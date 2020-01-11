@@ -180,7 +180,7 @@ public class Swerve implements Runnable {
 	public void zeroRotate() {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
-			Config.put(wheels[i].getName() + "_offset", "" + wheels[i].getOffset());
+			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
 			SmartDashboard.putString("DB/String " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
 		}
 		Config.updateConfigFile();

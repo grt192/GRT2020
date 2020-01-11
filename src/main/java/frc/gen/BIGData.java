@@ -10,7 +10,10 @@ public class BIGData {
 
     public static void start() {
         Config.start();
-        map = Config.getMap();
+		map = Config.getMap();
+		put("data_x", 0);
+		put("data_y", 0);
+		put("data_w", 0);
     }
 
     /** Get the boolean config value corresponding to the key passed in.
@@ -43,8 +46,16 @@ public class BIGData {
 	}
 	
 	public static void setDrive(double x, double y, double w){
-		map.put("drive_x", "" + x);
-		map.put("drive_y", "" + y);
-		map.put("drive_w", "" + w);
+		put("drive_x", x);
+		put("drive_y", y);
+		put("drive_w", w);
+	}
+
+	public static void put(String key, double val) {
+		map.put(key, "" + val);
+	}
+
+	public static void put(String key, int val) {
+		map.put(key, "" + val);
 	}
 }

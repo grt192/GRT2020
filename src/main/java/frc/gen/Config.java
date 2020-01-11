@@ -17,7 +17,6 @@ import java.util.Set;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -123,28 +122,6 @@ public class Config {
 		talon.configReverseSoftLimitEnable(false, 0);
 		talon.setNeutralMode(NeutralMode.Brake);
 		talon.configOpenloopRamp(0, 0);
-	}
-
-	/** Puts an entry into the map of config values. If the map 
-	 * previously contained a mapping for the key, the old value is replaced 
-	 * by the specified value. DOES NOT change the actual config file, call
-	 * updateConfigFile() to change values in file */
-	public static void put(String key, String value) {
-		key = key.trim();
-		value = value.trim();
-		if (map.put(key, value) == null) {
-			System.out.println("added new mapping to config map: " + key + "=" + value);
-		} else {
-			System.out.println("edited existing mapping in config map: " + key + "=" + value);
-		}
-	}
-
-	/** Puts an entry into the map of config values. If the map 
-	 * previously contained a mapping for the key, the old value is replaced 
-	 * by the specified value. DOES NOT change the actual config file, call
-	 * updateConfigFile() to change values in file */
-	public static void put(String key, double value) {
-		put(key, "" + value);
 	}
 
 	/** Removes the mapping for a key from the map of config values if it is present

@@ -1,8 +1,5 @@
 package frc.input;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
@@ -48,10 +45,10 @@ public class JoystickProfile {
 			SmartDashboard.putString(dashboardProfileStr0, profilingPoints[0][0] + ", " + profilingPoints[0][1]);
 			SmartDashboard.putString(dashboardProfileStr1, profilingPoints[1][0] + ", " + profilingPoints[1][1]);
 		}
-		Config.put("joystick_x1", profilingPoints[0][0]);
-		Config.put("joystick_y1", profilingPoints[0][1]);
-		Config.put("joystick_x2", profilingPoints[1][0]);
-		Config.put("joystick_y2", profilingPoints[1][1]);
+		BIGData.put("joystick_x1", profilingPoints[0][0]);
+		BIGData.put("joystick_y1", profilingPoints[0][1]);
+		BIGData.put("joystick_x2", profilingPoints[1][0]);
+		BIGData.put("joystick_y2", profilingPoints[1][1]);
 		Config.updateConfigFile();
 	}
 
