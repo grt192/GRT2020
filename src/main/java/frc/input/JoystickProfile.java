@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.config.Config;
 import frc.util.GRTUtil;
+import frc.gen.BIGData;
+import frc.gen.Config;
 
 public class JoystickProfile {
 	private static final double DEFAULT_DEADBAND = 0.1;
@@ -21,11 +22,11 @@ public class JoystickProfile {
 
 	public static void init() {
 		profilingPoints = new double[2][2];
-		profilingPoints[0][0] = Config.getDouble("joystick_x1");
-		profilingPoints[0][1] = Config.getDouble("joystick_y1");
+		profilingPoints[0][0] = BIGData.getDouble("joystick_x1");
+		profilingPoints[0][1] = BIGData.getDouble("joystick_y1");
 		SmartDashboard.putString(dashboardProfileStr0, profilingPoints[0][0] + ", " + profilingPoints[0][1]);
-		profilingPoints[1][0] = Config.getDouble("joystick_x2");
-		profilingPoints[1][1] = Config.getDouble("joystick_y2");
+		profilingPoints[1][0] = BIGData.getDouble("joystick_x2");
+		profilingPoints[1][1] = BIGData.getDouble("joystick_y2");
 		SmartDashboard.putString(dashboardProfileStr1, profilingPoints[1][0] + ", " + profilingPoints[1][1]);
 	}
 

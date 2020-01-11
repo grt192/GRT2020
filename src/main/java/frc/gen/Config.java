@@ -1,4 +1,4 @@
-package frc.config;
+package frc.gen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,24 +41,7 @@ public class Config {
 	private static String tempConfigFileName = "temporaryconfig.txt";
 	/** The name of the config state file in home/lvuser. Should include ".txt" */
 	private static String configStateFileName = "configstate.txt";
-	
-	/** Get the int config value corresponding to the key passed in.
-	 * @return The corresponding integer value, or -1 if the key was not found/invalid
-	 */
-	public static int getInt(String key) {
-		try {
-			return Integer.parseInt(map.get(key));
-		} catch (Exception e) {
-			return -1;
-		}
-	}
 
-	/** Get the boolean config value corresponding to the key passed in.
-	 * @return The corresponding boolean value, or false if the key was invalid
-	 */
-	public static boolean getBoolean(String key) {
-		return Boolean.parseBoolean(map.get(key));
-	}
 	/** Get the string config value corresponding to the key passed in.
 	 * @return The corresponding string value, or the empty string if the key was invalid
 	 */
@@ -70,15 +53,8 @@ public class Config {
 		return result;
 	}
 
-	/** Get the double config value corresponding to the key passed in.
-	 * @return The corresponding double value, or 0.0 if the key was invalid
-	 */
-	public static double getDouble(String key) {
-		try {
-			return Double.parseDouble(map.get(key));
-		} catch (Exception e) {
-			return 0.0;
-		}
+	public static Map<String, String> getMap(){
+		return map;
 	}
 
 	public static void start() {

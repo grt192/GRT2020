@@ -8,6 +8,7 @@
 package frc.modes;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import frc.gen.BIGData;
 import frc.input.Input;
 import frc.input.JoystickProfile;
 import frc.robot.Robot;
@@ -32,7 +33,7 @@ class DriverControl extends Mode {
         if (lTrigger + rTrigger > 0.05) {
             rotate = (rTrigger * rTrigger - lTrigger * lTrigger);
         }
-        Robot.SWERVE.drive(x, y, rotate);
+        BIGData.setDrive(x, y, rotate);
     }
 
 }
