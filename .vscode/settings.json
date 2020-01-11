@@ -1,0 +1,18 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "bin/": true,
+    ".classpath": true,
+    ".project": true
+  },
+  "wpilib.online": true,
+  "java.format.settings.url": "eclipse-formatter.xml",
+  "java.completion.guessMethodArguments": true,
+  "editor.formatOnSave": true,
+  "java.saveActions.organizeImports": true
+}

@@ -1,0 +1,36 @@
+# Config file for 2020 SWERVE BASE
+# Domain: roborio-192-frc.local
+
+swerve_width=22.25
+swerve_height=21.70
+
+robot_width=37.00
+robot_height=41
+
+swerve_inverted=false
+swerve_kp=0.0
+swerve_kd=0.5
+
+# Offsets are inverted
+br_rotate=2
+br_drive=1
+br_offset=-509
+bl_rotate=15
+bl_drive=16
+bl_offset=-835
+fr_rotate=4
+fr_drive=3
+fr_offset=-509
+fl_rotate=13
+fl_drive=14
+fl_offset=604
+
+ticks_per_rotation=1024
+drive_encoder_scale=1.83259571
+
+# joystick profile variables
+# see https://www.desmos.com/calculator/bmcalwjje2
+joystick_x1=0.8
+joystick_y1=0.1
+joystick_x2=0.85
+joystick_y2=0.4
