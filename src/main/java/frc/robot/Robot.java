@@ -7,21 +7,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.config.Config;
 import frc.modes.Mode;
-import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.input.Input;
 import frc.input.JoystickProfile;
 import frc.swerve.NavXGyro;
 import frc.swerve.Swerve;
-import frc.util.GRTUtil;
+import frc.gen.BIGData;
+import frc.gen.Config;
 
 import edu.wpi.first.cameraserver.*;
 
@@ -51,10 +47,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    Config.start();
+    BIGData.start();
     JoystickProfile.init();
-    ROBOT_WIDTH = Config.getDouble("robot_width");
-    ROBOT_HEIGHT = Config.getDouble("robot_height");
+    ROBOT_WIDTH = BIGData.getDouble("robot_width");
+    ROBOT_HEIGHT = BIGData.getDouble("robot_height");
     ROBOT_RADIUS = Math.sqrt(ROBOT_WIDTH * ROBOT_WIDTH + ROBOT_HEIGHT * ROBOT_HEIGHT) / 2;
     autonomous = new Autonomous(this);
     GYRO = new NavXGyro();
