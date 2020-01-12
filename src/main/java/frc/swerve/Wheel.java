@@ -130,6 +130,7 @@ class Wheel {
 	}
 
 	private void configDriveMotor() {
+		driveMotor.restoreFactoryDefaults();
 		driveMotor.setIdleMode(IdleMode.kBrake);
 		driveMotor.setOpenLoopRampRate(0.1);
 	}

@@ -132,13 +132,14 @@ public class Swerve implements Runnable {
 		double gyroAngle = (robotCentric ? 0 : Math.toRadians(gyro.getAngle()));
 		for (int i = 0; i < wheels.length; i++) {
 			// angle in radians
-			double wheelAngle = getRelativeWheelAngle(i) + gyroAngle;
+			double wheelAngle = getRelativeWheelAngle(i) - gyroAngle;
+			// x component of tangential velocity
 			double wx = (w*RADIUS) * Math.cos(Math.PI/2 + wheelAngle);
+			// y component of tangential velocity
 			double wy = (w*RADIUS) * Math.sin(Math.PI/2 + wheelAngle);
 			double wheelVX = vx + wx;
 			double wheelVY = vy + wy;
-			double wheelPos = Math.atan2(wheelVY, wheelVX) - gyroAngle - Math.PI/2;
-			//System.out.println("wheel: " + i + " wheel angle:" + wheelAngle + " wheelvx:" + wheelVX + " wheelvy:" + wheelVY + " wheelPos:" + wheelPos);
+			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI/2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
 			wheels[i].set(wheelPos, power);
 		}
