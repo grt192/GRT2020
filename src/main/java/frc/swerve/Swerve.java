@@ -5,9 +5,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.config.Config;
 import frc.robot.Robot;
 import frc.util.GRTUtil;
+import frc.gen.BIGData;
+import frc.gen.Config;
 
 public class Swerve implements Runnable {
 
@@ -48,10 +49,10 @@ public class Swerve implements Runnable {
 		wheels[2] = new Wheel("bl");
 		wheels[3] = new Wheel("fl");
 
-		SWERVE_WIDTH = Config.getDouble("swerve_width");
-		SWERVE_HEIGHT = Config.getDouble("swerve_height");
-		kP = Config.getDouble("swerve_kp");
-		kD = Config.getDouble("swerve_kd");
+		SWERVE_WIDTH = BIGData.getDouble("swerve_width");
+		SWERVE_HEIGHT = BIGData.getDouble("swerve_height");
+		kP = BIGData.getDouble("swerve_kp");
+		kD = BIGData.getDouble("swerve_kd");
 		RADIUS = Math.sqrt(SWERVE_WIDTH * SWERVE_WIDTH + SWERVE_HEIGHT * SWERVE_HEIGHT) / 2;
 		WHEEL_ANGLE = Math.atan2(SWERVE_WIDTH, SWERVE_HEIGHT);
 		ROTATE_SCALE = 1 / RADIUS;
@@ -66,10 +67,20 @@ public class Swerve implements Runnable {
 		if (withPID) {
 			w = calcPID();
 		}
+		refreshVals();
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 		SmartDashboard.putNumber("Angle", gyro.getAngle());
 		gyroAngle.setDouble(Math.toRadians(gyro.getAngle()));
+	}
+
+	private void refreshVals(){
+		userVX = BIGData.getDouble("drive_x");
+		userVY = BIGData.getDouble("drive_y");
+		userW = BIGData.getDouble("drive_w");
+		if (userW != 0) {
+			withPID = false;
+		}
 	}
 
 	/**
@@ -80,25 +91,6 @@ public class Swerve implements Runnable {
 		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), angle);
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
 		return w;
-	}
-
-	/**
-	 * sets x velocity, y velocity, and angular velocity of robot
-	 * 
-	 * @param vx
-	 *               the new x velocity, from -1.0 to 1.0
-	 * @param vy
-	 *               the new y velocity, from -1.0 to 1.0
-	 * @param w
-	 *               the new angular velocity, in radians/sec
-	 */
-	public void drive(double vx, double vy, double w) {
-		userVX = vx;
-		userVY = vy;
-		userW = w;
-		if (w != 0) {
-			withPID = false;
-		}
 	}
 
 	/**
@@ -187,7 +179,7 @@ public class Swerve implements Runnable {
 	public void zeroRotate() {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
-			Config.put(wheels[i].getName() + "_offset", "" + wheels[i].getOffset());
+			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
 			SmartDashboard.putString("DB/String " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
 		}
 		Config.updateConfigFile();
