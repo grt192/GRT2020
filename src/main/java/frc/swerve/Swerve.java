@@ -133,18 +133,27 @@ public class Swerve implements Runnable {
 		for (int i = 0; i < wheels.length; i++) {
 			// angle in radians
 			double wheelAngle = getRelativeWheelAngle(i) + gyroAngle;
-			double dx = RADIUS * Math.cos(wheelAngle);
-			double dy = RADIUS * Math.sin(wheelAngle);
-			double wheelVX = vx - dy * w;
-			double wheelVY = vy + dx * w;
-			double wheelPos = Math.atan2(wheelVY, wheelVX) - gyroAngle;
-			// System.out.println("wheel: " + i + " wheelPos: " + wheelPos + " dx: " + dx +
-			// " dy: " + dy);
+			double wx = (w*RADIUS) * Math.cos(Math.PI/2 + wheelAngle);
+			double wy = (w*RADIUS) * Math.sin(Math.PI/2 + wheelAngle);
+			double wheelVX = vx + wx;
+			double wheelVY = vy + wy;
+			double wheelPos = Math.atan2(wheelVY, wheelVX) - gyroAngle - Math.PI/2;
+			//System.out.println("wheel: " + i + " wheel angle:" + wheelAngle + " wheelvx:" + wheelVX + " wheelvy:" + wheelVY + " wheelPos:" + wheelPos);
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
 			wheels[i].set(wheelPos, power);
 		}
 	}
 
+	private double getRelativeWheelAngle(int i) {
+		double angle = WHEEL_ANGLE;
+		switch (i) {
+			case 1: angle = GRTUtil.TWO_PI - WHEEL_ANGLE; break;
+			case 2: angle = Math.PI + WHEEL_ANGLE; break;
+			case 3: angle = Math.PI - WHEEL_ANGLE; break;
+		}
+		return angle;
+	}
+	
 	public SwerveData getSwerveData() {
 		return swerveData;
 	}
@@ -168,17 +177,6 @@ public class Swerve implements Runnable {
 		vx /= 4.0;
 		vy /= 4.0;
 		swerveData = new SwerveData(gyroAngle, gyroRate, vx, vy, w);
-	}
-
-	private double getRelativeWheelAngle(int i) {
-		double angle = WHEEL_ANGLE;
-		if (i == 0 || i == 2) {
-			angle *= -1;
-		}
-		if (i == 0 || i == 3) {
-			angle += Math.PI;
-		}
-		return angle;
 	}
 
 	/**

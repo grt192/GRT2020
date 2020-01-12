@@ -63,8 +63,8 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
 
-    // CameraServer.getInstance().startAutomaticCapture(0);
-    // CameraServer.getInstance().startAutomaticCapture(1);
+    //CameraServer.getInstance().startAutomaticCapture(0);
+    //CameraServer.getInstance().startAutomaticCapture(1);
 
   }
 

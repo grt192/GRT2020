@@ -21,8 +21,9 @@ class DriverControl extends Mode {
     }
 
     private void driveSwerve() {
-        double x = -Input.SWERVE_XBOX.getY(Hand.kLeft);
-        double y = Input.SWERVE_XBOX.getX(Hand.kLeft);
+        double x = Input.SWERVE_XBOX.getX(Hand.kLeft);
+        // negativize y so that up is forward
+        double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);
         x = JoystickProfile.applyProfile(x);
         y = JoystickProfile.applyProfile(y);
         // rotate the robot
