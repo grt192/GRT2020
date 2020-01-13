@@ -59,7 +59,7 @@ public class Swerve implements Runnable {
 		calcSwerveData();
 		notifier = new Notifier(this);
 		notifier.startPeriodic(0.02);
-		// setAngle(0.0); TODO uncomment this
+		setAngle(0.0); 
 	}
 
 	public void run() {
@@ -74,10 +74,10 @@ public class Swerve implements Runnable {
 		gyroAngle.setDouble(Math.toRadians(gyro.getAngle()));
 	}
 
-	private void refreshVals(){
-		userVX = BIGData.getDouble("drive_x");
-		userVY = BIGData.getDouble("drive_y");
-		userW = BIGData.getDouble("drive_w");
+	private void refreshVals() {
+		userVX = BIGData.getDouble("drive_vx");
+		userVY = BIGData.getDouble("drive_vy");
+		userW = BIGData.getDouble("drive_vw");
 		if (userW != 0) {
 			withPID = false;
 		}
@@ -94,10 +94,8 @@ public class Swerve implements Runnable {
 	}
 
 	/**
-	 * sets the angle of the robot
-	 * 
-	 * @param angle
-	 *                  the angle to turn the robot to, in radians
+	 * sets the angle of the robot 
+	 * @param angle the angle to turn the robot to, in radians
 	 */
 	public void setAngle(double angle) {
 		withPID = true;
@@ -110,14 +108,10 @@ public class Swerve implements Runnable {
 	}
 
 	/**
-	 * change the motors to reach the requested values
-	 * 
-	 * @param vx
-	 *               the requested x velocity from -1.0 to 1.0
-	 * @param vy
-	 *               the requested y velocity from -1.0 to 1.0
-	 * @param w
-	 *               the requested angular velocity
+	 * change the motors to reach the requested values 
+	 * @param vx the requested x velocity from -1.0 to 1.0
+	 * @param vy the requested y velocity from -1.0 to 1.0
+	 * @param w  the requested angular velocity
 	 */
 	public void changeMotors(double vx, double vy, double w) {
 		w *= ROTATE_SCALE;
@@ -126,12 +120,12 @@ public class Swerve implements Runnable {
 			// angle in radians
 			double wheelAngle = getRelativeWheelAngle(i) - gyroAngle;
 			// x component of tangential velocity
-			double wx = (w*RADIUS) * Math.cos(Math.PI/2 + wheelAngle);
+			double wx = (w * RADIUS) * Math.cos(Math.PI / 2 + wheelAngle);
 			// y component of tangential velocity
-			double wy = (w*RADIUS) * Math.sin(Math.PI/2 + wheelAngle);
+			double wy = (w * RADIUS) * Math.sin(Math.PI / 2 + wheelAngle);
 			double wheelVX = vx + wx;
 			double wheelVY = vy + wy;
-			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI/2;
+			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
 			wheels[i].set(wheelPos, power);
 		}
@@ -140,13 +134,19 @@ public class Swerve implements Runnable {
 	private double getRelativeWheelAngle(int i) {
 		double angle = WHEEL_ANGLE;
 		switch (i) {
-			case 1: angle = GRTUtil.TWO_PI - WHEEL_ANGLE; break;
-			case 2: angle = Math.PI + WHEEL_ANGLE; break;
-			case 3: angle = Math.PI - WHEEL_ANGLE; break;
+		case 1:
+			angle = GRTUtil.TWO_PI - WHEEL_ANGLE;
+			break;
+		case 2:
+			angle = Math.PI + WHEEL_ANGLE;
+			break;
+		case 3:
+			angle = Math.PI - WHEEL_ANGLE;
+			break;
 		}
 		return angle;
 	}
-	
+
 	public SwerveData getSwerveData() {
 		return swerveData;
 	}
@@ -180,9 +180,9 @@ public class Swerve implements Runnable {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
-			SmartDashboard.putString("DB/String " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
+			SmartDashboard.putString("wheel " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
 		}
-		Config.updateConfigFile();
+		BIGData.updateConfigFile();
 	}
 
 }

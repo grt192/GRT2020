@@ -17,7 +17,6 @@ import frc.input.JoystickProfile;
 import frc.swerve.NavXGyro;
 import frc.swerve.Swerve;
 import frc.gen.BIGData;
-import frc.gen.Config;
 
 import edu.wpi.first.cameraserver.*;
 

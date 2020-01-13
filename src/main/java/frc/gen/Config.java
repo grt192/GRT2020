@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * contains "deploy", the deploy time config file will be used, and if the file contains 
  * "temp", the temporary config file will be used. </p>
  */
-public class Config {
+class Config {
 	private static Map<String, String> map;
 
 	/** The name of the deploy time config file in home/lvuser/deploy */
@@ -40,6 +40,8 @@ public class Config {
 	private static String tempConfigFileName = "temporaryconfig.txt";
 	/** The name of the config state file in home/lvuser. Should include ".txt" */
 	private static String configStateFileName = "configstate.txt";
+
+	private static boolean updated;
 
 	/** Get the string config value corresponding to the key passed in.
 	 * @return The corresponding string value, or the empty string if the key was invalid
@@ -114,6 +116,8 @@ public class Config {
 		} else {
 			SmartDashboard.putString("DB/String 7", "using temporary config file");
 		}
+
+		updated = true;
 	}
 
 	public static void defaultConfigTalon(TalonSRX talon) {
@@ -209,6 +213,7 @@ public class Config {
 			return;
 		}
 		changeStartupConfigFile(false);
+		
 	}
 
 	/** Writes the current key/value pairs to the file in an unordered way */
@@ -246,5 +251,9 @@ public class Config {
 		for (Map.Entry<String, String> e : map.entrySet()) {
 			System.out.println(e.getKey() + "=" + e.getValue());
 		}
+	}
+
+	public static void setUpdated(boolean updated) {
+		Config.updated = updated;
 	}
 }

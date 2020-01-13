@@ -45,10 +45,16 @@ public class BIGData {
 		}
 	}
 	
-	public static void setDrive(double x, double y, double w){
-		put("drive_x", x);
-		put("drive_y", y);
-		put("drive_w", w);
+	/**
+	 * Set the translational and angular velocity of the robot
+	 * @param vx requested x velocity from -1.0 to 1.0
+	 * @param vy requested y velocity from -1.0 to 1.0
+	 * @param w requested angular velocity
+	 */
+	public static void setDrive(double vx, double vy, double w){
+		put("drive_vx", vx);
+		put("drive_vy", vy);
+		put("drive_vw", w);
 	}
 
 	public static void put(String key, double val) {
@@ -57,5 +63,15 @@ public class BIGData {
 
 	public static void put(String key, int val) {
 		map.put(key, "" + val);
+	}
+
+	/** calls Config.updateConfigFile */
+	public static void updateConfigFile() {
+		Config.updateConfigFile();
+	}
+
+	/** calls Config.resetTempConfigFile() */
+	public static void resetTempConfigFile() {
+		Config.resetTempConfigFile();
 	}
 }

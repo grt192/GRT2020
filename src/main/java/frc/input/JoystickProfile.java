@@ -3,7 +3,6 @@ package frc.input;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
-import frc.gen.Config;
 
 public class JoystickProfile {
 	private static final double DEFAULT_DEADBAND = 0.1;
@@ -49,7 +48,7 @@ public class JoystickProfile {
 		BIGData.put("joystick_y1", profilingPoints[0][1]);
 		BIGData.put("joystick_x2", profilingPoints[1][0]);
 		BIGData.put("joystick_y2", profilingPoints[1][1]);
-		Config.updateConfigFile();
+		BIGData.updateConfigFile();
 	}
 
 	public static double applyProfile(double x) {
