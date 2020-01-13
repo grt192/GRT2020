@@ -7,21 +7,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.config.Config;
-import frc.modes.Mode;
-import edu.wpi.first.networktables.EntryListenerFlags;
+import frc.control.Mode;
+import frc.control.ShuffleboardCommands;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.input.Input;
 import frc.input.JoystickProfile;
 import frc.swerve.NavXGyro;
 import frc.swerve.Swerve;
-import frc.util.GRTUtil;
+import frc.gen.BIGData;
 
 import edu.wpi.first.cameraserver.*;
 
@@ -51,10 +47,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    Config.start();
+    BIGData.start();
     JoystickProfile.init();
-    ROBOT_WIDTH = Config.getDouble("robot_width");
-    ROBOT_HEIGHT = Config.getDouble("robot_height");
+    //ShuffleboardCommands.init();
+    ROBOT_WIDTH = BIGData.getDouble("robot_width");
+    ROBOT_HEIGHT = BIGData.getDouble("robot_height");
     ROBOT_RADIUS = Math.sqrt(ROBOT_WIDTH * ROBOT_WIDTH + ROBOT_HEIGHT * ROBOT_HEIGHT) / 2;
     autonomous = new Autonomous(this);
     GYRO = new NavXGyro();
@@ -63,8 +60,8 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
 
-    //CameraServer.getInstance().startAutomaticCapture(0);
-    //CameraServer.getInstance().startAutomaticCapture(1);
+    // CameraServer.getInstance().startAutomaticCapture(0);
+    // CameraServer.getInstance().startAutomaticCapture(1);
 
   }
 
@@ -148,26 +145,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    // zero swerve
-    if (Input.SWERVE_XBOX.getXButtonPressed()) {
-      System.out.println("x button pressed");
-      Config.resetTempConfigFile();
-    }
-    if (Input.SWERVE_XBOX.getYButtonReleased()) {
-      System.out.println("y button released");
-      SWERVE.zeroRotate();
-    }
-    if (Input.SWERVE_XBOX.getAButtonPressed()) {
-      Config.changeStartupConfigFile(true);
-    }
-    if (Input.SWERVE_XBOX.getBButtonPressed()) {
-      Config.changeStartupConfigFile(false);
-    }
-    if (Input.SWERVE_XBOX.getBumperReleased(Hand.kLeft)) {
-      Config.printConfigMappings();
-    }
-    if (Input.SWERVE_XBOX.getBumperReleased(Hand.kRight)) {
-      JoystickProfile.updateProfilingPoints();
-    }
+    Mode.getMode(1).loop();
   }
 }

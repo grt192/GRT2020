@@ -1,4 +1,4 @@
-package frc.config;
+package frc.gen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,50 +17,42 @@ import java.util.Set;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
 /**
- * This class stores its configuration information in 3 files: 
- * <p>Deploy time config file, located in /home/lvuser/deploy/. Robot programs
- * don't have permission to write to this directory. </p>
- * <p>"Temporary" config file, located in /home/lvuser/. This file is where changes
- * to configuration values while the program is running are stored. </p>
- * <p>Config state file, located in /home/lvuser/. This file contains a single line 
- * that determines which config file to load into the program on startup. If the file
- * contains "deploy", the deploy time config file will be used, and if the file contains 
- * "temp", the temporary config file will be used. </p>
+ * This class stores its configuration information in 3 files:
+ * <p>
+ * Deploy time config file, located in /home/lvuser/deploy/. Robot programs
+ * don't have permission to write to this directory.
+ * </p>
+ * <p>
+ * "Temporary" config file, located in /home/lvuser/. This file is where changes
+ * to configuration values while the program is running are stored.
+ * </p>
+ * <p>
+ * Config state file, located in /home/lvuser/. This file contains a single line
+ * that determines which config file to load into the program on startup. If the
+ * file contains "deploy", the deploy time config file will be used, and if the
+ * file contains "temp", the temporary config file will be used.
+ * </p>
  */
-public class Config {
+class Config {
 	private static Map<String, String> map;
 
 	/** The name of the deploy time config file in home/lvuser/deploy */
 	private static String deployConfigFileName;
-	/** The name of the temporary config file in home/lvuser. Should include ".txt" */
+	/**
+	 * The name of the temporary config file in home/lvuser. Should include ".txt"
+	 */
 	private static String tempConfigFileName = "temporaryconfig.txt";
 	/** The name of the config state file in home/lvuser. Should include ".txt" */
 	private static String configStateFileName = "configstate.txt";
-	
-	/** Get the int config value corresponding to the key passed in.
-	 * @return The corresponding integer value, or -1 if the key was not found/invalid
-	 */
-	public static int getInt(String key) {
-		try {
-			return Integer.parseInt(map.get(key));
-		} catch (Exception e) {
-			return -1;
-		}
-	}
 
-	/** Get the boolean config value corresponding to the key passed in.
-	 * @return The corresponding boolean value, or false if the key was invalid
-	 */
-	public static boolean getBoolean(String key) {
-		return Boolean.parseBoolean(map.get(key));
-	}
-	/** Get the string config value corresponding to the key passed in.
-	 * @return The corresponding string value, or the empty string if the key was invalid
+	/**
+	 * Get the string config value corresponding to the key passed in.
+	 * 
+	 * @return The corresponding string value, or the empty string if the key was
+	 *         invalid
 	 */
 	public static String getString(String key) {
 		String result = map.get(key);
@@ -70,15 +62,8 @@ public class Config {
 		return result;
 	}
 
-	/** Get the double config value corresponding to the key passed in.
-	 * @return The corresponding double value, or 0.0 if the key was invalid
-	 */
-	public static double getDouble(String key) {
-		try {
-			return Double.parseDouble(map.get(key));
-		} catch (Exception e) {
-			return 0.0;
-		}
+	public static Map<String, String> getMap() {
+		return map;
 	}
 
 	public static void start() {
@@ -133,54 +118,28 @@ public class Config {
 		for (String s : map.keySet()) {
 			System.out.println(s + ": " + getString(s));
 		}
-		
+
 		if (useDeployConfig) {
 			SmartDashboard.putString("DB/String 7", "using deploy time config file");
 		} else {
 			SmartDashboard.putString("DB/String 7", "using temporary config file");
 		}
+
 	}
 
-	public static void defaultConfigTalon(TalonSRX talon) {
-		talon.configFactoryDefault();
-		talon.configForwardSoftLimitEnable(false, 0);
-		talon.configReverseSoftLimitEnable(false, 0);
-		talon.setNeutralMode(NeutralMode.Brake);
-		talon.configOpenloopRamp(0, 0);
-	}
-
-	/** Puts an entry into the map of config values. If the map 
-	 * previously contained a mapping for the key, the old value is replaced 
-	 * by the specified value. DOES NOT change the actual config file, call
-	 * updateConfigFile() to change values in file */
-	public static void put(String key, String value) {
-		key = key.trim();
-		value = value.trim();
-		if (map.put(key, value) == null) {
-			System.out.println("added new mapping to config map: " + key + "=" + value);
-		} else {
-			System.out.println("edited existing mapping in config map: " + key + "=" + value);
-		}
-	}
-
-	/** Puts an entry into the map of config values. If the map 
-	 * previously contained a mapping for the key, the old value is replaced 
-	 * by the specified value. DOES NOT change the actual config file, call
-	 * updateConfigFile() to change values in file */
-	public static void put(String key, double value) {
-		put(key, "" + value);
-	}
-
-	/** Removes the mapping for a key from the map of config values if it is present
+	/**
+	 * Removes the mapping for a key from the map of config values if it is present
 	 * @param key the key whose mapping is to be removed
-	 * @return the previous value associated with the key */
+	 * @return the previous value associated with the key
+	 */
 	public static String remove(String key) {
 		System.out.println("removed mapping from config map: " + key + "=" + map.get(key));
 		return map.remove(key);
 	}
 
-	/** Change whether we use the deploy time config file or the temporary config file ON STARTUP. 
-	 * This function does not modify current program state.
+	/**
+	 * Change whether we use the deploy time config file or the temporary config
+	 * file ON STARTUP. This function does not modify current program state.
 	 */
 	public static void changeStartupConfigFile(boolean useDeploy) {
 		File useDeployFile = new File("/home/lvuser/", configStateFileName);
@@ -194,7 +153,6 @@ public class Config {
 		}
 		SmartDashboard.putString("DB/String 7", (useDeploy ? "deploy" : "temp") + " file will be used on startup");
 	}
-
 
 	/** Writes the current mappings to the temporary config file in home/lvuser */
 	public static void updateConfigFile() {
@@ -221,7 +179,8 @@ public class Config {
 			return;
 		}
 
-		// put new config file at "configtemptemp.txt", then atomically rename it to replace old config file
+		// put new config file at "configtemptemp.txt", then atomically rename it to
+		// replace old config file
 		File tempFile = new File("/home/lvuser", "configtemptemp.txt");
 		FileWriter writer;
 		try {
@@ -256,10 +215,11 @@ public class Config {
 			return;
 		}
 		changeStartupConfigFile(false);
+
 	}
 
 	/** Writes the current key/value pairs to the file in an unordered way */
-	private static void writeRawToConfigFile(File f)  {
+	private static void writeRawToConfigFile(File f) {
 		System.out.println("Writing raw key/value pairs to config file: " + f.getName());
 		FileWriter writer;
 		try {
@@ -274,7 +234,10 @@ public class Config {
 		}
 		changeStartupConfigFile(false);
 	}
-	/** copies the contents of the deploy time config file to the temp config file */
+
+	/**
+	 * copies the contents of the deploy time config file to the temp config file
+	 */
 	public static void resetTempConfigFile() {
 		System.out.println("copying config file from home/lvuser/deploy to temp config file in home/lvuser");
 		File tempConfigFile = new File("/home/lvuser/", tempConfigFileName);
@@ -282,8 +245,7 @@ public class Config {
 		try {
 			Files.copy(deployConfigFile.toPath(), tempConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			SmartDashboard.putString("DB/String 7", "reset temp config file");
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			System.out.println("unable to reset temp config file");
 			e.printStackTrace();
 		}

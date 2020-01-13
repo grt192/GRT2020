@@ -1,5 +1,8 @@
 package frc.util;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 public class GRTUtil {
 
 	// GRTUtil because there are too many other Util classes
@@ -36,18 +39,22 @@ public class GRTUtil {
 	 * See
 	 * https://math.stackexchange.com/questions/914823/shift-numbers-into-a-different-range
 	 * 
-	 * @param origMin
-	 *                    The minimum of the original range
-	 * @param origMax
-	 *                    The maximum of the original range
-	 * @param newMin
-	 *                    The minimum of the range to stretch/shrink to
-	 * @param newMax
-	 *                    The maximum of the range to stretch/shrink to
-	 * @param x
-	 *                    The number to stretch
+	 * @param origMin The minimum of the original range
+	 * @param origMax The maximum of the original range
+	 * @param newMin The minimum of the range to stretch/shrink to
+	 * @param newMax The maximum of the range to stretch/shrink to
+	 * @param x The number to stretch
 	 */
 	public static double toRange(double origMin, double origMax, double newMin, double newMax, double x) {
 		return newMin + ((newMax - newMin) / (origMax - origMin)) * (x - origMin);
 	}
+	
+	public static void defaultConfigTalon(TalonSRX talon) {
+		talon.configFactoryDefault();
+		talon.configForwardSoftLimitEnable(false, 0);
+		talon.configReverseSoftLimitEnable(false, 0);
+		talon.setNeutralMode(NeutralMode.Brake);
+		talon.configOpenloopRamp(0, 0);
+	}
+
 }

@@ -5,17 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.modes;
+package frc.control;
 
 public abstract class Mode {
-
-    public static Mode DRIVER_CONTROL;
+    private static DriverControl driverControl;
     private static Mode[] modes;
 
     public static void initModes() {
-        DRIVER_CONTROL = new DriverControl();
-        modes = new Mode[1];
-        modes[0] = DRIVER_CONTROL;
+        driverControl = new DriverControl();
+        modes = new Mode[2];
+        modes[0] = driverControl;
     }
 
     public abstract boolean loop();

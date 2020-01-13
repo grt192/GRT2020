@@ -9,8 +9,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.config.Config;
 import frc.util.GRTUtil;
+import frc.gen.BIGData;
 
 class Wheel {
 
@@ -34,12 +34,12 @@ class Wheel {
 	public Wheel(String name) {
 		this.name = name;
 
-		rotateMotor = new TalonSRX(Config.getInt(name + "_rotate"));
-		driveMotor = new CANSparkMax(Config.getInt(name + "_drive"), MotorType.kBrushless);
+		rotateMotor = new TalonSRX(BIGData.getInt(name + "_rotate"));
+		driveMotor = new CANSparkMax(BIGData.getInt(name + "_drive"), MotorType.kBrushless);
 		driveEncoder = driveMotor.getEncoder();
-		TICKS_PER_ROTATION = Config.getDouble("ticks_per_rotation");
-		OFFSET = Config.getInt(name + "_offset");
-		DRIVE_TICKS_TO_METERS = Config.getDouble("drive_encoder_scale");
+		TICKS_PER_ROTATION = BIGData.getDouble("ticks_per_rotation");
+		OFFSET = BIGData.getInt(name + "_offset");
+		DRIVE_TICKS_TO_METERS = BIGData.getDouble("drive_encoder_scale");
 		configRotateMotor();
 		configDriveMotor();
 	}
@@ -85,9 +85,7 @@ class Wheel {
 			double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
 			rotateMotor.set(ControlMode.Position, encoderPos);
 		}
-		speed *= (reversed ? -1 : 1);// / (DRIVE_TICKS_TO_METERS * 10);
-		// driveMotor.set(ControlMode.PercentOutput, speed);
-		// TODO also add maximum acceleration check here
+		speed *= (reversed ? -1 : 1);
 		driveMotor.set(speed);
 	}
 
@@ -113,11 +111,11 @@ class Wheel {
 	}
 
 	private void configRotateMotor() {
-		Config.defaultConfigTalon(rotateMotor);
+		GRTUtil.defaultConfigTalon(rotateMotor);
 
-		boolean inverted = Config.getBoolean("swerve_inverted");
+		boolean inverted = BIGData.getBoolean("swerve_inverted");
 		rotateMotor.setInverted(inverted);
-		rotateMotor.setSensorPhase((!inverted) ^ Config.getBoolean("sensor_phase"));
+		rotateMotor.setSensorPhase((!inverted) ^ BIGData.getBoolean("sensor_phase"));
 		rotateMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 0);
 		rotateMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 10, 0);
 
