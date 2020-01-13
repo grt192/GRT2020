@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
-import frc.gen.Config;
 
 class Wheel {
 
@@ -86,9 +85,7 @@ class Wheel {
 			double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
 			rotateMotor.set(ControlMode.Position, encoderPos);
 		}
-		speed *= (reversed ? -1 : 1);// / (DRIVE_TICKS_TO_METERS * 10);
-		// driveMotor.set(ControlMode.PercentOutput, speed);
-		// TODO also add maximum acceleration check here
+		speed *= (reversed ? -1 : 1);
 		driveMotor.set(speed);
 	}
 
@@ -114,7 +111,7 @@ class Wheel {
 	}
 
 	private void configRotateMotor() {
-		Config.defaultConfigTalon(rotateMotor);
+		GRTUtil.defaultConfigTalon(rotateMotor);
 
 		boolean inverted = BIGData.getBoolean("swerve_inverted");
 		rotateMotor.setInverted(inverted);

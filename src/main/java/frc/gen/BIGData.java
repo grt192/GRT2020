@@ -57,12 +57,39 @@ public class BIGData {
 		put("drive_vw", w);
 	}
 
+	/** Request that swerve be zeroed. */
+	public static void setZeroSwerveRequest(boolean request) {
+		put("zero_swerve", request);
+	}
+
+	/** Get whether swerve has been requested to be zeroed. */
+	public static boolean getZeroSwerveRequest() {
+		return getBoolean("zero_swerve");
+	}
+
+	/** Request that the gyro be zeroed. */
+	public static void setZeroGyroRequest(boolean request) {
+		put("zero_gyro", request);
+	}
+
+	/** Get whether the gyro has been requested to be zeroed. */
+	public static boolean getZeroGyroRequest() {
+		return getBoolean("zero_gyro");
+	}
+
+	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, double val) {
 		map.put(key, "" + val);
 	}
 
+	/** put (or update) a key/value mapping into the map  */
 	public static void put(String key, int val) {
 		map.put(key, "" + val);
+	}
+
+	/** put (or update) a key/value mapping into the map */
+	public static void put(String key, boolean val) {
+		map.put(key, ""+val);
 	}
 
 	/** calls Config.updateConfigFile */
@@ -73,5 +100,16 @@ public class BIGData {
 	/** calls Config.resetTempConfigFile() */
 	public static void resetTempConfigFile() {
 		Config.resetTempConfigFile();
+	}
+
+	/** Change whether we use the deploy time config file or the temporary config file 
+	 * ON STARTUP. This function does not modify current program state. */
+	public static void changeStartupConfigFile(boolean useDeploy) {
+		Config.changeStartupConfigFile(useDeploy);
+	}
+
+	/** print the current config mappings to the console */
+	public static void printConfigMappings() {
+		Config.printConfigMappings();
 	}
 }

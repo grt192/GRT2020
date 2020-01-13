@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.modes;
+package frc.control;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.gen.BIGData;
@@ -31,7 +31,7 @@ class DriverControl extends Mode {
         double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
         double rotate = 0;
         if (lTrigger + rTrigger > 0.05) {
-            rotate = (rTrigger * rTrigger - lTrigger * lTrigger);
+            rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
         }
         BIGData.setDrive(x, y, rotate);
     }

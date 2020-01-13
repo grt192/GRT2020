@@ -30,7 +30,7 @@ drive_encoder_scale=1.83259571
 
 # joystick profile variables
 # see https://www.desmos.com/calculator/bmcalwjje2
-joystick_x1=0.8
+joystick_x1=0.3
 joystick_y1=0.1
-joystick_x2=0.85
+joystick_x2=0.7
 joystick_y2=0.4

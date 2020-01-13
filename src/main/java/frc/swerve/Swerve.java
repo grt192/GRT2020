@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
-import frc.gen.Config;
 
 public class Swerve implements Runnable {
 
@@ -68,6 +67,14 @@ public class Swerve implements Runnable {
 			w = calcPID();
 		}
 		refreshVals();
+		if (BIGData.getZeroSwerveRequest()) {
+			zeroRotate();
+			BIGData.setZeroSwerveRequest(false);
+		}
+		if (BIGData.getZeroGyroRequest()) {
+			gyro.zeroYaw();
+			BIGData.setZeroGyroRequest(false);
+		}
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 		SmartDashboard.putNumber("Angle", gyro.getAngle());
@@ -113,7 +120,7 @@ public class Swerve implements Runnable {
 	 * @param vy the requested y velocity from -1.0 to 1.0
 	 * @param w  the requested angular velocity
 	 */
-	public void changeMotors(double vx, double vy, double w) {
+	private void changeMotors(double vx, double vy, double w) {
 		w *= ROTATE_SCALE;
 		double gyroAngle = (robotCentric ? 0 : Math.toRadians(gyro.getAngle()));
 		for (int i = 0; i < wheels.length; i++) {
@@ -176,7 +183,7 @@ public class Swerve implements Runnable {
 	 * Takes the current position of the wheels and sets them as zero in the
 	 * currently running program and adds them to the Basic tab on SmartDashboard
 	 */
-	public void zeroRotate() {
+	private void zeroRotate() {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
