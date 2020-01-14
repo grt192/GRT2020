@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.input;
+package frc.control.input;
 
 import edu.wpi.first.wpilibj.XboxController;
 

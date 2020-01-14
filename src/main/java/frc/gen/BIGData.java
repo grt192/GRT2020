@@ -77,6 +77,72 @@ public class BIGData {
 		return getBoolean("zero_gyro");
 	}
 
+	/** set the original value of the first joystick profile point */
+	public static void setJoystickX1(double x1) {
+		put("joystick_x1", x1);
+	}
+	/** set the new value of the first joystick profile point */
+	public static void setJoystickY1(double y1) {
+		put("joystick_y1", y1);
+	}
+	/** set the original value of the second joystick profile point */
+	public static void setJoystickX2(double x2) {
+		put("joystick_x2", x2);
+	}
+	/** set the new value of the second joystick profile point */
+	public static void setJoystickY2(double y2) {
+		put("joystick_y2", y2);
+	}
+	/** get the original value of the first joystick profile point */
+	public static double getJoystickX1() {
+		return getDouble("joystick_x1");
+	}
+	/** get the new value of the first joystick profile point */
+	public static double getJoystickY1() {
+		return getDouble("joystick_y1");
+	}
+	/** get the original value of the second joystick profile point */
+	public static double getJoystickX2() {
+		return getDouble("joystick_x2");
+	}
+	/** get the new value of the second joystick profile point */
+	public static double getJoystickY2() {
+		return getDouble("joystick_y2");
+	}
+
+	/** set the front right wheel's zero position */
+	public static void setFrZero(int frzero) {
+		put("fr_offset", frzero);
+	}
+	/** set the back right wheel's zero position */
+	public static void setBrZero(int brzero) {
+		put("br_offset", brzero);
+	}
+	/** set the back left wheel's zero position */
+	public static void setBlZero(int blzero) {
+		put("bl_offset", blzero);
+	}
+	/** set the front left wheel's zero position */
+	public static void setFlZero(int flzero) {
+		put("fl_offset", flzero);
+	}
+	/** get the front right wheel's zero position */
+	public static int getFrZero() {
+		return getInt("fr_offset");
+	}
+	/** get the back right wheel's zero position */
+	public static int getBrZero() {
+		return getInt("br_offset");
+	}
+	/** get the back left wheel's zero position */
+	public static int getBlZero() {
+		return getInt("bl_offset");
+	}
+	/** get the front left wheel's zero position */
+	public static int getFlZero() {
+		return getInt("fl_offset");
+	}
+
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, double val) {
 		map.put(key, "" + val);

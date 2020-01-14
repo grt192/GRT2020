@@ -37,7 +37,7 @@ public class Swerve implements Runnable {
 
 	public Swerve() {
 		gyroAngle = NetworkTableInstance.getDefault().getTable("PositionTracking").getEntry("angle");
-		this.gyro = Robot.GYRO;
+		this.gyro = Robot.gyro;
 		gyro.reset();
 		angle = 0.0;
 		robotCentric = false;
@@ -71,10 +71,6 @@ public class Swerve implements Runnable {
 			zeroRotate();
 			BIGData.setZeroSwerveRequest(false);
 		}
-		if (BIGData.getZeroGyroRequest()) {
-			gyro.zeroYaw();
-			BIGData.setZeroGyroRequest(false);
-		}
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 		SmartDashboard.putNumber("Angle", gyro.getAngle());
@@ -87,6 +83,16 @@ public class Swerve implements Runnable {
 		userW = BIGData.getDouble("drive_vw");
 		if (userW != 0) {
 			withPID = false;
+		}
+		if (BIGData.getZeroSwerveRequest()) {
+			System.out.println("zeroing wheels");
+			zeroRotate();
+			BIGData.setZeroSwerveRequest(false);
+		}
+		if (BIGData.getZeroGyroRequest()) {
+			System.out.println("zeroing gyro");
+			gyro.zeroYaw();
+			BIGData.setZeroGyroRequest(false);
 		}
 	}
 
@@ -187,7 +193,6 @@ public class Swerve implements Runnable {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
-			SmartDashboard.putString("wheel " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
 		}
 		BIGData.updateConfigFile();
 	}

@@ -9,13 +9,14 @@ package frc.control;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.gen.BIGData;
-import frc.input.Input;
-import frc.input.JoystickProfile;
+import frc.control.input.Input;
+import frc.control.input.JoystickProfile;
 
 class DriverControl extends Mode {
 
     @Override
     public boolean loop() {
+        JoystickProfile.updateProfilingPoints();
         driveSwerve();
         return true;
     }
