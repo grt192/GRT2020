@@ -16,6 +16,7 @@ public abstract class Mode {
         DRIVER_CONTROL = new DriverControl();
         modes = new Mode[1];
         modes[0] = DRIVER_CONTROL;
+
     }
 
     public abstract boolean loop();
