@@ -14,9 +14,6 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -33,7 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Config state file, located in /home/lvuser/. This file contains a single line
  * that determines which config file to load into the program on startup. If the
  * file contains "deploy", the deploy time config file will be used, and if the
- * file contains "temp", the temporary config file will be used.
+ * file contains "temp", the temporary config file will be used to start the program.
  * </p>
  */
 class Config {

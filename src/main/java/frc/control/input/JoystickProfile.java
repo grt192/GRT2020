@@ -1,6 +1,5 @@
 package frc.control.input;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
 

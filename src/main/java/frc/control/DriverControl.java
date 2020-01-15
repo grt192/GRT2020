@@ -34,7 +34,7 @@ class DriverControl extends Mode {
         if (lTrigger + rTrigger > 0.05) {
             rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
         }
-        BIGData.setDrive(x, y, rotate);
+        BIGData.requestDrive(x, y, rotate);
     }
 
 }

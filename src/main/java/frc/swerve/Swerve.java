@@ -78,9 +78,9 @@ public class Swerve implements Runnable {
 	}
 
 	private void refreshVals() {
-		userVX = BIGData.getDouble("drive_vx");
-		userVY = BIGData.getDouble("drive_vy");
-		userW = BIGData.getDouble("drive_vw");
+		userVX = BIGData.getRequestedVX();
+		userVY = BIGData.getRequestedVY();
+		userW = BIGData.getRequestedW();
 		if (userW != 0) {
 			withPID = false;
 		}
@@ -167,7 +167,7 @@ public class Swerve implements Runnable {
 	private void calcSwerveData() {
 		double gyroAngle = Math.toRadians(gyro.getAngle());
 		double gyroRate = Math.toRadians(gyro.getRate());
-		double vx = 0;
+		double vx = 0; 
 		double vy = 0;
 		double w = 0;
 		for (int i = 0; i < wheels.length; i++) {

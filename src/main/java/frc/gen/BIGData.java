@@ -63,15 +63,28 @@ public class BIGData {
 	}
 	
 	/**
-	 * Set the translational and angular velocity of the robot
+	 * Request translational and angular velocity of the robot
 	 * @param vx requested x velocity from -1.0 to 1.0
 	 * @param vy requested y velocity from -1.0 to 1.0
 	 * @param w requested angular velocity
 	 */
-	public static void setDrive(double vx, double vy, double w) {
-		put("drive_vx", vx);
-		put("drive_vy", vy);
-		put("drive_vw", w);
+	public static void requestDrive(double vx, double vy, double w) {
+		put("requested_vx", vx);
+		put("requested_vy", vy);
+		put("requested_w", w);
+	}
+
+	/** get the requested x velocity of the robot */
+	public static double getRequestedVX() {
+		return getDouble("requested_vx");
+	}
+	/** get the requested y velocity of the robot */
+	public static double getRequestedVY() {
+		return getDouble("requested_vy");
+	}
+	/** get the requested angular velocity of the robot */
+	public static double getRequestedW() {
+		return getDouble("requested_w");
 	}
 
 	public static void setSwerveData(SwerveData data) {
@@ -81,6 +94,24 @@ public class BIGData {
 		put("enc_vy", data.encoderVY);
 		put("enc_w", data.encoderW);
 	}
+
+	/** get the gyro's current angle */
+	public static double getGyroAngle() {
+		return getDouble("gyro_ang");
+	}
+	/** get the gyro's angular velocity */
+	public static double getGyroW() {
+		return getDouble("gyro_w");
+	}
+	/** get the actual x velocity of the robot */
+	public static double getActualVX() {
+		return getDouble("actual_vx");
+	}
+	/** get the actual y velocity of the robot */
+	public static double getActualVY() {
+		return getDouble("actual_vy");
+	}
+	/** get the actual TODO finish this */
 
 	/** Request that swerve be zeroed. */
 	public static void setZeroSwerveRequest(boolean request) {
