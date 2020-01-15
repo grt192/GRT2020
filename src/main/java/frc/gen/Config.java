@@ -63,8 +63,8 @@ class Config {
 		return map;
 	}
 
-	public static void start() {
-		map = new HashMap<>();
+	public static void start(Map<String, String> givenMap) {
+		map = givenMap;
 		// check whether to use the deploy configuration or the temporary configuration
 		boolean useDeployConfig;
 		try {

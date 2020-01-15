@@ -66,10 +66,6 @@ public class Swerve implements Runnable {
 			w = calcPID();
 		}
 		refreshVals();
-		if (BIGData.getZeroSwerveRequest()) {
-			zeroRotate();
-			BIGData.setZeroSwerveRequest(false);
-		}
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 		BIGData.setGyroAngle(gyro.getAngle());

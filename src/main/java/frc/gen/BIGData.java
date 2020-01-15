@@ -12,8 +12,7 @@ public class BIGData {
 
     public static void start() {
 		map = new HashMap<String, String>();
-		Config.start();
-		map.putAll(Config.getMap());
+		Config.start(map);
 	}
 
 	private static void existenceCheck(String key, String type) {
@@ -177,19 +176,19 @@ public class BIGData {
 		return getDouble("joystick_y2");
 	}
 
-	/** set the front right wheel's zero position */
+	/** set the front right wheel's zero position. Only Swerve should call this function. */
 	public static void setFrZero(int frzero) {
 		put("fr_offset", frzero);
 	}
-	/** set the back right wheel's zero position */
+	/** set the back right wheel's zero position. Only Swerve should call this function. */
 	public static void setBrZero(int brzero) {
 		put("br_offset", brzero);
 	}
-	/** set the back left wheel's zero position */
+	/** set the back left wheel's zero position. Only Swerve should call this function. */
 	public static void setBlZero(int blzero) {
 		put("bl_offset", blzero);
 	}
-	/** set the front left wheel's zero position */
+	/** set the front left wheel's zero position. Only Swerve should call this function. */
 	public static void setFlZero(int flzero) {
 		put("fl_offset", flzero);
 	}
