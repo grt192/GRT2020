@@ -2,6 +2,7 @@ package frc.control;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,12 +24,17 @@ public class ShuffleboardCommands implements Runnable {
     private NetworkTableEntry joystickY1;
     private NetworkTableEntry joystickX2;
     private NetworkTableEntry joystickY2;
-
+    // swerve
     private ShuffleboardTab swerveTab;
     private NetworkTableEntry frZero;
     private NetworkTableEntry brZero;
     private NetworkTableEntry blZero;
     private NetworkTableEntry flZero;
+    private NetworkTableEntry gyroAngle;
+    private NetworkTableEntry gyroRate;
+    // config
+    private NetworkTableEntry configMessage;
+
 
     private Notifier notifier;
 
@@ -45,6 +51,7 @@ public class ShuffleboardCommands implements Runnable {
         CommandBase resetTempConfigCommand = new CommandBase() {
             @Override
             public void initialize() {
+                System.out.println("resetting temp config file...");
                 BIGData.resetTempConfigFile();
             }
             @Override
@@ -57,6 +64,7 @@ public class ShuffleboardCommands implements Runnable {
         CommandBase useDeployCommand = new CommandBase() {
             @Override
             public void initialize() {
+                System.out.println("next restart, deploy time file will be used");
                 BIGData.changeStartupConfigFile(true);
             }
             @Override
@@ -69,6 +77,7 @@ public class ShuffleboardCommands implements Runnable {
         CommandBase useTempCommand = new CommandBase() {
             @Override
             public void initialize() {
+                System.out.println("next restart, temp config file will be used");
                 BIGData.changeStartupConfigFile(false);
             }
             @Override
@@ -77,6 +86,7 @@ public class ShuffleboardCommands implements Runnable {
             }
         };
         configLayout.add("use temporary config file", useTempCommand).withWidget(BuiltInWidgets.kCommand);
+        configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).getEntry();
 
         joystickX1 = joystickLayout.add("original pt1", BIGData.getDouble("joystick_x1")).getEntry();
         joystickY1 = joystickLayout.add("new pt1", BIGData.getDouble("joystick_y1")).getEntry();
@@ -96,6 +106,7 @@ public class ShuffleboardCommands implements Runnable {
                     BIGData.setJoystickX2(x2);
                     BIGData.setJoystickY2(y2);
                     BIGData.updateConfigFile();
+                    System.out.println("set new joystick profiles...");
                 }
             }
             @Override
@@ -115,6 +126,7 @@ public class ShuffleboardCommands implements Runnable {
                 return true;
             }
         };
+        
         swerveTab.add("zero swerve WHEELS", zeroRotateCommand).withWidget(BuiltInWidgets.kCommand);
         frZero = swerveTab.add("fr zero:", BIGData.getFrZero()).getEntry();
         brZero = swerveTab.add("br zero", BIGData.getBrZero()).getEntry();
@@ -124,6 +136,7 @@ public class ShuffleboardCommands implements Runnable {
         CommandBase zeroGyroCommand = new CommandBase() {
             @Override
             public void initialize() {
+                System.out.println("zeroing the gyro...");
                 BIGData.setZeroGyroRequest(true);
             }
             @Override
@@ -132,6 +145,8 @@ public class ShuffleboardCommands implements Runnable {
             }
         };
         swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand);
+        gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).getEntry();
+        gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).getEntry();
 
         notifier = new Notifier(this);
         notifier.startPeriodic(0.02);
@@ -139,11 +154,19 @@ public class ShuffleboardCommands implements Runnable {
 
     @Override
     public void run() {
+        String newMsg = BIGData.getConfigFileMsg();
+        if (!newMsg.equals(configMessage.getString(""))) {
+            configMessage.forceSetString(newMsg);
+        }
+        gyroAngle.forceSetDouble(BIGData.getGyroAngle());
+        gyroRate.forceSetDouble(BIGData.getGyroW());
+
         // update zeros on dashboard
         frZero.setDouble(BIGData.getFrZero());
         brZero.setDouble(BIGData.getBrZero());
         blZero.setDouble(BIGData.getBlZero());
         flZero.setDouble(BIGData.getFlZero());
+
     }
 
 }

@@ -117,9 +117,9 @@ class Config {
 		}
 
 		if (useDeployConfig) {
-			SmartDashboard.putString("DB/String 7", "using deploy time config file");
+			BIGData.setConfigFileMsg("using deploy time config file");
 		} else {
-			SmartDashboard.putString("DB/String 7", "using temporary config file");
+			BIGData.setConfigFileMsg("using temporary config file");
 		}
 
 	}
@@ -148,7 +148,7 @@ class Config {
 			System.out.println("Unable to write to config state file at /home/lvuser/" + configStateFileName);
 			e.printStackTrace();
 		}
-		SmartDashboard.putString("DB/String 7", (useDeploy ? "deploy" : "temp") + " file will be used on startup");
+		BIGData.setConfigFileMsg((useDeploy ? "deploy" : "temp") + " file will be used on startup");
 	}
 
 	/** Writes the current mappings to the temporary config file in home/lvuser */
@@ -241,9 +241,9 @@ class Config {
 		File deployConfigFile = new File("/home/lvuser/deploy/", deployConfigFileName);
 		try {
 			Files.copy(deployConfigFile.toPath(), tempConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			SmartDashboard.putString("DB/String 7", "reset temp config file");
+			BIGData.setConfigFileMsg("reset temp config file");
 		} catch (IOException e) {
-			System.out.println("unable to reset temp config file");
+			BIGData.setConfigFileMsg("unable to reset temp config file");
 			e.printStackTrace();
 		}
 	}

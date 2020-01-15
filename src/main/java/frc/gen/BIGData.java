@@ -1,5 +1,6 @@
 package frc.gen;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import frc.swerve.SwerveData;
@@ -10,8 +11,9 @@ public class BIGData {
     private static Map<String, String> map;
 
     public static void start() {
-        Config.start();
-		map = Config.getMap();
+		map = new HashMap<String, String>();
+		Config.start();
+		map.putAll(Config.getMap());
 	}
 
 	private static void existenceCheck(String key, String type) {
@@ -26,6 +28,9 @@ public class BIGData {
 			case "int":
 				put(key, 0);
 				break;	
+			case "String":
+				put(key, "");
+				break;
 			}
 		}
 	}
@@ -61,6 +66,13 @@ public class BIGData {
 			return -1;
 		}
 	}
+
+	/** Get the string value corresponding to the key passed in.
+	 * @return The corresponding string value, or the empty string if the key was not found/invalid */
+	public static String getString(String key) {
+		existenceCheck(key, "String");
+		return map.get(key);
+	}
 	
 	/**
 	 * Request translational and angular velocity of the robot
@@ -94,7 +106,15 @@ public class BIGData {
 		put("enc_vy", data.encoderVY);
 		put("enc_w", data.encoderW);
 	}
-
+	
+	/** set the gyro's angle */
+	public static void setGyroAngle(double angle) {
+		put("gyro_ang", angle);
+	}
+	/** set the gyro's rate of rotation */
+	public static void setGyroW(double w) {
+		put("gyro_w", w);
+	}
 	/** get the gyro's current angle */
 	public static double getGyroAngle() {
 		return getDouble("gyro_ang");
@@ -103,15 +123,6 @@ public class BIGData {
 	public static double getGyroW() {
 		return getDouble("gyro_w");
 	}
-	/** get the actual x velocity of the robot */
-	public static double getActualVX() {
-		return getDouble("actual_vx");
-	}
-	/** get the actual y velocity of the robot */
-	public static double getActualVY() {
-		return getDouble("actual_vy");
-	}
-	/** get the actual TODO finish this */
 
 	/** Request that swerve be zeroed. */
 	public static void setZeroSwerveRequest(boolean request) {
@@ -199,6 +210,19 @@ public class BIGData {
 		return getInt("fl_offset");
 	}
 
+	/** set the config file message to display to drivers */
+	public static void setConfigFileMsg(String msg) {
+		put("config_msg", msg);
+	}
+	/** get the config file message to display to drivers */
+	public static String getConfigFileMsg() {
+		return getString("config_,sg");
+	}
+
+	/** put (or update) a key/value mapping into the map */
+	public static void put(String key, String val) {
+		map.put(key, val);
+	}
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, double val) {
 		map.put(key, "" + val);

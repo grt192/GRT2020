@@ -58,7 +58,6 @@ public class Swerve implements Runnable {
 		calcSwerveData();
 		notifier = new Notifier(this);
 		notifier.startPeriodic(0.02);
-		setAngle(0.0); 
 	}
 
 	public void run() {
@@ -73,7 +72,7 @@ public class Swerve implements Runnable {
 		}
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
-		SmartDashboard.putNumber("Angle", gyro.getAngle());
+		BIGData.setGyroAngle(gyro.getAngle());
 		gyroAngle.setDouble(Math.toRadians(gyro.getAngle()));
 	}
 
@@ -140,6 +139,9 @@ public class Swerve implements Runnable {
 			double wheelVY = vy + wy;
 			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
+			if (i == 0 || i == 3) {
+				System.out.println(power);
+			}
 			wheels[i].set(wheelPos, power);
 		}
 	}

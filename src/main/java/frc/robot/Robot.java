@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
     Mode.initModes();
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
+    CommandScheduler.getInstance().enable();
 
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
@@ -109,6 +110,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    
   }
 
   /**
@@ -148,6 +150,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    Mode.getMode(1).loop();
   }
 }
