@@ -20,6 +20,7 @@ import frc.swerve.Swerve;
 import frc.gen.BIGData;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import frc.sockets.Client;
 import edu.wpi.first.cameraserver.*;
 
 /**
@@ -36,11 +37,11 @@ public class Robot extends TimedRobot {
   public static Swerve swerve;
   public static NavXGyro gyro;
   public static ShuffleboardCommands shuffleboardCommands;
+  public static Client client;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
   public static double ROBOT_RADIUS;
-
   private boolean overridden;
 
   /**
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
+    client = new Client();
 
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
@@ -110,7 +112,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    
+
   }
 
   /**
@@ -127,6 +129,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    // System.out.println(BIGData.getDouble("camera_azimuth"));
   }
 
   /**
@@ -137,12 +140,17 @@ public class Robot extends TimedRobot {
     loop();
   }
 
+  @Override
+  public void teleopInit() {
+  }
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
     Mode.getMode(0).loop();
+
   }
 
   /**
