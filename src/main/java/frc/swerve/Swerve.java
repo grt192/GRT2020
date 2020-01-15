@@ -37,7 +37,7 @@ public class Swerve implements Runnable {
 
 	public Swerve() {
 		gyroAngle = NetworkTableInstance.getDefault().getTable("PositionTracking").getEntry("angle");
-		this.gyro = Robot.GYRO;
+		this.gyro = Robot.gyro;
 		gyro.reset();
 		angle = 0.0;
 		robotCentric = false;
@@ -58,7 +58,6 @@ public class Swerve implements Runnable {
 		calcSwerveData();
 		notifier = new Notifier(this);
 		notifier.startPeriodic(0.02);
-		setAngle(0.0); 
 	}
 
 	public void run() {
@@ -67,26 +66,28 @@ public class Swerve implements Runnable {
 			w = calcPID();
 		}
 		refreshVals();
-		if (BIGData.getZeroSwerveRequest()) {
-			zeroRotate();
-			BIGData.setZeroSwerveRequest(false);
-		}
-		if (BIGData.getZeroGyroRequest()) {
-			gyro.zeroYaw();
-			BIGData.setZeroGyroRequest(false);
-		}
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
-		SmartDashboard.putNumber("Angle", gyro.getAngle());
+		BIGData.setGyroAngle(gyro.getAngle());
 		gyroAngle.setDouble(Math.toRadians(gyro.getAngle()));
 	}
 
 	private void refreshVals() {
-		userVX = BIGData.getDouble("drive_vx");
-		userVY = BIGData.getDouble("drive_vy");
-		userW = BIGData.getDouble("drive_vw");
+		userVX = BIGData.getRequestedVX();
+		userVY = BIGData.getRequestedVY();
+		userW = BIGData.getRequestedW();
 		if (userW != 0) {
 			withPID = false;
+		}
+		if (BIGData.getZeroSwerveRequest()) {
+			System.out.println("zeroing wheels");
+			zeroRotate();
+			BIGData.setZeroSwerveRequest(false);
+		}
+		if (BIGData.getZeroGyroRequest()) {
+			System.out.println("zeroing gyro");
+			gyro.zeroYaw();
+			BIGData.setZeroGyroRequest(false);
 		}
 	}
 
@@ -134,6 +135,9 @@ public class Swerve implements Runnable {
 			double wheelVY = vy + wy;
 			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
+			if (i == 0 || i == 3) {
+				System.out.println(power);
+			}
 			wheels[i].set(wheelPos, power);
 		}
 	}
@@ -161,7 +165,7 @@ public class Swerve implements Runnable {
 	private void calcSwerveData() {
 		double gyroAngle = Math.toRadians(gyro.getAngle());
 		double gyroRate = Math.toRadians(gyro.getRate());
-		double vx = 0;
+		double vx = 0; 
 		double vy = 0;
 		double w = 0;
 		for (int i = 0; i < wheels.length; i++) {
@@ -187,7 +191,6 @@ public class Swerve implements Runnable {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
-			SmartDashboard.putString("wheel " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
 		}
 		BIGData.updateConfigFile();
 	}

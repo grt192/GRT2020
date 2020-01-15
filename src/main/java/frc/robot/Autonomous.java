@@ -46,6 +46,7 @@ public class Autonomous {
                     lines.add(line);
                 line = reader.readLine();
             }
+            reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -77,7 +78,7 @@ public class Autonomous {
                 break;
             case "swerve":
                 robot.setMode(0);
-                BIGData.setDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),
+                BIGData.requestDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),
                         cmd.length > 3 ? Double.parseDouble(cmd[3]) : 0);
                 break;
             }

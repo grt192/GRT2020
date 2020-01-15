@@ -13,11 +13,12 @@ import frc.control.ShuffleboardCommands;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.input.Input;
-import frc.input.JoystickProfile;
+import frc.control.input.Input;
+import frc.control.input.JoystickProfile;
 import frc.swerve.NavXGyro;
 import frc.swerve.Swerve;
 import frc.gen.BIGData;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.cameraserver.*;
 
@@ -32,8 +33,9 @@ public class Robot extends TimedRobot {
   private NetworkTableEntry mode;
   private Autonomous autonomous;
 
-  public static Swerve SWERVE;
-  public static NavXGyro GYRO;
+  public static Swerve swerve;
+  public static NavXGyro gyro;
+  public static ShuffleboardCommands shuffleboardCommands;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
@@ -49,16 +51,17 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     BIGData.start();
     JoystickProfile.init();
-    //ShuffleboardCommands.init();
     ROBOT_WIDTH = BIGData.getDouble("robot_width");
     ROBOT_HEIGHT = BIGData.getDouble("robot_height");
     ROBOT_RADIUS = Math.sqrt(ROBOT_WIDTH * ROBOT_WIDTH + ROBOT_HEIGHT * ROBOT_HEIGHT) / 2;
     autonomous = new Autonomous(this);
-    GYRO = new NavXGyro();
-    SWERVE = new Swerve();
+    gyro = new NavXGyro();
+    swerve = new Swerve();
+    shuffleboardCommands = new ShuffleboardCommands();
     Mode.initModes();
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
+    CommandScheduler.getInstance().enable();
 
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
@@ -106,6 +109,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+    
   }
 
   /**
@@ -145,6 +150,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    Mode.getMode(1).loop();
   }
 }
