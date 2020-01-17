@@ -2,14 +2,11 @@ package frc.swerve;
 
 public class SwerveData {
 
-	public final double gyroAngle, gyroW, encoderW, encoderVX, encoderVY;
+	public final double enc_w, enc_vx, enc_vy;
 
-	public SwerveData(double gyroAngle, double gyroRate, double encVX, double encVY, double encAngVel) {
-		this.gyroAngle = gyroAngle;
-		gyroW = gyroRate;
-		encoderW = encAngVel;
-		encoderVX = encVX;
-		encoderVY = encVY;
+	public SwerveData(double encVX, double encVY, double encAngVel) {
+		enc_w = encAngVel;
+		enc_vx = encVX;
+		enc_vy = encVY;
 	}
-
 }

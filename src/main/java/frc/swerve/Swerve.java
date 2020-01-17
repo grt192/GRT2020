@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
-import frc.gen.Config;
+import frc.position.KalmanPosition;
 
 public class Swerve implements Runnable {
 
@@ -26,6 +26,7 @@ public class Swerve implements Runnable {
 
 	private NetworkTableEntry gyroAngle;
 	private NavXGyro gyro;
+	private KalmanPosition kPos;
 	/** wheels[0]=fr, wheels[1]=br, wheels[2]=bl, wheels[3]=fl */
 	private Wheel[] wheels;
 
@@ -36,9 +37,12 @@ public class Swerve implements Runnable {
 	private volatile boolean withPID;
 	private volatile SwerveData swerveData;
 
+	private volatile double navx_x, navx_y;
+
 	public Swerve() {
 		gyroAngle = NetworkTableInstance.getDefault().getTable("PositionTracking").getEntry("angle");
 		this.gyro = Robot.GYRO;
+		this.kPos = Robot.POSITION;
 		gyro.reset();
 		angle = 0.0;
 		robotCentric = false;
@@ -59,7 +63,7 @@ public class Swerve implements Runnable {
 		calcSwerveData();
 		notifier = new Notifier(this);
 		notifier.startPeriodic(0.02);
-		// setAngle(0.0); TODO uncomment this
+		setAngle(0.0);
 	}
 
 	public void run() {
@@ -68,16 +72,26 @@ public class Swerve implements Runnable {
 			w = calcPID();
 		}
 		refreshVals();
+		if (BIGData.getZeroSwerveRequest()) {
+			zeroRotate();
+			BIGData.setZeroSwerveRequest(false);
+		}
+		if (BIGData.getZeroGyroRequest()) {
+			gyro.zeroYaw();
+			BIGData.setZeroGyroRequest(false);
+		}
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
+		kPos.update();
+		System.out.println("x: " + kPos.getX() + " y: " + kPos.getY());
 		SmartDashboard.putNumber("Angle", gyro.getAngle());
 		gyroAngle.setDouble(Math.toRadians(gyro.getAngle()));
 	}
 
-	private void refreshVals(){
-		userVX = BIGData.getDouble("drive_x");
-		userVY = BIGData.getDouble("drive_y");
-		userW = BIGData.getDouble("drive_w");
+	private void refreshVals() {
+		userVX = BIGData.getDouble("drive_vx");
+		userVY = BIGData.getDouble("drive_vy");
+		userW = BIGData.getDouble("drive_vw");
 		if (userW != 0) {
 			withPID = false;
 		}
@@ -119,22 +133,38 @@ public class Swerve implements Runnable {
 	 * @param w
 	 *               the requested angular velocity
 	 */
-	public void changeMotors(double vx, double vy, double w) {
+	private void changeMotors(double vx, double vy, double w) {
 		w *= ROTATE_SCALE;
 		double gyroAngle = (robotCentric ? 0 : Math.toRadians(gyro.getAngle()));
 		for (int i = 0; i < wheels.length; i++) {
 			// angle in radians
-			double wheelAngle = getRelativeWheelAngle(i) + gyroAngle;
-			double dx = RADIUS * Math.cos(wheelAngle);
-			double dy = RADIUS * Math.sin(wheelAngle);
-			double wheelVX = vx - dy * w;
-			double wheelVY = vy + dx * w;
-			double wheelPos = Math.atan2(wheelVY, wheelVX) - gyroAngle;
-			// System.out.println("wheel: " + i + " wheelPos: " + wheelPos + " dx: " + dx +
-			// " dy: " + dy);
+			double wheelAngle = getRelativeWheelAngle(i) - gyroAngle;
+			// x component of tangential velocity
+			double wx = (w * RADIUS) * Math.cos(Math.PI / 2 + wheelAngle);
+			// y component of tangential velocity
+			double wy = (w * RADIUS) * Math.sin(Math.PI / 2 + wheelAngle);
+			double wheelVX = vx + wx;
+			double wheelVY = vy + wy;
+			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
 			wheels[i].set(wheelPos, power);
 		}
+	}
+
+	private double getRelativeWheelAngle(int i) {
+		double angle = WHEEL_ANGLE;
+		switch (i) {
+		case 1:
+			angle = GRTUtil.TWO_PI - WHEEL_ANGLE;
+			break;
+		case 2:
+			angle = Math.PI + WHEEL_ANGLE;
+			break;
+		case 3:
+			angle = Math.PI - WHEEL_ANGLE;
+			break;
+		}
+		return angle;
 	}
 
 	public SwerveData getSwerveData() {
@@ -143,7 +173,6 @@ public class Swerve implements Runnable {
 
 	private void calcSwerveData() {
 		double gyroAngle = Math.toRadians(gyro.getAngle());
-		double gyroRate = Math.toRadians(gyro.getRate());
 		double vx = 0;
 		double vy = 0;
 		double w = 0;
@@ -159,31 +188,27 @@ public class Swerve implements Runnable {
 		w /= 4.0;
 		vx /= 4.0;
 		vy /= 4.0;
-		swerveData = new SwerveData(gyroAngle, gyroRate, vx, vy, w);
-	}
-
-	private double getRelativeWheelAngle(int i) {
-		double angle = WHEEL_ANGLE;
-		if (i == 0 || i == 2) {
-			angle *= -1;
-		}
-		if (i == 0 || i == 3) {
-			angle += Math.PI;
-		}
-		return angle;
+		swerveData = new SwerveData(vx, vy, w);
+		BIGData.setSwerveData(swerveData);
+		// TODO: Fix bad names //
+		float x = gyro.getDisplacementX();
+		float y = gyro.getDisplacementY();
+		navx_x += x;
+		navx_y += y;
+		BIGData.setNavXPosition(navx_x, navx_y);
 	}
 
 	/**
 	 * Takes the current position of the wheels and sets them as zero in the
 	 * currently running program and adds them to the Basic tab on SmartDashboard
 	 */
-	public void zeroRotate() {
+	private void zeroRotate() {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
-			SmartDashboard.putString("DB/String " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
+			SmartDashboard.putString("wheel " + i, wheels[i].getName() + "_offset: " + wheels[i].getOffset());
 		}
-		Config.updateConfigFile();
+		BIGData.updateConfigFile();
 	}
 
 }
