@@ -25,6 +25,10 @@ public class Client implements Runnable {
     }
 
     public Client() {
+        connect();
+    }
+
+    public void connect() {
         System.out.println("start connect pls");
         try {
             InetAddress address = InetAddress.getByName("10.1.92.14");
@@ -59,6 +63,7 @@ public class Client implements Runnable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
 }

@@ -102,8 +102,10 @@ public class Swerve implements Runnable {
 	}
 
 	/**
-	 * sets the angle of the robot 
-	 * @param angle the angle to turn the robot to, in radians
+	 * sets the angle of the robot
+	 * 
+	 * @param angle
+	 *                  the angle to turn the robot to, in radians
 	 */
 	public void setAngle(double angle) {
 		withPID = true;
@@ -116,10 +118,14 @@ public class Swerve implements Runnable {
 	}
 
 	/**
-	 * change the motors to reach the requested values 
-	 * @param vx the requested x velocity from -1.0 to 1.0
-	 * @param vy the requested y velocity from -1.0 to 1.0
-	 * @param w  the requested angular velocity
+	 * change the motors to reach the requested values
+	 * 
+	 * @param vx
+	 *               the requested x velocity from -1.0 to 1.0
+	 * @param vy
+	 *               the requested y velocity from -1.0 to 1.0
+	 * @param w
+	 *               the requested angular velocity
 	 */
 	private void changeMotors(double vx, double vy, double w) {
 		w *= ROTATE_SCALE;
@@ -136,7 +142,7 @@ public class Swerve implements Runnable {
 			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
 			if (i == 0 || i == 3) {
-				System.out.println(power);
+				// System.out.println(power);
 			}
 			wheels[i].set(wheelPos, power);
 		}
@@ -165,7 +171,7 @@ public class Swerve implements Runnable {
 	private void calcSwerveData() {
 		double gyroAngle = Math.toRadians(gyro.getAngle());
 		double gyroRate = Math.toRadians(gyro.getRate());
-		double vx = 0; 
+		double vx = 0;
 		double vy = 0;
 		double w = 0;
 		for (int i = 0; i < wheels.length; i++) {
@@ -181,6 +187,7 @@ public class Swerve implements Runnable {
 		vx /= 4.0;
 		vy /= 4.0;
 		swerveData = new SwerveData(gyroAngle, gyroRate, vx, vy, w);
+		BIGData.setSwerveData(swerveData);
 	}
 
 	/**

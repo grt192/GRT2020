@@ -67,7 +67,7 @@ public class Autonomous {
                 done = true;
                 return;
             }
-            System.out.println(line);
+            // System.out.println(line);
             String[] cmd = line.trim().split(" ");
             switch (cmd[0]) {
             case "delay":
