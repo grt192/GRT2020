@@ -1,10 +1,10 @@
 package frc.swerve;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import static frc.gen.BIGData.FR_WHEEL;
+import static frc.gen.BIGData.BR_WHEEL;
+import static frc.gen.BIGData.BL_WHEEL;
+import static frc.gen.BIGData.FL_WHEEL;
 import frc.robot.Robot;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
@@ -23,7 +23,6 @@ public class Swerve implements Runnable {
 
 	private Notifier notifier;
 
-	private NetworkTableEntry gyroAngle;
 	private NavXGyro gyro;
 	/** wheels[0]=fr, wheels[1]=br, wheels[2]=bl, wheels[3]=fl */
 	private Wheel[] wheels;
@@ -36,17 +35,16 @@ public class Swerve implements Runnable {
 	private volatile SwerveData swerveData;
 
 	public Swerve() {
-		gyroAngle = NetworkTableInstance.getDefault().getTable("PositionTracking").getEntry("angle");
 		this.gyro = Robot.gyro;
 		gyro.reset();
 		angle = 0.0;
 		robotCentric = false;
 		withPID = false;
 		wheels = new Wheel[4];
-		wheels[0] = new Wheel("fr");
-		wheels[1] = new Wheel("br");
-		wheels[2] = new Wheel("bl");
-		wheels[3] = new Wheel("fl");
+		wheels[FR_WHEEL] = new Wheel(BIGData.getWheelName(FR_WHEEL));
+		wheels[BR_WHEEL] = new Wheel(BIGData.getWheelName(BR_WHEEL));
+		wheels[BL_WHEEL] = new Wheel(BIGData.getWheelName(BL_WHEEL));
+		wheels[FL_WHEEL] = new Wheel(BIGData.getWheelName(FL_WHEEL));
 
 		SWERVE_WIDTH = BIGData.getDouble("swerve_width");
 		SWERVE_HEIGHT = BIGData.getDouble("swerve_height");
@@ -68,8 +66,6 @@ public class Swerve implements Runnable {
 		refreshVals();
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
-		BIGData.setGyroAngle(gyro.getAngle());
-		gyroAngle.setDouble(Math.toRadians(gyro.getAngle()));
 	}
 
 	private void refreshVals() {
@@ -82,12 +78,18 @@ public class Swerve implements Runnable {
 		if (BIGData.getZeroSwerveRequest()) {
 			System.out.println("zeroing wheels");
 			zeroRotate();
-			BIGData.setZeroSwerveRequest(false);
+			BIGData.putZeroSwerveRequest(false);
 		}
 		if (BIGData.getZeroGyroRequest()) {
 			System.out.println("zeroing gyro");
 			gyro.zeroYaw();
-			BIGData.setZeroGyroRequest(false);
+			BIGData.putZeroGyroRequest(false);
+		}
+		BIGData.putGyroAngle(gyro.getAngle());
+
+		for (Wheel wheel : wheels) {
+			BIGData.putWheelRawDriveSpeed(wheel.getName(), wheel.getRawDriveSpeed());
+			BIGData.putWheelRawRotateSpeed(wheel.getName(), wheel.getRawRotateSpeed());
 		}
 	}
 
@@ -135,9 +137,6 @@ public class Swerve implements Runnable {
 			double wheelVY = vy + wy;
 			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
-			if (i == 0 || i == 3) {
-				System.out.println(power);
-			}
 			wheels[i].set(wheelPos, power);
 		}
 	}
@@ -145,13 +144,13 @@ public class Swerve implements Runnable {
 	private double getRelativeWheelAngle(int i) {
 		double angle = WHEEL_ANGLE;
 		switch (i) {
-		case 1:
+		case BR_WHEEL:
 			angle = GRTUtil.TWO_PI - WHEEL_ANGLE;
 			break;
-		case 2:
+		case BL_WHEEL:
 			angle = Math.PI + WHEEL_ANGLE;
 			break;
-		case 3:
+		case FL_WHEEL:
 			angle = Math.PI - WHEEL_ANGLE;
 			break;
 		}
@@ -185,12 +184,12 @@ public class Swerve implements Runnable {
 
 	/**
 	 * Takes the current position of the wheels and sets them as zero in the
-	 * currently running program and adds them to the Basic tab on SmartDashboard
+	 * currently running program and adds them to BIGData
 	 */
 	private void zeroRotate() {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
-			BIGData.put(wheels[i].getName() + "_offset", wheels[i].getOffset());
+			BIGData.putWheelZero(wheels[i].getName(), wheels[i].getOffset());
 		}
 		BIGData.updateConfigFile();
 	}

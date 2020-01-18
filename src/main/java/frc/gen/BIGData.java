@@ -8,7 +8,12 @@ import frc.gen.Config;
 
 public class BIGData {
 
-    private static Map<String, String> map;
+	private static Map<String, String> map;
+
+	public static final int FR_WHEEL = 0;
+	public static final int BR_WHEEL = 1;
+	public static final int BL_WHEEL = 2;
+	public static final int FL_WHEEL = 3;
 
     public static void start() {
 		map = new HashMap<String, String>();
@@ -73,6 +78,18 @@ public class BIGData {
 		return map.get(key);
 	}
 	
+	/** Pass in one of four constants: FR_WHEEL, BR_WHEEL, BL_WHEEL, FL_WHEEL to 
+	 * get the wheel's name "fr", "br", "bl", "fl" */
+	public static String getWheelName(int wheelNum) {
+		switch (wheelNum) {
+			case FR_WHEEL: return "fr";
+			case BR_WHEEL: return "br";
+			case BL_WHEEL: return "bl";
+			case FL_WHEEL: return "fl";
+			default: return "unknown_wheel";
+		}
+	}
+
 	/**
 	 * Request translational and angular velocity of the robot
 	 * @param vx requested x velocity from -1.0 to 1.0
@@ -107,11 +124,11 @@ public class BIGData {
 	}
 	
 	/** set the gyro's angle */
-	public static void setGyroAngle(double angle) {
+	public static void putGyroAngle(double angle) {
 		put("gyro_ang", angle);
 	}
 	/** set the gyro's rate of rotation */
-	public static void setGyroW(double w) {
+	public static void putGyroW(double w) {
 		put("gyro_w", w);
 	}
 	/** get the gyro's current angle */
@@ -124,7 +141,7 @@ public class BIGData {
 	}
 
 	/** Request that swerve be zeroed. */
-	public static void setZeroSwerveRequest(boolean request) {
+	public static void putZeroSwerveRequest(boolean request) {
 		put("zero_swerve", request);
 	}
 
@@ -134,7 +151,7 @@ public class BIGData {
 	}
 
 	/** Request that the gyro be zeroed. */
-	public static void setZeroGyroRequest(boolean request) {
+	public static void putZeroGyroRequest(boolean request) {
 		put("zero_gyro", request);
 	}
 
@@ -176,46 +193,51 @@ public class BIGData {
 		return getDouble("joystick_y2");
 	}
 
-	/** set the front right wheel's zero position. Only Swerve should call this function. */
-	public static void setFrZero(int frzero) {
-		put("fr_offset", frzero);
+	/** put a wheel's zero position. only Swerve should call this function */
+	public static void putWheelZero(String name, int zeroPos) {
+		put(name + "_offset", zeroPos);
 	}
-	/** set the back right wheel's zero position. Only Swerve should call this function. */
-	public static void setBrZero(int brzero) {
-		put("br_offset", brzero);
+	/** get a wheel's zero position from a name "fr", "br", "bl", "fl". */
+	public static int getWheelZero(String wheelName) {
+		return getInt(wheelName + "_offset");
 	}
-	/** set the back left wheel's zero position. Only Swerve should call this function. */
-	public static void setBlZero(int blzero) {
-		put("bl_offset", blzero);
+	/** get a wheel's zero position from a wheel number */
+	public static int getWheelZero(int wheelNum) {
+		return getInt(getWheelName(wheelNum) + "_offset");
 	}
-	/** set the front left wheel's zero position. Only Swerve should call this function. */
-	public static void setFlZero(int flzero) {
-		put("fl_offset", flzero);
+
+	/** put a wheel's current raw drive speed */
+	public static void putWheelRawDriveSpeed(String name, double driveSpeed) {
+		put(name + "_raw_drive", driveSpeed);
 	}
-	/** get the front right wheel's zero position */
-	public static int getFrZero() {
-		return getInt("fr_offset");
+	/** get a wheel's current raw drive speed from a name "fr", "br", "bl", "fl". */
+	public static double getWheelRawDriveSpeed(String name) {
+		return getDouble(name + "_raw_drive");
 	}
-	/** get the back right wheel's zero position */
-	public static int getBrZero() {
-		return getInt("br_offset");
+	/** get a wheel's current raw drive speed from a wheel number */
+	public static double getWheelRawDriveSpeed(int wheelNum) {
+		return getDouble(getWheelName(wheelNum) + "_raw_drive");
 	}
-	/** get the back left wheel's zero position */
-	public static int getBlZero() {
-		return getInt("bl_offset");
+	/** put a wheel's current raw rotate speed */
+	public static void putWheelRawRotateSpeed(String name, double rotateSpeed) {
+		put(name + "_raw_rotate", rotateSpeed);
 	}
-	/** get the front left wheel's zero position */
-	public static int getFlZero() {
-		return getInt("fl_offset");
+	/** get a wheel's current raw rotate speed from a name "fr", "br", "bl", "fl". */
+	public static double getWheelRawRotateSpeed(String wheelName) {
+		return getDouble(wheelName + "_raw_rotate");
+	}
+	/** get a wheel's current raw rotate speed from a wheel number */
+	public static double getWheelRawRotateSpeed(int wheelNum) {
+		return getDouble(getWheelName(wheelNum) + "_raw_rotate");
 	}
 
 	/** set the config file message to display to drivers */
-	public static void setConfigFileMsg(String msg) {
+	public static void putConfigFileMsg(String msg) {
 		put("config_msg", msg);
 	}
 	/** get the config file message to display to drivers */
 	public static String getConfigFileMsg() {
-		return getString("config_,sg");
+		return getString("config_msg");
 	}
 
 	/** put (or update) a key/value mapping into the map */

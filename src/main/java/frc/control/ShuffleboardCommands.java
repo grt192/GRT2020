@@ -2,7 +2,6 @@ package frc.control;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -26,10 +25,12 @@ public class ShuffleboardCommands implements Runnable {
     private NetworkTableEntry joystickY2;
     // swerve
     private ShuffleboardTab swerveTab;
-    private NetworkTableEntry frZero;
-    private NetworkTableEntry brZero;
-    private NetworkTableEntry blZero;
-    private NetworkTableEntry flZero;
+    private ShuffleboardLayout wheelZerosLayout;
+    private NetworkTableEntry wheelZeros[];
+    private ShuffleboardLayout wheelDriveSpeedsLayout;
+    private NetworkTableEntry wheelDriveSpeeds[];
+    private ShuffleboardLayout wheelRotateSpeedsLayout;
+    private NetworkTableEntry wheelRotateSpeeds[];
     private NetworkTableEntry gyroAngle;
     private NetworkTableEntry gyroRate;
     // config
@@ -39,14 +40,20 @@ public class ShuffleboardCommands implements Runnable {
     private Notifier notifier;
 
     public ShuffleboardCommands() {
+        wheelZeros = new NetworkTableEntry[4];
+        wheelDriveSpeeds = new NetworkTableEntry[4];
+        wheelRotateSpeeds = new NetworkTableEntry[4];
         init();
     }
 
     public void init() {
         settingsTab = Shuffleboard.getTab("Settings");
         swerveTab = Shuffleboard.getTab("Swerve");
-        configLayout = settingsTab.getLayout("Config File", "List Layout");
-        joystickLayout = settingsTab.getLayout("Joysticks", "List Layout");
+        configLayout = settingsTab.getLayout("Config File", "List Layout").withSize(2, 2).withPosition(0, 0);
+        joystickLayout = settingsTab.getLayout("Joysticks", "List Layout").withSize(1,3).withPosition(2, 0);
+        wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2,2).withPosition(0, 2);
+        wheelDriveSpeedsLayout = swerveTab.getLayout("Wheel Drive Speeds", "Grid Layout").withSize(2,2).withPosition(2,2);
+        wheelRotateSpeedsLayout = swerveTab.getLayout("Wheel Rotate Speeds", "Grid Layout").withSize(2,2).withPosition(4,2);
 
         CommandBase resetTempConfigCommand = new CommandBase() {
             @Override
@@ -86,7 +93,7 @@ public class ShuffleboardCommands implements Runnable {
             }
         };
         configLayout.add("use temporary config file", useTempCommand).withWidget(BuiltInWidgets.kCommand);
-        configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).getEntry();
+        configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).withPosition(3, 0).withSize(2, 1).getEntry();
 
         joystickX1 = joystickLayout.add("original pt1", BIGData.getDouble("joystick_x1")).getEntry();
         joystickY1 = joystickLayout.add("new pt1", BIGData.getDouble("joystick_y1")).getEntry();
@@ -119,7 +126,7 @@ public class ShuffleboardCommands implements Runnable {
         CommandBase zeroRotateCommand = new CommandBase() {
             @Override
             public void initialize() {
-                BIGData.setZeroSwerveRequest(true);
+                BIGData.putZeroSwerveRequest(true);
             }
             @Override
             public boolean isFinished() {
@@ -128,16 +135,17 @@ public class ShuffleboardCommands implements Runnable {
         };
         
         swerveTab.add("zero swerve WHEELS", zeroRotateCommand).withWidget(BuiltInWidgets.kCommand);
-        frZero = swerveTab.add("fr zero:", BIGData.getFrZero()).getEntry();
-        brZero = swerveTab.add("br zero", BIGData.getBrZero()).getEntry();
-        blZero = swerveTab.add("bl zero", BIGData.getBlZero()).getEntry();
-        flZero = swerveTab.add("fl zero", BIGData.getFlZero()).getEntry();
+        for (int i = 0; i < 4; i++) {
+            wheelZeros[i] = wheelZerosLayout.add(BIGData.getWheelName(i) + " zero:", BIGData.getWheelZero(i)).getEntry();
+            wheelDriveSpeeds[i] = wheelDriveSpeedsLayout.add(BIGData.getWheelName(i) + " drive speed", BIGData.getWheelRawDriveSpeed(i)).getEntry();
+            wheelRotateSpeeds[i] = wheelRotateSpeedsLayout.add(BIGData.getWheelName(i) + " rotate speed", BIGData.getWheelRawRotateSpeed(i)).getEntry();
+        }
 
         CommandBase zeroGyroCommand = new CommandBase() {
             @Override
             public void initialize() {
                 System.out.println("zeroing the gyro...");
-                BIGData.setZeroGyroRequest(true);
+                BIGData.putZeroGyroRequest(true);
             }
             @Override
             public boolean isFinished() {
@@ -162,11 +170,12 @@ public class ShuffleboardCommands implements Runnable {
         gyroRate.forceSetDouble(BIGData.getGyroW());
 
         // update zeros on dashboard
-        frZero.setDouble(BIGData.getFrZero());
-        brZero.setDouble(BIGData.getBrZero());
-        blZero.setDouble(BIGData.getBlZero());
-        flZero.setDouble(BIGData.getFlZero());
+        for (int i = 0; i < 4; i++) {
+            wheelZeros[i].forceSetDouble(BIGData.getWheelZero(i));
+            wheelDriveSpeeds[i].forceSetDouble(BIGData.getWheelRawDriveSpeed(i));
+            wheelRotateSpeeds[i].forceSetDouble(BIGData.getWheelRawRotateSpeed(i));
 
+        }
     }
 
 }
