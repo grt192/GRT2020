@@ -20,7 +20,7 @@ import frc.swerve.Swerve;
 import frc.gen.BIGData;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import frc.sockets.Client;
+import frc.sockets.ClientCamera;
 import edu.wpi.first.cameraserver.*;
 
 /**
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   public static Swerve swerve;
   public static NavXGyro gyro;
   public static ShuffleboardCommands shuffleboardCommands;
-  public static Client client;
+  public static ClientCamera clientcamera;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    client = new Client();
+    clientcamera = new ClientCamera();
 
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);

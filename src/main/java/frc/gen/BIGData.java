@@ -272,7 +272,11 @@ public class BIGData {
 
 	public static void updateCamera(double r, double a) {
 		put("camera_azimuth", a);
-		put("camera_distance", r);
+		put("camera_range", r);
+	}
+
+	public static void updateLidar(double r) {
+		put("lidar_range", r);
 	}
 
 	/** put (or update) a key/value mapping into the map */

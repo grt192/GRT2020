@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
 
-public class Client implements Runnable {
+public class ClientLidar implements Runnable {
     static Thread sent;
     static Thread receive;
     static Socket socket;
@@ -21,10 +21,10 @@ public class Client implements Runnable {
 
     public void run() {
         // System.out.println("IN CLIENT RUN");
-        cameraData();
+        lidarData();
     }
 
-    public Client() {
+    public ClientLidar() {
         connect();
     }
 
@@ -32,7 +32,7 @@ public class Client implements Runnable {
         System.out.println("start connect pls");
         try {
             InetAddress address = InetAddress.getByName("10.1.92.14");
-            socket = new Socket(address, 30000);
+            socket = new Socket(address, 1030);
         } catch (UnknownHostException e1) {
             e1.printStackTrace();
         } catch (IOException e1) {
@@ -50,12 +50,11 @@ public class Client implements Runnable {
         notifier.startPeriodic(0.02);
     }
 
-    public void cameraData() {
+    public void lidarData() {
         try {
             String in = stdIn.readLine();
-            // System.out.println(in);
-            String[] data = in.replace("(", "").replace(")", "").split(",");
-            BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]));
+            System.out.println(in);
+            BIGData.updateLidar(Double.parseDouble(in));
             // out.print("Recieved\n");
             out.flush();
 

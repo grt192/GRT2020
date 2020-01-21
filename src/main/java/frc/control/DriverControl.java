@@ -48,7 +48,7 @@ class DriverControl extends Mode {
             centeringCamera = false;
         }
 
-        double azimuth = -BIGData.getDouble("camera_azimuth");
+        double azimuth = BIGData.getDouble("camera_azimuth");
         // System.out.println(azimuth);
         if (centeringCamera && Math.abs(azimuth) > 1) {
             rotate = 0.5 * azimuth * Math.PI / 180;
