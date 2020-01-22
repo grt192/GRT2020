@@ -79,6 +79,7 @@ public class Swerve implements Runnable {
 			System.out.println("zeroing wheels");
 			zeroRotate();
 			BIGData.putZeroSwerveRequest(false);
+			BIGData.updateConfigFile();
 		}
 		if (BIGData.getZeroGyroRequest()) {
 			System.out.println("zeroing gyro");
@@ -191,7 +192,6 @@ public class Swerve implements Runnable {
 			wheels[i].zero();
 			BIGData.putWheelZero(wheels[i].getName(), wheels[i].getOffset());
 		}
-		BIGData.updateConfigFile();
 	}
 
 }
