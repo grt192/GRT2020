@@ -1,15 +1,13 @@
 package frc.swerve;
 
-import edu.wpi.first.wpilibj.Notifier;
 import static frc.gen.BIGData.FR_WHEEL;
 import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.BL_WHEEL;
 import static frc.gen.BIGData.FL_WHEEL;
-import frc.robot.Robot;
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
 
-public class Swerve implements Runnable {
+public class Swerve {
 
 	private final double SWERVE_WIDTH;
 	private final double SWERVE_HEIGHT;
@@ -20,8 +18,6 @@ public class Swerve implements Runnable {
 	private final double kP;
 	/** derivative scaling constant */
 	private final double kD;
-
-	private Notifier notifier;
 
 	private NavXGyro gyro;
 	/** wheels[0]=fr, wheels[1]=br, wheels[2]=bl, wheels[3]=fl */
@@ -35,7 +31,7 @@ public class Swerve implements Runnable {
 	private volatile SwerveData swerveData;
 
 	public Swerve() {
-		this.gyro = Robot.gyro;
+		this.gyro = new NavXGyro();
 		gyro.reset();
 		angle = 0.0;
 		robotCentric = false;
@@ -54,11 +50,9 @@ public class Swerve implements Runnable {
 		WHEEL_ANGLE = Math.atan2(SWERVE_WIDTH, SWERVE_HEIGHT);
 		ROTATE_SCALE = 1 / RADIUS;
 		calcSwerveData();
-		notifier = new Notifier(this);
-		notifier.startPeriodic(0.02);
 	}
 
-	public void run() {
+	public void update() {
 		double w = userW;
 		if (withPID) {
 			w = calcPID();

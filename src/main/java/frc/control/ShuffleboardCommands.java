@@ -1,7 +1,6 @@
 package frc.control;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -13,7 +12,7 @@ import frc.util.GRTUtil;
 /**
  * Miscellaneous commands from the shuffleboard
  */
-public class ShuffleboardCommands implements Runnable {
+public class ShuffleboardCommands {
 
     private ShuffleboardTab settingsTab;
     private ShuffleboardLayout configLayout;
@@ -35,9 +34,6 @@ public class ShuffleboardCommands implements Runnable {
     private NetworkTableEntry gyroRate;
     // config
     private NetworkTableEntry configMessage;
-
-
-    private Notifier notifier;
 
     public ShuffleboardCommands() {
         wheelZeros = new NetworkTableEntry[4];
@@ -155,13 +151,9 @@ public class ShuffleboardCommands implements Runnable {
         swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand);
         gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).getEntry();
         gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).getEntry();
-
-        notifier = new Notifier(this);
-        notifier.startPeriodic(0.02);
     }
 
-    @Override
-    public void run() {
+    public void update() {
         String newMsg = BIGData.getConfigFileMsg();
         if (!newMsg.equals(configMessage.getString(""))) {
             configMessage.forceSetString(newMsg);
