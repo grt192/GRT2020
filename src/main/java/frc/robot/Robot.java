@@ -18,6 +18,8 @@ import frc.control.input.JoystickProfile;
 import frc.swerve.NavXGyro;
 import frc.swerve.Swerve;
 import frc.gen.BIGData;
+import frc.gen.Brain;
+import frc.mechs.TwoWheelShooter;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.cameraserver.*;
@@ -33,6 +35,7 @@ public class Robot extends TimedRobot {
   private NetworkTableEntry mode;
   private Autonomous autonomous;
 
+  public static Brain brain;
   public static Swerve swerve;
   public static NavXGyro gyro;
   public static ShuffleboardCommands shuffleboardCommands;
@@ -62,7 +65,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-
+    brain = new Brain();
     // CameraServer.getInstance().startAutomaticCapture(0);
     // CameraServer.getInstance().startAutomaticCapture(1);
 
