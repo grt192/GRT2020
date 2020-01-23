@@ -1,7 +1,6 @@
 package frc.control;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -13,7 +12,7 @@ import frc.util.GRTUtil;
 /**
  * Miscellaneous commands from the shuffleboard
  */
-public class ShuffleboardCommands implements Runnable {
+public class ShuffleboardCommands {
 
     private ShuffleboardTab settingsTab;
     private ShuffleboardLayout configLayout;
@@ -39,8 +38,6 @@ public class ShuffleboardCommands implements Runnable {
     private ShuffleboardTab shooterTab;
     private NetworkTableEntry wheelARPM;
     private NetworkTableEntry wheelBRPM;
-
-    private Notifier notifier;
 
     public ShuffleboardCommands() {
         wheelZeros = new NetworkTableEntry[4];
@@ -176,13 +173,9 @@ public class ShuffleboardCommands implements Runnable {
             }
         };
         shooterTab.add("update two wheel shooter", updateTwoWheelShooter);
-
-        notifier = new Notifier(this);
-        notifier.startPeriodic(0.02);
     }
 
-    @Override
-    public void run() {
+    public void update() {
         String newMsg = BIGData.getConfigFileMsg();
         if (!newMsg.equals(configMessage.getString(""))) {
             configMessage.forceSetString(newMsg);

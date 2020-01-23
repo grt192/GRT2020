@@ -9,20 +9,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.control.Mode;
-import frc.control.ShuffleboardCommands;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
-import frc.swerve.NavXGyro;
-import frc.swerve.Swerve;
 import frc.gen.BIGData;
 import frc.gen.Brain;
 import frc.mechs.TwoWheelShooter;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-import edu.wpi.first.cameraserver.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -36,9 +31,6 @@ public class Robot extends TimedRobot {
   private Autonomous autonomous;
 
   public static Brain brain;
-  public static Swerve swerve;
-  public static NavXGyro gyro;
-  public static ShuffleboardCommands shuffleboardCommands;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
@@ -57,17 +49,14 @@ public class Robot extends TimedRobot {
     ROBOT_WIDTH = BIGData.getDouble("robot_width");
     ROBOT_HEIGHT = BIGData.getDouble("robot_height");
     ROBOT_RADIUS = Math.sqrt(ROBOT_WIDTH * ROBOT_WIDTH + ROBOT_HEIGHT * ROBOT_HEIGHT) / 2;
+
     autonomous = new Autonomous(this);
-    gyro = new NavXGyro();
-    swerve = new Swerve();
-    shuffleboardCommands = new ShuffleboardCommands();
     Mode.initModes();
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
+
     brain = new Brain();
-    // CameraServer.getInstance().startAutomaticCapture(0);
-    // CameraServer.getInstance().startAutomaticCapture(1);
 
   }
 
