@@ -3,6 +3,8 @@ package frc.gen;
 import java.util.HashMap;
 import java.util.Map;
 
+import frc.positiontracking.Position;
+import frc.positiontracking.fieldmap.geometry.Vector;
 import frc.swerve.SwerveData;
 
 public class BIGData {
@@ -138,12 +140,32 @@ public class BIGData {
 		return getDouble("requested_w");
 	}
 
+	/** set swerve data */
 	public static void setSwerveData(SwerveData data) {
 		put("gyro_ang", data.gyroAngle);
 		put("gyro_w", data.gyroW);
 		put("enc_vx", data.encoderVX);
 		put("enc_vy", data.encoderVY);
 		put("enc_w", data.encoderW);
+	}
+
+	/** get swerve data */
+	public static SwerveData getSwerveData() {
+		return new SwerveData(getDouble("gyro_ang"), getDouble("gyro_w"), getDouble("enc_vx"), getDouble("enc_vy"),
+				getDouble("enc_w"));
+	}
+
+	/** set current position */
+	public static void setVisPosition(Position position) {
+		put("vis_pos_x", position.pos.x);
+		put("vis_pos_y", position.pos.y);
+		put("vis_pos_ang", position.angle);
+	}
+
+	/** get current position */
+	public static Position getVisPosition() {
+		Vector vec = new Vector(getDouble("vis_pos_x"), getDouble("vis_pos_y"));
+		return new Position(vec, getDouble("vis_pos_ang"));
 	}
 
 	/** set the gyro's angle */
