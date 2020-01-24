@@ -32,7 +32,7 @@ public class TwoWheelShooter {
         this.aRPM = rpmToTalonVeloc(aRPM);
         this.bRPM = rpmToTalonVeloc(bRPM);
         System.out.println(this.aRPM + " " + this.bRPM);
-        wheelAMotor.set(ControlMode.Velocity, this.aRPM);// ControlMode.Velocity, this.aRPM);
+        wheelAMotor.set(ControlMode.Velocity, this.aRPM);
         wheelBMotor.set(ControlMode.Velocity, this.bRPM);
     }
 
