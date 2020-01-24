@@ -39,3 +39,6 @@ joystick_y2=0.4
 two_wheel_motor_a=10
 two_wheel_motor_b=9
 two_wheel_ticks_per_rotation=1024
+
+# one wheel shooter
+#one_wheel_shooter=
