@@ -28,6 +28,7 @@ public class PositionTracking {
         Mat Q = new Mat(STATES, STATES, TYPE);
         Q.put(0, 0, MEASUREMENT_NOISE, 0, 0, MEASUREMENT_NOISE);
         kf.set_measurementNoiseCov(Q);
+        set(BIGData.getDouble("robot_height") / 2, BIGData.getDouble("robot_width"));
     }
 
     public void set(double x, double y) {
