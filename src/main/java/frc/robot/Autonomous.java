@@ -73,6 +73,10 @@ public class Autonomous {
             case "wait":
                 finishedFlag = false;
                 break;
+            case "pmp":
+                BIGData.setTarget(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]));
+                robot.setMode(1);
+                break;
             case "swerve":
                 robot.setMode(0);
                 BIGData.requestDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),

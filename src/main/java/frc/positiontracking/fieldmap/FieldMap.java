@@ -22,8 +22,6 @@ public class FieldMap {
         obstacles = new Polygon[2];
         FIELD_WIDTH = 323.31;
         FIELD_HEIGHT = 629.25;
-        BIGData.put("field_width", FIELD_WIDTH);
-        BIGData.put("field_height", FIELD_HEIGHT);
         bounds = new Vector(FIELD_HEIGHT, FIELD_WIDTH);
 
         Polygon RightSideTrench = new Polygon(new Vector(254, 320), new Vector(254, FIELD_WIDTH),

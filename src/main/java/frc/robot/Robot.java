@@ -56,7 +56,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().enable();
 
     brain = new Brain();
-
   }
 
   private void loop() {
@@ -118,6 +117,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    autonomous.init("test.txt");
   }
 
   /**

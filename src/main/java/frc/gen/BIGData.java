@@ -156,16 +156,24 @@ public class BIGData {
 	}
 
 	/** set current position */
-	public static void setVisPosition(Position position) {
-		put("vis_pos_x", position.pos.x);
-		put("vis_pos_y", position.pos.y);
-		put("vis_pos_ang", position.angle);
+	public static void setPosition(Vector pos, String s) {
+		put(s + "_pos_x", pos.x);
+		put(s + "_pos_y", pos.y);
 	}
 
 	/** get current position */
-	public static Position getVisPosition() {
-		Vector vec = new Vector(getDouble("vis_pos_x"), getDouble("vis_pos_y"));
-		return new Position(vec, getDouble("vis_pos_ang"));
+	public static Vector getPosition(String s) {
+		Vector vec = new Vector(getDouble(s + "_pos_x"), getDouble(s + "_pos_y"));
+		return vec;
+	}
+
+	public static void setTarget(double x, double y) {
+		put("tar_x", x);
+		put("tar_y", y);
+	}
+
+	public static Vector getTarget() {
+		return new Vector(getDouble("tar_x"), getDouble("tar_y"));
 	}
 
 	/** set the gyro's angle */

@@ -4,11 +4,19 @@ import frc.positiontracking.fieldmap.geometry.Vector;
 
 public class Position {
 
-    public final Vector pos;
-    public final double angle;
+    private final Vector pos;
+    private final double angle;
 
     public Position(Vector pos, double angle) {
         this.pos = pos;
         this.angle = angle;
+    }
+
+    public Vector getPos() {
+        return pos;
+    }
+
+    public double getAngle() {
+        return angle;
     }
 }

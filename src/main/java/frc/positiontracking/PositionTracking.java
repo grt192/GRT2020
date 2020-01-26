@@ -1,11 +1,13 @@
 package frc.positiontracking;
 
+import org.opencv.core.Core;
 import org.opencv.core.CvException;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.video.KalmanFilter;
 
 import frc.gen.BIGData;
+import frc.positiontracking.fieldmap.geometry.Vector;
 import frc.swerve.SwerveData;
 
 public class PositionTracking {
@@ -22,13 +24,14 @@ public class PositionTracking {
     private double cachedX, cachedY;
 
     public PositionTracking() {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         kf = new KalmanFilter(STATES, STATES, STATES, TYPE);
         kf.set_transitionMatrix(Mat.eye(STATES, STATES, TYPE));
         kf.set_measurementMatrix(Mat.eye(STATES, STATES, TYPE));
         Mat Q = new Mat(STATES, STATES, TYPE);
         Q.put(0, 0, MEASUREMENT_NOISE, 0, 0, MEASUREMENT_NOISE);
         kf.set_measurementNoiseCov(Q);
-        set(BIGData.getDouble("robot_height") / 2, BIGData.getDouble("robot_width"));
+        set(0, 0);
     }
 
     public void set(double x, double y) {
@@ -77,22 +80,27 @@ public class PositionTracking {
         Mat U = new Mat(STATES, 1, TYPE);
         U.put(0, 0, data.encoderVX, data.encoderVY);
         kf.predict(U);
-        Position estimate = BIGData.getVisPosition();
+        // TODO: change this later
+        Position estimate = null;
         if (estimate != null) {
             Mat Z = new Mat(STATES, 1, TYPE);
-            Z.put(0, 0, estimate.pos.x, estimate.pos.y);
+            Z.put(0, 0, estimate.getPos().x, estimate.getPos().x);
             kf.correct(Z);
         }
         double tempX = getX();
         double tempY = getY();
-        double FIELD_HEIGHT = BIGData.getDouble("field_height");
-        double FIELD_WIDTH = BIGData.getDouble("field_width");
-        if (tempX < -FIELD_HEIGHT || tempX > 2 * FIELD_HEIGHT || tempY < -FIELD_WIDTH || tempY > 2 * FIELD_WIDTH) {
+        //System.out.println("x: " + tempX + " y:" + tempY);
+        double FIELD_HEIGHT = 629.25;
+        double FIELD_WIDTH = 323.31;
+        if (tempX < (-1 * FIELD_HEIGHT) || tempX > (2 * FIELD_HEIGHT) || tempY < (-1 * FIELD_WIDTH) || tempY > (2 * FIELD_WIDTH)) {
             System.out.println("An error occured, resetting to last position");
             set(cachedX, cachedY);
         } else {
             cachedX = tempX;
             cachedY = tempY;
         }
+        Vector curr_pos = new Vector(tempX, tempY);
+        BIGData.setPosition(curr_pos, "curr");
+        //System.out.println("x: " + curr_pos.x + " y: " + curr_pos.y);
     }
 }

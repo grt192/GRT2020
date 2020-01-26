@@ -175,6 +175,7 @@ public class Swerve {
 		vx /= 4.0;
 		vy /= 4.0;
 		swerveData = new SwerveData(gyroAngle, gyroRate, vx, vy, w);
+		BIGData.setSwerveData(swerveData);
 	}
 
 	/**
