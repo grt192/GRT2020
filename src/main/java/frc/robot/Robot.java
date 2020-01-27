@@ -17,6 +17,7 @@ import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
+import frc.positiontracking.pathfinding.Target;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   private Autonomous autonomous;
 
   public static Brain brain;
+  public static Target target;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
@@ -56,6 +58,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().enable();
 
     brain = new Brain();
+    target = new Target();
   }
 
   private void loop() {
@@ -117,7 +120,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    autonomous.init("test.txt");
+    autonomous.init("smile.txt");
   }
 
   /**

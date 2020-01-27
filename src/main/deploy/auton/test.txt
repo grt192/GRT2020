@@ -1,2 +1,11 @@
-# drive in a square
+# drive in a square and zig zag
 pmp 0 50
+pmp 50 50
+pmp 50 0
+pmp 0 0
+pmp 50 50
+pmp 100 0
+pmp 150 50
+pmp 100 0
+pmp 50 50
+pmp 0 0

@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.positiontracking.pathfinding.Target;
 import frc.gen.BIGData;
 
 public class Autonomous {
@@ -74,7 +76,7 @@ public class Autonomous {
                 finishedFlag = false;
                 break;
             case "pmp":
-                BIGData.setTarget(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]));
+                Target.putTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
                 robot.setMode(1);
                 break;
             case "swerve":

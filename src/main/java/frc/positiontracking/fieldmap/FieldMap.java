@@ -1,6 +1,5 @@
 package frc.positiontracking.fieldmap;
 
-import frc.gen.BIGData;
 import frc.positiontracking.fieldmap.geometry.Polygon;
 import frc.positiontracking.fieldmap.geometry.Vector;
 

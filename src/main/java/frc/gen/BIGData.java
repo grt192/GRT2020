@@ -3,7 +3,6 @@ package frc.gen;
 import java.util.HashMap;
 import java.util.Map;
 
-import frc.positiontracking.Position;
 import frc.positiontracking.fieldmap.geometry.Vector;
 import frc.swerve.SwerveData;
 
