@@ -36,9 +36,6 @@ public class Robot extends TimedRobot {
 
   public static Brain brain;
   public static Target target;
-  public static Swerve swerve;
-  public static NavXGyro gyro;
-  public static ShuffleboardCommands shuffleboardCommands;
   public static ClientCamera clientcamera;
 
   public static double ROBOT_WIDTH;
