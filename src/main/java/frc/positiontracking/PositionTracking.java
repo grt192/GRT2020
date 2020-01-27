@@ -86,10 +86,10 @@ public class PositionTracking {
         U.put(0, 0, data.encoderVX, data.encoderVY);
         kf.predict(U);
         // TODO: change this later
-        Position estimate = null;
+        Vector estimate = BIGData.getCameraPos();
         if (estimate != null) {
             Mat Z = new Mat(STATES, 1, TYPE);
-            Z.put(0, 0, estimate.getPos().x, estimate.getPos().x);
+            Z.put(0, 0, estimate.x, estimate.y);
             kf.correct(Z);
         }
         double tempX = getX();
