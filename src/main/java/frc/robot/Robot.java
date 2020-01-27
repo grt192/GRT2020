@@ -18,6 +18,10 @@ import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
 import frc.positiontracking.pathfinding.Target;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import frc.sockets.ClientCamera;
+import edu.wpi.first.cameraserver.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,11 +36,14 @@ public class Robot extends TimedRobot {
 
   public static Brain brain;
   public static Target target;
+  public static Swerve swerve;
+  public static NavXGyro gyro;
+  public static ShuffleboardCommands shuffleboardCommands;
+  public static ClientCamera clientcamera;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
   public static double ROBOT_RADIUS;
-
   private boolean overridden;
 
   /**
@@ -56,6 +63,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
+    clientcamera = new ClientCamera();
 
     brain = new Brain();
     target = new Target();
@@ -131,12 +139,17 @@ public class Robot extends TimedRobot {
     loop();
   }
 
+  @Override
+  public void teleopInit() {
+  }
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
     Mode.getMode(0).loop();
+
   }
 
   /**

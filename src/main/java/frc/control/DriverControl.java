@@ -1,11 +1,17 @@
 package frc.control;
 
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import frc.gen.BIGData;
+import frc.swerve.SwerveData;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 
 class DriverControl extends Mode {
+
+    private boolean centeringCamera = false;
 
     @Override
     public boolean loop() {
@@ -28,7 +34,22 @@ class DriverControl extends Mode {
         if (lTrigger + rTrigger > 0.05) {
             rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
         }
+
+        if (Input.SWERVE_XBOX.getAButtonPressed()) {
+            centeringCamera = true;
+        }
+
+        if (Input.SWERVE_XBOX.getAButtonReleased()) {
+            centeringCamera = false;
+        }
+
+        double azimuth = BIGData.getDouble("camera_azimuth");
+        // System.out.println(azimuth);
+        if (centeringCamera && Math.abs(azimuth) > 1) {
+            rotate = 0.5 * azimuth * Math.PI / 180;
+        }
         BIGData.requestDrive(x, y, rotate);
+
     }
 
     // private void driveMechs() {

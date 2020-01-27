@@ -324,6 +324,16 @@ public class BIGData {
 		map.put(key, val);
 	}
 
+	public static void updateCamera(double r, double a, double t) {
+		put("camera_azimuth", a);
+		put("camera_range", r);
+		put("relative_angle", t);
+	}
+
+	public static void updateLidar(double r) {
+		put("lidar_range", r);
+	}
+
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, double val) {
 		map.put(key, "" + val);

@@ -99,8 +99,10 @@ public class Swerve {
 	}
 
 	/**
-	 * sets the angle of the robot 
-	 * @param angle the angle to turn the robot to, in radians
+	 * sets the angle of the robot
+	 * 
+	 * @param angle
+	 *                  the angle to turn the robot to, in radians
 	 */
 	public void setAngle(double angle) {
 		withPID = true;
@@ -113,10 +115,14 @@ public class Swerve {
 	}
 
 	/**
-	 * change the motors to reach the requested values 
-	 * @param vx the requested x velocity from -1.0 to 1.0
-	 * @param vy the requested y velocity from -1.0 to 1.0
-	 * @param w  the requested angular velocity
+	 * change the motors to reach the requested values
+	 * 
+	 * @param vx
+	 *               the requested x velocity from -1.0 to 1.0
+	 * @param vy
+	 *               the requested y velocity from -1.0 to 1.0
+	 * @param w
+	 *               the requested angular velocity
 	 */
 	private void changeMotors(double vx, double vy, double w) {
 		w *= ROTATE_SCALE;
@@ -159,7 +165,7 @@ public class Swerve {
 	private void calcSwerveData() {
 		double gyroAngle = Math.toRadians(gyro.getAngle());
 		double gyroRate = Math.toRadians(gyro.getRate());
-		double vx = 0; 
+		double vx = 0;
 		double vy = 0;
 		double w = 0;
 		for (int i = 0; i < wheels.length; i++) {
