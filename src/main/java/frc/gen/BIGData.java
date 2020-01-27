@@ -331,8 +331,13 @@ public class BIGData {
 	}
 
 	public static Vector getCameraPos() {
-		Vector v = new Vector(getDouble("camera_range") * Math.cos(getDouble("relative_angle") * Math.PI / 180), getDouble("camera_range") * Math.sin(getDouble("relative_angle") * Math.PI / 180));
-		return v;
+		if (getDouble("camera_range") != 0) {
+			double x = getDouble("camera_range") * Math.cos(getDouble("relative_angle") * Math.PI / 180);
+			double y = getDouble("camera_range") * Math.sin(getDouble("relative_angle") * Math.PI / 180);
+			Vector v = new Vector(x, y);
+			return v;
+		}
+		return null;
 	}
 
 	public static void updateLidar(double r) {

@@ -1,10 +1,6 @@
 package frc.control;
 
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
-
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.gen.BIGData;
-import frc.swerve.SwerveData;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;

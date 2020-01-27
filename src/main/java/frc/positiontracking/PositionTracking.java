@@ -1,7 +1,5 @@
 package frc.positiontracking;
 
-import java.util.ArrayList;
-
 import org.opencv.core.Core;
 import org.opencv.core.CvException;
 import org.opencv.core.CvType;
@@ -25,8 +23,6 @@ public class PositionTracking {
     private KalmanFilter kf;
     private double cachedX, cachedY;
 
-    private ArrayList<Vector> targets;
-
     public PositionTracking() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         kf = new KalmanFilter(STATES, STATES, STATES, TYPE);
@@ -36,7 +32,6 @@ public class PositionTracking {
         Q.put(0, 0, MEASUREMENT_NOISE, 0, 0, MEASUREMENT_NOISE);
         kf.set_measurementNoiseCov(Q);
         set(0, 0);
-        targets = new ArrayList<Vector>();
     }
 
     public void set(double x, double y) {

@@ -18,10 +18,7 @@ import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
 import frc.positiontracking.pathfinding.Target;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import frc.sockets.ClientCamera;
-import edu.wpi.first.cameraserver.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
