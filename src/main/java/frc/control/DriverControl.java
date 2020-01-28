@@ -53,6 +53,7 @@ class DriverControl extends Mode {
         if (centeringCamera && Math.abs(azimuth) > 1) {
             rotate = 0.5 * azimuth * Math.PI / 180;
         }
+        System.out.println(BIGData.getDouble("relative_angle"));
         BIGData.requestDrive(x, y, rotate);
 
     }
