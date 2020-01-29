@@ -9,7 +9,7 @@ public class FieldMap {
     private static Vector bounds;
     private Polygon wall;
     private static Polygon[] obstacles;
-    public VisionTarget[] visionTargets;
+    private static VisionTarget[] visionTargets;
 
     public FieldMap() {
         buildMap();
@@ -19,6 +19,7 @@ public class FieldMap {
 
     private static void buildMap() {
         obstacles = new Polygon[2];
+        visionTargets = new VisionTarget[1];
         FIELD_WIDTH = 323.31;
         FIELD_HEIGHT = 629.25;
         bounds = new Vector(FIELD_HEIGHT, FIELD_WIDTH);
@@ -30,6 +31,10 @@ public class FieldMap {
 
         obstacles[0] = RightSideTrench;
         obstacles[1] = LeftSideTrench;
+
+        VisionTarget farGoal = new VisionTarget(new Vector(FIELD_HEIGHT, 228.655), Math.PI, true);
+
+        visionTargets[0] = farGoal;
 
     }
 

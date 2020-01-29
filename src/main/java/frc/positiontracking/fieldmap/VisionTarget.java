@@ -4,8 +4,8 @@ import frc.positiontracking.fieldmap.geometry.Vector;
 
 public class VisionTarget {
 
-    private static final double HIGH_HEIGHT = 39.125;
-    private static final double LOW_HEIGHT = 31.5;
+    private static final double HIGH_HEIGHT = 98.188;
+    private static final double LOW_HEIGHT = 16.5;
 
     public final Vector pos;
     public final double angle;
