@@ -1,11 +1,12 @@
 package frc.swerve;
 
-import static frc.gen.BIGData.FR_WHEEL;
-import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.BL_WHEEL;
+import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.FL_WHEEL;
-import frc.util.GRTUtil;
+import static frc.gen.BIGData.FR_WHEEL;
+
 import frc.gen.BIGData;
+import frc.util.GRTUtil;
 
 public class Swerve {
 
@@ -50,6 +51,8 @@ public class Swerve {
 		WHEEL_ANGLE = Math.atan2(SWERVE_WIDTH, SWERVE_HEIGHT);
 		ROTATE_SCALE = 1 / RADIUS;
 		calcSwerveData();
+		//TODO: test swerve PID
+		setAngle(0.0);
 	}
 
 	public void update() {

@@ -1,9 +1,0 @@
-# draws a smiley face
-pmp 50 0
-pmp 0 50
-pmp 50 50
-pmp 80 50
-pmp 90 37.5
-pmp 100 25
-pmp 90 12.5
-pmp 80 0
