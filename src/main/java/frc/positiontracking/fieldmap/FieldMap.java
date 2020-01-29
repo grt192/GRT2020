@@ -41,4 +41,8 @@ public class FieldMap {
         return obstacles;
     }
 
+    public Vector getBounds() {
+        return bounds;
+    }
+
 }

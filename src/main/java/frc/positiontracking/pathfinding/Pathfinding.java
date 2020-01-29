@@ -62,40 +62,4 @@ public class Pathfinding {
         }
         return velocity;
     }
-
-    public Vector oldsearch(double x, double y) {
-        double radius = ROBOT_RADIUS + 4.0;
-        double r2 = radius * radius;
-        Vector pos = new Vector(x, y);
-        Vector velocity = target.subtract(pos).multiply(1 / target.distanceTo(pos));
-        for (Polygon p : field.getObstacles()) {
-            Vector close = p.closestPoint(pos);
-            double d2 = close.distanceSquaredTo(pos);
-            if (d2 < r2) {
-                Vector displacement = pos.subtract(close);
-                double project = (displacement.dot(velocity) / d2);
-                if (project < 0) {
-                    Vector force = displacement.multiply(-project);
-                    velocity = velocity.add(force);
-                }
-            }
-        }
-        Vector close = field.closestWallPoint(pos);
-        double d2 = close.distanceSquaredTo(pos);
-        if (d2 < r2) {
-            Vector displacement = pos.subtract(close);
-            double project = (displacement.dot(velocity) / d2);
-            if (project < 0) {
-                Vector force = displacement.multiply(-project);
-                velocity = velocity.add(force);
-            }
-        }
-        velocity = velocity.multiply(1 / velocity.magnitude());
-        return velocity;
-    }
-
-    public void setTarget(double x, double y) {
-        target = new Vector(x, y);
-    }
-
 }
