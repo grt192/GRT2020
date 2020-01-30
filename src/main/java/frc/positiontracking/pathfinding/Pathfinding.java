@@ -18,6 +18,8 @@ public class Pathfinding {
     private HashSet<Node> nodes;
     private Node targetNode;
 
+    private double[] factCache;
+
     public Pathfinding() {
         target = new Vector(0, 0);
         field = new FieldMap();
@@ -25,6 +27,7 @@ public class Pathfinding {
         targetNode = new Node(new Vector(0, 0));
         ROBOT_RADIUS = Math.sqrt(
                 Math.pow(BIGData.getDouble("robot_width"), 2) + Math.pow(BIGData.getDouble("robot_height"), 2)) / 2;
+        precomp(151);
     }
 
     public Vector bezier(double t) {
@@ -42,11 +45,21 @@ public class Pathfinding {
         return null;
     }
 
-    //TODO: make the factorial calculation faster
+    private void precomp(int n) {
+        factCache = new double[n];
+        factCache[0] = 1;
+        for (int i = 1; i < factCache.length; i++) {
+            factCache[i] = factCache[i - 1] * i;
+        }
+    }
+
     private double factorial(int n) {
-        double num = 1;
-        for (int i = 1; i <= n; i++) {
-            num *= n;
+        int num = 1;
+        for (int i = n; i >= 1; i--) {
+            if (i < factCache.length) {
+                return num * factCache[i];
+            }
+            num *= i;
         }
         return num;
     }
@@ -137,7 +150,7 @@ public class Pathfinding {
     private void initNodes() {
         nodes = new HashSet<>();
         Set<Vector> pos = field.generateNodes();
-        for (Vector v : pos){
+        for (Vector v : pos) {
             System.out.println("x: " + v.x + " y: " + v.y);
             addNode(new Node(v));
         }
