@@ -136,8 +136,10 @@ public class Pathfinding {
     private void initNodes() {
         nodes = new HashSet<>();
         Set<Vector> pos = field.generateNodes();
-        for (Vector v : pos)
+        for (Vector v : pos){
+            System.out.println("x: " + v.x + " y: " + v.y);
             addNode(new Node(v));
+        }
     }
 
     private void addNode(Node n) {
