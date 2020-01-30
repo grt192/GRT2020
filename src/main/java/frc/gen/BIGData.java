@@ -319,6 +319,22 @@ public class BIGData {
 		return getString("config_msg");
 	}
 
+	public static void putButtonClick(String click) {
+		put("button_click", click);
+	}
+
+	public static String getButtonClick() {
+		return getString("button_click");
+	}
+
+	public static void putCanvasClick(String click) {
+		put("canvas_click", click);
+	}
+
+	public static String getCanvasClick() {
+		return getString("canvas_click");
+	}
+
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, String val) {
 		map.put(key, val);

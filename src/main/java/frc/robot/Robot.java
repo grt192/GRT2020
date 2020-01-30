@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    clientcamera = new ClientCamera();
+    // clientcamera = new ClientCamera();
 
     brain = new Brain();
     target = new Target();
