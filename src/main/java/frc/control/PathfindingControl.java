@@ -2,22 +2,36 @@ package frc.control;
 
 import frc.gen.BIGData;
 import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.positiontracking.pathfinding.Pathfinding;
 import frc.positiontracking.pathfinding.Target;
 
 public class PathfindingControl extends Mode {
 
     public static final double SPEED = 0.3;
 
+    private Vector velocity;
+    private double d;
+
+    public Pathfinding path;
+
     public PathfindingControl() {
+        path = new Pathfinding();
     }
 
     @Override
     public boolean loop() {
-        if (Target.length() > 0) {
-            Vector endPos = Target.get(0);
+        if (Target.size() < 1) {
+            return false;
+        } else {
             Vector pos = BIGData.getPosition("curr");
-            double d = pos.distanceTo(endPos);
-            Vector velocity = endPos.subtract(pos).multiply(1 / d);
+            Vector endPos = Target.getNext();
+            if (endPos == null) {
+                d = pos.distanceTo(pos);
+                velocity = path.searchPFP(pos);
+            } else {
+                d = pos.distanceTo(endPos);
+                velocity = endPos.subtract(pos).multiply(1 / d);
+            }
             //TODO: Remove this after debugging
             //System.out.println("d: " + d + " vx: " + velocity.x + " vy: " + velocity.y);
             double speed = SPEED * Math.min(d / 36.0, 1);
@@ -28,8 +42,6 @@ public class PathfindingControl extends Mode {
             }
             BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
             return true;
-        } else {
-            return false;
         }
     }
 

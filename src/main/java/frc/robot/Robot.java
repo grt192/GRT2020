@@ -122,7 +122,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    autonomous.init("smile.txt");
+    autonomous.init("test.txt");
   }
 
   /**

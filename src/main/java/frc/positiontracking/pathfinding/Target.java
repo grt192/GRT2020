@@ -12,8 +12,12 @@ public class Target {
         targets = new ArrayList<Vector>();
     }
 
-    public static void putTarget(Vector v) {
+    public static void put(Vector v) {
         targets.add(v);
+    }
+
+    public static void put(int i, Vector v) {
+        targets.add(i, v);
     }
 
     public static Vector get(int i) {
@@ -24,12 +28,19 @@ public class Target {
         targets.remove(0);
     }
 
-    public static int length() {
-        return targets.size();
-    }
-
     public static ArrayList<Vector> getTargets() {
         return targets;
     }
 
+    public static double size() {
+        return targets.size();
+    }
+
+    public static Vector getNext() {
+        if (size() > 0) {
+            return targets.get(targets.size() - 1);
+        } else {
+            return null;
+        }
+    }
 }

@@ -80,7 +80,6 @@ public class PositionTracking {
         Mat U = new Mat(STATES, 1, TYPE);
         U.put(0, 0, data.encoderVX, data.encoderVY);
         kf.predict(U);
-        // TODO: change this later
         Vector estimate = BIGData.getCameraPos();
         if (estimate != null) {
             Mat Z = new Mat(STATES, 1, TYPE);
