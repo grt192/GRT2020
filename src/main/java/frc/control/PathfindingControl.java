@@ -12,7 +12,6 @@ public class PathfindingControl extends Mode {
     private Vector velocity;
     private double d;
     private boolean bezier;
-    private long prev;
 
     public Pathfinding path;
 
@@ -23,35 +22,33 @@ public class PathfindingControl extends Mode {
 
     @Override
     public boolean loop() {
-        long curr = System.currentTimeMillis();
-        long diff = curr - prev;
-        prev = curr;
-        if (Target.size() < 1) {
-            return false;
-        } else {
-            Vector pos = BIGData.getPosition("curr");
-            Vector endPos = Target.getNext();
-            if (endPos == null) {
-                d = pos.distanceTo(pos);
-                velocity = path.searchPFP(pos);
-            } else if (bezier) {
-                d = pos.distanceTo(pos);
-                velocity = path.bezier(0);
-            } else {
-                d = pos.distanceTo(endPos);
-                velocity = endPos.subtract(pos).multiply(1 / d);
-            }
-            //TODO: Remove this after debugging
-            //System.out.println("d: " + d + " vx: " + velocity.x + " vy: " + velocity.y);
-            double speed = SPEED * Math.min(d / 36.0, 1);
-            velocity = velocity.multiply(speed);
-            if (d < 5) {
-                BIGData.requestDrive(0, 0, 0);
-                Target.remove(0);
-            }
-            BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
-            return true;
+        Vector pos = BIGData.getPosition("curr");
+        if (Target.size() <= 0) {
+            path.searchA(new Vector(0, 0));
         }
+        Vector endPos = Target.getNext();
+        if (endPos == null) {
+            d = pos.distanceTo(pos);
+            velocity = path.searchPFP(pos);
+        } else if (bezier) {
+            d = pos.distanceTo(pos);
+            velocity = path.bezier(0);
+        } else {
+            d = pos.distanceTo(endPos);
+            velocity = endPos.subtract(pos).multiply(1 / d);
+        }
+        //TODO: Remove this after debugging
+        //System.out.println("d: " + d + " vx: " + velocity.x + " vy: " + velocity.y);
+        double speed = SPEED * Math.min(d / 36.0, 1);
+        velocity = velocity.multiply(speed);
+        if (d < 5) {
+            BIGData.requestDrive(0, 0, 0);
+            Target.remove(0);
+        }
+        BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
+        if (Target.size() <= 0)
+            return false;
+        return true;
     }
 
 }

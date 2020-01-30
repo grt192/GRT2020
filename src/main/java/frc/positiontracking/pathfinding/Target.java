@@ -7,6 +7,7 @@ import frc.positiontracking.fieldmap.geometry.Vector;
 public class Target {
 
     private static ArrayList<Vector> targets;
+    private static Vector target;
 
     public Target() {
         targets = new ArrayList<Vector>();
@@ -42,5 +43,13 @@ public class Target {
         } else {
             return null;
         }
+    }
+
+    public static void setTarget(Vector v) {
+        target = v;
+    }
+
+    public static Vector getTarget() {
+        return target;
     }
 }

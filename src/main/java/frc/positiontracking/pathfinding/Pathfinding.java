@@ -56,6 +56,7 @@ public class Pathfinding {
     }
 
     public void searchA(Vector curr) {
+        setTargetNode(Target.getTarget());
         HashSet<Node> closed = new HashSet<>();
         PriorityQueue<Node> open = new PriorityQueue<>();
         Node startNode = new Node(curr);

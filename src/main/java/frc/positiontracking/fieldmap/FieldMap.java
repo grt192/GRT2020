@@ -29,7 +29,7 @@ public class FieldMap {
 	}
 
 	private static void buildMap() {
-		obstacles = new Polygon[13];
+		obstacles = new Polygon[14];
 		safeZones = new Polygon[3];
 		visionTargets = new VisionTarget[1];
 		FIELD_WIDTH = 323.31;

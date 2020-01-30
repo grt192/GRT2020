@@ -76,7 +76,7 @@ public class Autonomous {
                 finishedFlag = false;
                 break;
             case "pmp":
-                Target.put(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
+                Target.setTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
                 robot.setMode(1);
                 break;
             case "swerve":
