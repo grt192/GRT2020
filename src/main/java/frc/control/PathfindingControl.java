@@ -11,15 +11,21 @@ public class PathfindingControl extends Mode {
 
     private Vector velocity;
     private double d;
+    private boolean bezier;
+    private long prev;
 
     public Pathfinding path;
 
     public PathfindingControl() {
         path = new Pathfinding();
+        bezier = false;
     }
 
     @Override
     public boolean loop() {
+        long curr = System.currentTimeMillis();
+        long diff = curr - prev;
+        prev = curr;
         if (Target.size() < 1) {
             return false;
         } else {
@@ -28,6 +34,9 @@ public class PathfindingControl extends Mode {
             if (endPos == null) {
                 d = pos.distanceTo(pos);
                 velocity = path.searchPFP(pos);
+            } else if (bezier) {
+                d = pos.distanceTo(pos);
+                velocity = path.bezier(0);
             } else {
                 d = pos.distanceTo(endPos);
                 velocity = endPos.subtract(pos).multiply(1 / d);

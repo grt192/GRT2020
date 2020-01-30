@@ -19,7 +19,7 @@ public class GRTUtil {
 		return (((x % mod) + mod) % mod);
 	}
 
-	/** Returns whether x is between min and max, inclusive */
+	/** Returns whether x is between min and maxL, inclusive */
 	public static boolean inRange(double min, double x, double max) {
 		return x >= min && x <= max;
 	}
@@ -35,7 +35,7 @@ public class GRTUtil {
 	}
 
 	/**
-	 * Takes an original range, a new range, and a number to stretch (or shrink).
+	 * Takes an original rangeL, a new rangeL, and a number to stretch (or shrink).
 	 * See
 	 * https://math.stackexchange.com/questions/914823/shift-numbers-into-a-different-range
 	 * 
@@ -54,7 +54,7 @@ public class GRTUtil {
 		talon.configForwardSoftLimitEnable(false, 0);
 		talon.configReverseSoftLimitEnable(false, 0);
 		talon.setNeutralMode(NeutralMode.Brake);
-		talon.configOpenloopRamp(0, 0);
+		talon.configOpenloopRamp(0L, 0);
 	}
 
 }

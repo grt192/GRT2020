@@ -27,6 +27,34 @@ public class Pathfinding {
                 Math.pow(BIGData.getDouble("robot_width"), 2) + Math.pow(BIGData.getDouble("robot_height"), 2)) / 2;
     }
 
+    public Vector bezier(double t) {
+        int size = Target.size();
+        if (size >= 3) {
+            int k = size - 1;
+            double x = 0;
+            double y = 0;
+            for (int i = k; i >= 0; i--) {
+                x += choose(k, i) * Target.get(i).x * Math.pow(t, k - i) * Math.pow((1 - t), i);
+                y += choose(k, i) * Target.get(i).y * Math.pow(t, k - i) * Math.pow((1 - t), i);
+            }
+            return new Vector(x, y);
+        }
+        return null;
+    }
+
+    //TODO: make the factorial calculation faster
+    private double factorial(int n) {
+        double num = 1;
+        for (int i = 1; i <= n; i++) {
+            num *= n;
+        }
+        return num;
+    }
+
+    private double choose(int n, int r) {
+        return (factorial(n) / (factorial(r) * factorial(n - r)));
+    }
+
     public void searchA(Vector curr) {
         HashSet<Node> closed = new HashSet<>();
         PriorityQueue<Node> open = new PriorityQueue<>();

@@ -32,7 +32,7 @@ public class Target {
         return targets;
     }
 
-    public static double size() {
+    public static int size() {
         return targets.size();
     }
 
