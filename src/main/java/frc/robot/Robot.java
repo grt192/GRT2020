@@ -18,6 +18,8 @@ import frc.gen.BIGData;
 import frc.gen.Brain;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import frc.sockets.*;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -36,6 +38,8 @@ public class Robot extends TimedRobot {
   public static double ROBOT_RADIUS;
   private boolean overridden;
 
+  private static ClientCamera clientCamera;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -53,7 +57,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    clientcamera = new ClientCamera();
+    clientCamera = new ClientCamera();
 
     brain = new Brain();
 

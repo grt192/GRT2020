@@ -40,6 +40,25 @@ public class BIGData {
 	}
 
 	/**
+	 * Pass in one of four constants: FR_WHEEL, BR_WHEEL, BL_WHEEL, FL_WHEEL to get
+	 * the wheel's name "fr", "br", "bl", "fl"
+	 */
+	public static String getWheelName(int wheelNum) {
+		switch (wheelNum) {
+		case FR_WHEEL:
+			return "fr";
+		case BR_WHEEL:
+			return "br";
+		case BL_WHEEL:
+			return "bl";
+		case FL_WHEEL:
+			return "fl";
+		default:
+			return "unknown_wheel";
+		}
+	}
+
+	/**
 	 * Get the boolean config value corresponding to the key passed in.
 	 * 
 	 * @return The corresponding boolean value, or false if the key was invalid
