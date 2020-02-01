@@ -6,15 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class stores its configuration information in 3 files:
@@ -117,9 +114,9 @@ class Config {
 		}
 
 		if (useDeployConfig) {
-			BIGData.setConfigFileMsg("using deploy time config file");
+			BIGData.putConfigFileMsg("using deploy time config file");
 		} else {
-			BIGData.setConfigFileMsg("using temporary config file");
+			BIGData.putConfigFileMsg("using temporary config file");
 		}
 
 	}
@@ -148,7 +145,7 @@ class Config {
 			System.out.println("Unable to write to config state file at /home/lvuser/" + configStateFileName);
 			e.printStackTrace();
 		}
-		BIGData.setConfigFileMsg((useDeploy ? "deploy" : "temp") + " file will be used on startup");
+		BIGData.putConfigFileMsg((useDeploy ? "deploy" : "temp") + " file will be used on startup");
 	}
 
 	/** Writes the current mappings to the temporary config file in home/lvuser */
@@ -241,9 +238,9 @@ class Config {
 		File deployConfigFile = new File("/home/lvuser/deploy/", deployConfigFileName);
 		try {
 			Files.copy(deployConfigFile.toPath(), tempConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			BIGData.setConfigFileMsg("reset temp config file");
+			BIGData.putConfigFileMsg("reset temp config file");
 		} catch (IOException e) {
-			BIGData.setConfigFileMsg("unable to reset temp config file");
+			BIGData.putConfigFileMsg("unable to reset temp config file");
 			e.printStackTrace();
 		}
 	}
