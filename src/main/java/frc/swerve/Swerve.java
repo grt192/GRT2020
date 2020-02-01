@@ -1,6 +1,9 @@
 package frc.swerve;
 
 import static frc.gen.BIGData.FR_WHEEL;
+
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
+
 import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.BL_WHEEL;
 import static frc.gen.BIGData.FL_WHEEL;
@@ -18,7 +21,7 @@ public class Swerve {
 	private final double kP;
 	/** derivative scaling constant */
 	private final double kD;
-
+	private final double kF;
 	private NavXGyro gyro;
 	/** wheels[0]=fr, wheels[1]=br, wheels[2]=bl, wheels[3]=fl */
 	private Wheel[] wheels;
@@ -35,7 +38,8 @@ public class Swerve {
 		gyro.reset();
 		angle = 0.0;
 		robotCentric = false;
-		withPID = false;
+		BIGData.setPIDFalse();
+
 		wheels = new Wheel[4];
 		wheels[FR_WHEEL] = new Wheel(BIGData.getWheelName(FR_WHEEL));
 		wheels[BR_WHEEL] = new Wheel(BIGData.getWheelName(BR_WHEEL));
@@ -46,6 +50,7 @@ public class Swerve {
 		SWERVE_HEIGHT = BIGData.getDouble("swerve_height");
 		kP = BIGData.getDouble("swerve_kp");
 		kD = BIGData.getDouble("swerve_kd");
+		kF = Math.toRadians(BIGData.getDouble("swerve_kf"));
 		RADIUS = Math.sqrt(SWERVE_WIDTH * SWERVE_WIDTH + SWERVE_HEIGHT * SWERVE_HEIGHT) / 2;
 		WHEEL_ANGLE = Math.atan2(SWERVE_WIDTH, SWERVE_HEIGHT);
 		ROTATE_SCALE = 1 / RADIUS;
@@ -53,21 +58,26 @@ public class Swerve {
 	}
 
 	public void update() {
+
+		refreshVals();
 		double w = userW;
-		if (withPID) {
+		if (BIGData.getBoolean("PID?")) {
 			w = calcPID();
 		}
-		refreshVals();
+
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 	}
 
 	private void refreshVals() {
+		withPID = BIGData.getBoolean("PID?");
+		angle = BIGData.getDouble("requested_angle");
+
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();
 		userW = BIGData.getRequestedW();
 		if (userW != 0) {
-			withPID = false;
+			BIGData.setPIDFalse();
 		}
 		if (BIGData.getZeroSwerveRequest()) {
 			System.out.println("zeroing wheels");
@@ -93,16 +103,26 @@ public class Swerve {
 	 * angle, kP, and kD
 	 */
 	private double calcPID() {
-		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), angle);
+		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), angle, kF);
+		System.out.println("kP: " + kP);
+		System.out.println("kD: " + kD);
+		System.out.println("kF: " + kF);
+		System.out.println("Error: " + Math.toDegrees(error));
+		System.out.println();
+
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
-		return w;
+		// System.out.print("W: " + w);
+		return -w;
 	}
 
 	/**
-	 * sets the angle of the robot 
-	 * @param angle the angle to turn the robot to, in radians
+	 * sets the angle of the robot
+	 * 
+	 * 
+	 * @param angle
+	 *                  the angle to turn the robot to, in radians
 	 */
-	public void setAngle(double angle) {
+	private void setAngle(double angle) {
 		withPID = true;
 		this.angle = angle;
 	}
@@ -113,10 +133,14 @@ public class Swerve {
 	}
 
 	/**
-	 * change the motors to reach the requested values 
-	 * @param vx the requested x velocity from -1.0 to 1.0
-	 * @param vy the requested y velocity from -1.0 to 1.0
-	 * @param w  the requested angular velocity
+	 * change the motors to reach the requested values
+	 * 
+	 * @param vx
+	 *               the requested x velocity from -1.0 to 1.0
+	 * @param vy
+	 *               the requested y velocity from -1.0 to 1.0
+	 * @param w
+	 *               the requested angular velocity
 	 */
 	private void changeMotors(double vx, double vy, double w) {
 		if (vx == 0 && vy == 0 && w == 0) {
@@ -166,7 +190,7 @@ public class Swerve {
 	private void calcSwerveData() {
 		double gyroAngle = Math.toRadians(gyro.getAngle());
 		double gyroRate = Math.toRadians(gyro.getRate());
-		double vx = 0; 
+		double vx = 0;
 		double vy = 0;
 		double w = 0;
 		for (int i = 0; i < wheels.length; i++) {

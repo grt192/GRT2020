@@ -1,15 +1,17 @@
 # Config file for 2020 SWERVE BASE
 # Domain: roborio-192-frc.local
 
-swerve_width=22.25
-swerve_height=21.70
+swerve_width=23.625
+swerve_height=23.375
 
-robot_width=37.00
-robot_height=41
+robot_width=40.0
+robot_height=40.0
+
 
 swerve_inverted=false
-swerve_kp=0.0
-swerve_kd=0.5
+swerve_kp=.85
+swerve_kd=0.0
+swerve_kf=2.0
 
 # Offsets are inverted
 br_rotate=2
