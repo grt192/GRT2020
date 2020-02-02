@@ -76,7 +76,7 @@ public class Swerve {
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();
 		userW = BIGData.getRequestedW();
-		if (userW != 0) {
+		if (userW != 0 || Math.abs(gyro.getAngle() % 360 - angle) < .5) {
 			BIGData.setPIDFalse();
 		}
 		if (BIGData.getZeroSwerveRequest()) {
