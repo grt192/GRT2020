@@ -53,7 +53,7 @@ public class ClientCamera implements Runnable {
     public void cameraData() {
         try {
             String in = stdIn.readLine();
-            System.out.println(in);
+            // System.out.println(in);
             String[] data = in.replace("(", "").replace(")", "").split(",");
             BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]));
             // out.print("Recieved\n");

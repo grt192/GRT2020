@@ -53,7 +53,7 @@ class DriverControl extends Mode {
         if (buttonPressed) {
             if (pov == -1) {
             } else {
-                BIGData.setAngle(Math.toRadians(pov));
+                BIGData.setAngle(pov);
                 System.out.println("pov: " + pov);
                 lastPov = pov;
             }
@@ -69,14 +69,15 @@ class DriverControl extends Mode {
 
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
             centeringCamera = false;
+            BIGData.setPIDFalse();
         }
 
         double azimuth = BIGData.getDouble("camera_azimuth");
         // System.out.println(azimuth);
         if (centeringCamera && Math.abs(azimuth) > 1) {
-            rotate = 0.5 * azimuth * Math.PI / 180;
+            BIGData.setAngle(Math.toRadians(azimuth));
         }
-        System.out.println(BIGData.getDouble("relative_angle"));
+        // System.out.println(BIGData.getDouble("relative_angle"));
         BIGData.requestDrive(x, y, rotate);
 
     }

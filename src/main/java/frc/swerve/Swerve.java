@@ -76,7 +76,8 @@ public class Swerve {
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();
 		userW = BIGData.getRequestedW();
-		if (userW != 0) {
+		System.out.println(Math.abs(gyro.getAngle() - angle));
+		if (userW != 0 || Math.abs(gyro.getAngle() % 360 - angle) < .5) {
 			BIGData.setPIDFalse();
 		}
 		if (BIGData.getZeroSwerveRequest()) {
@@ -103,7 +104,8 @@ public class Swerve {
 	 * angle, kP, and kD
 	 */
 	private double calcPID() {
-		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), angle, kF);
+		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
+				Math.toRadians(kF));
 		System.out.println("kP: " + kP);
 		System.out.println("kD: " + kD);
 		System.out.println("kF: " + kF);
@@ -111,7 +113,7 @@ public class Swerve {
 		System.out.println();
 
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
-		// System.out.print("W: " + w);
+		// System.out.print("W: " + w);%
 		return -w;
 	}
 

@@ -46,10 +46,12 @@ public class ShuffleboardCommands {
         settingsTab = Shuffleboard.getTab("Settings");
         swerveTab = Shuffleboard.getTab("Swerve");
         configLayout = settingsTab.getLayout("Config File", "List Layout").withSize(2, 2).withPosition(0, 0);
-        joystickLayout = settingsTab.getLayout("Joysticks", "List Layout").withSize(1,3).withPosition(2, 0);
-        wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2,2).withPosition(0, 2);
-        wheelDriveSpeedsLayout = swerveTab.getLayout("Wheel Drive Speeds", "Grid Layout").withSize(2,2).withPosition(2,2);
-        wheelRotateSpeedsLayout = swerveTab.getLayout("Wheel Rotate Speeds", "Grid Layout").withSize(2,2).withPosition(4,2);
+        joystickLayout = settingsTab.getLayout("Joysticks", "List Layout").withSize(1, 3).withPosition(2, 0);
+        wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2, 2).withPosition(0, 2);
+        wheelDriveSpeedsLayout = swerveTab.getLayout("Wheel Drive Speeds", "Grid Layout").withSize(2, 2).withPosition(2,
+                2);
+        wheelRotateSpeedsLayout = swerveTab.getLayout("Wheel Rotate Speeds", "Grid Layout").withSize(2, 2)
+                .withPosition(4, 2);
 
         CommandBase resetTempConfigCommand = new CommandBase() {
             @Override
@@ -57,19 +59,21 @@ public class ShuffleboardCommands {
                 System.out.println("resetting temp config file...");
                 BIGData.resetTempConfigFile();
             }
+
             @Override
             public boolean isFinished() {
                 return true;
             }
         };
         configLayout.add("reset temp config file", resetTempConfigCommand).withWidget(BuiltInWidgets.kCommand);
-        
+
         CommandBase useDeployCommand = new CommandBase() {
             @Override
             public void initialize() {
                 System.out.println("next restart, deploy time file will be used");
                 BIGData.changeStartupConfigFile(true);
             }
+
             @Override
             public boolean isFinished() {
                 return true;
@@ -83,13 +87,15 @@ public class ShuffleboardCommands {
                 System.out.println("next restart, temp config file will be used");
                 BIGData.changeStartupConfigFile(false);
             }
+
             @Override
             public boolean isFinished() {
                 return true;
             }
         };
         configLayout.add("use temporary config file", useTempCommand).withWidget(BuiltInWidgets.kCommand);
-        configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).withPosition(3, 0).withSize(2, 1).getEntry();
+        configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).withPosition(3, 0).withSize(2, 1)
+                .getEntry();
 
         joystickX1 = joystickLayout.add("original pt1", BIGData.getDouble("joystick_x1")).getEntry();
         joystickY1 = joystickLayout.add("new pt1", BIGData.getDouble("joystick_y1")).getEntry();
@@ -112,6 +118,7 @@ public class ShuffleboardCommands {
                     System.out.println("set new joystick profiles...");
                 }
             }
+
             @Override
             public boolean isFinished() {
                 return true;
@@ -124,17 +131,21 @@ public class ShuffleboardCommands {
             public void initialize() {
                 BIGData.putZeroSwerveRequest(true);
             }
+
             @Override
             public boolean isFinished() {
                 return true;
             }
         };
-        
+
         swerveTab.add("zero swerve WHEELS", zeroRotateCommand).withWidget(BuiltInWidgets.kCommand);
         for (int i = 0; i < 4; i++) {
-            wheelZeros[i] = wheelZerosLayout.add(BIGData.getWheelName(i) + " zero:", BIGData.getWheelZero(i)).getEntry();
-            wheelDriveSpeeds[i] = wheelDriveSpeedsLayout.add(BIGData.getWheelName(i) + " drive speed", BIGData.getWheelRawDriveSpeed(i)).getEntry();
-            wheelRotateSpeeds[i] = wheelRotateSpeedsLayout.add(BIGData.getWheelName(i) + " rotate speed", BIGData.getWheelRawRotateSpeed(i)).getEntry();
+            wheelZeros[i] = wheelZerosLayout.add(BIGData.getWheelName(i) + " zero:", BIGData.getWheelZero(i))
+                    .getEntry();
+            wheelDriveSpeeds[i] = wheelDriveSpeedsLayout
+                    .add(BIGData.getWheelName(i) + " drive speed", BIGData.getWheelRawDriveSpeed(i)).getEntry();
+            wheelRotateSpeeds[i] = wheelRotateSpeedsLayout
+                    .add(BIGData.getWheelName(i) + " rotate speed", BIGData.getWheelRawRotateSpeed(i)).getEntry();
         }
 
         CommandBase zeroGyroCommand = new CommandBase() {
@@ -143,6 +154,7 @@ public class ShuffleboardCommands {
                 System.out.println("zeroing the gyro...");
                 BIGData.putZeroGyroRequest(true);
             }
+
             @Override
             public boolean isFinished() {
                 return true;
