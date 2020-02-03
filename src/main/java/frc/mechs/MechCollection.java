@@ -1,21 +1,16 @@
 package frc.mechs;
 
 public class MechCollection {
-
-    private OneWheelShooter one;
-    private TwoWheelShooter two;
-    private Storage storage;
-
+    private StorageMech storage;
+    private ShooterMech shooter;
     public MechCollection() {
-        this.one = new OneWheelShooter();
-        this.two = new TwoWheelShooter();
-        this.storage = new Storage();
+        this.shooter = new ShooterMech();
+        this.storage = new StorageMech();
 
     }
 
     public void update() {
-        one.update();
-        two.updateSpeeds();
+        shooter.update();
         storage.update();
     }
 }

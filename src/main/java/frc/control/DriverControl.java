@@ -8,9 +8,9 @@
 package frc.control;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.gen.BIGData;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
+import frc.gen.BIGData;
 
 class DriverControl extends Mode {
 
@@ -18,6 +18,7 @@ class DriverControl extends Mode {
     public boolean loop() {
         JoystickProfile.updateProfilingPoints();
         driveSwerve();
+        driveMechs();
         return true;
     }
 
@@ -35,6 +36,19 @@ class DriverControl extends Mode {
             rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
         }
         BIGData.requestDrive(x, y, rotate);
+    }
+
+    private void driveMechs() {
+        double one_l = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
+        double one_r = -Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
+        double one = one_l + one_r;
+
+        double two_a = -Input.MECH_XBOX.getY(Hand.kRight);
+        double two_b = two_a;
+        if (two_a == 0) {
+            // TODO: add stuff
+        }
+        BIGData.putMechs(one, two_a, two_b);
     }
 
 }
