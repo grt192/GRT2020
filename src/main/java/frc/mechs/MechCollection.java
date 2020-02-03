@@ -1,16 +1,21 @@
 package frc.mechs;
 
+import java.util.ArrayList;
+
 public class MechCollection {
-    private StorageMech storage;
-    private ShooterMech shooter;
+    private ArrayList<Mech> mechs;
     public MechCollection() {
-        this.shooter = new ShooterMech();
-        this.storage = new StorageMech();
+        mechs.add(new IntakeMech());
+        mechs.add(new LinkageMech());
+        mechs.add(new ShooterMech());
+        mechs.add(new StorageMech());
+        mechs.add(new WinchMech());
 
     }
 
     public void update() {
-        shooter.update();
-        storage.update();
+        for (Mech m : mechs) {
+            m.update();
+        }
     }
 }
