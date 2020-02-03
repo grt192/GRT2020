@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import frc.swerve.SwerveData;
+import frc.util.GRTUtil;
 
 public class BIGData {
 
@@ -186,11 +187,30 @@ public class BIGData {
 		return getBoolean("zero_gyro");
 	}
 
-	public static void putMechs(double one, double two_a, double two_b) {
-		// TODO: add the rest of the mechs
-		put("one_wheel_shooter", one);
-		put("wheel_a_rpm", two_a);
-		put("wheel_b_rpm", two_b);
+	// TODO ADD MECH BIGDATA STUFF HERE!
+	/** Set the state of the linkage; true=on, false=off */
+	public static void requestLinkageState(boolean state) {
+		put("linkage_state", state);
+	}
+	/** Get the state of the linkage; true=on, false=off */
+	public static boolean getLinkageState() {
+		return getBoolean("linkage_state");
+	}
+	/** Set the state of intake; true=extended, false=retracted */
+	public static void requestIntakeState(boolean state) {
+		put("intake_state", state);
+	}
+	/** Get the state of intake; true=extended, false=retracted */
+	public static boolean getIntakeState() {
+		return getBoolean("intake_state");
+	}
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestIntakeSpeed(double speed) {
+		put("intake_speed", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+	/** Get the motor spin speed, in percentage motor output */
+	public static double getIntakeSpeed() {
+		return getDouble("intake_speed");
 	}
 
 	/** set the original value of the first joystick profile point */
