@@ -39,8 +39,7 @@ class DriverControl extends Mode {
     }
 
     private void driveMechs() {
-        // TODO add mech control
-
+        
     }
 
 }

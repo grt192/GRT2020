@@ -232,6 +232,15 @@ public class BIGData {
 		return getInt("shooter_state");
 	}
 
+	/** set the output speed of the winch motor, from -1.0 to 1.0
+	 * TODO maybe only make it turn one way */
+	public static void requestWinchSpeed(double output) {
+		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
+	}
+	public static double getWinchSpeed() {
+		return getDouble("winch_speed");
+	}
+
 	/** set the original value of the first joystick profile point */
 	public static void setJoystickX1(double x1) {
 		put("joystick_x1", x1);
