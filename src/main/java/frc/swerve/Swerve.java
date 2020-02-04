@@ -143,13 +143,6 @@ public class Swerve {
 	 *               the requested angular velocity
 	 */
 	private void changeMotors(double vx, double vy, double w) {
-		if (vx == 0 && vy == 0 && w == 0) {
-			// when stopped, set all wheels to point inward
-			for (int i = 0; i < wheels.length; i++) {
-				wheels[i].set(-getRelativeWheelAngle(i), 0);
-			}
-			return;
-		}
 		w *= ROTATE_SCALE;
 		double gyroAngle = (robotCentric ? 0 : Math.toRadians(gyro.getAngle()));
 		for (int i = 0; i < wheels.length; i++) {
