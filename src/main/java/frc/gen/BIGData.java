@@ -192,25 +192,44 @@ public class BIGData {
 	public static void requestLinkageState(boolean state) {
 		put("linkage_state", state);
 	}
+
 	/** Get the state of the linkage; true=on, false=off */
 	public static boolean getLinkageState() {
 		return getBoolean("linkage_state");
 	}
+
 	/** Set the state of intake; true=extended, false=retracted */
 	public static void requestIntakeState(boolean state) {
 		put("intake_state", state);
 	}
+
 	/** Get the state of intake; true=extended, false=retracted */
 	public static boolean getIntakeState() {
 		return getBoolean("intake_state");
 	}
+
 	/** Set the motor spin speed with percentage motor output */
 	public static void requestIntakeSpeed(double speed) {
 		put("intake_speed", GRTUtil.clamp(-1.0, speed, 1.0));
 	}
+
 	/** Get the motor spin speed, in percentage motor output */
 	public static double getIntakeSpeed() {
 		return getDouble("intake_speed");
+	}
+
+	/**
+	 * Set the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
+	 */
+	public static void putShooterState(int state) {
+		put("shooter_state", state);
+	}
+
+	/**
+	 * Get the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
+	 */
+	public static int getShooterState() {
+		return getInt("shooter_state");
 	}
 
 	/** set the original value of the first joystick profile point */

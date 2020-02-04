@@ -24,13 +24,33 @@ public class ShooterMech implements Mech {
     }
 
     public void update() {
-        setSpeed(BIGData.getDouble("one_wheel_shooter"));
+        int mode = BIGData.getInt("shooter_state");
+        // mode being 0 means shooter is off
+        if (mode == 0) {
+            setSpeed(0);
+            // mode being 1 means it's in manual control, speed in BIGData adjusted by
+            // buttons and driver input
+        } else if (mode == 1) {
+            setSpeed(BIGData.getDouble("one_wheel_shooter"));
+            // mode being 2 means it's in automatic control, speed calculated based on
+            // distance to vision target
+        } else {
+            double range = BIGData.getDouble("camera_range");
+            double rpm = calcSpeed(range);
+            // put current rpm in BIGData so if driver wants to adjust speed based off that
+            BIGData.put("one_wheel_shooter", rpm);
+            setSpeed(rpm);
+        }
     }
 
     public void setSpeed(double rpm) {
-        // System.out.println(rpm);
         pid.setReference(rpm, ControlType.kVelocity);
-        System.out.println(getSpeed());
+        // System.out.println(getSpeed());
+    }
+
+    public double calcSpeed(double range) {
+        // TODO: make an actual formula for this
+        return range * 10;
     }
 
     public void configPID() {
