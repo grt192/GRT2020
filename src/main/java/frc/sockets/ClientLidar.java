@@ -53,8 +53,9 @@ public class ClientLidar implements Runnable {
     public void lidarData() {
         try {
             String in = stdIn.readLine();
-            System.out.println(in);
-            BIGData.updateLidar(Double.parseDouble(in));
+            // System.out.println(in);
+            String[] data = in.replace("(", "").replace(")", "").split(",");
+            BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]));
             // out.print("Recieved\n");
             out.flush();
 

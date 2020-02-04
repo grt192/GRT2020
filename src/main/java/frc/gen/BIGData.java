@@ -160,7 +160,7 @@ public class BIGData {
 		put("enc_w", data.encoderW);
 	}
 
-	/** set the gyro's angle */
+	/** set the gyro's angle in degrees */
 	public static void putGyroAngle(double angle) {
 		put("gyro_ang", angle);
 	}
@@ -170,7 +170,7 @@ public class BIGData {
 		put("gyro_w", w);
 	}
 
-	/** get the gyro's current angle */
+	/** get the gyro's current angle in degrees */
 	public static double getGyroAngle() {
 		return getDouble("gyro_ang");
 	}
@@ -308,8 +308,9 @@ public class BIGData {
 		put("relative_angle", t);
 	}
 
-	public static void updateLidar(double r) {
+	public static void updateLidar(double a, double r) {
 		put("lidar_range", r);
+		put("lidar_azimuth", a);
 	}
 
 	/** put (or update) a key/value mapping into the map */

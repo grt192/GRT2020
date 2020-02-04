@@ -19,7 +19,7 @@ class DriverControl extends Mode {
     private int pov = -1;
     private int lastPov;
 
-    private boolean centeringCamera = false;
+    private boolean centeringCamera, centeringCameraLidar = false;
 
     @Override
     public boolean loop() {
@@ -54,13 +54,16 @@ class DriverControl extends Mode {
             if (pov == -1) {
             } else {
                 BIGData.setAngle(pov);
-                System.out.println("pov: " + pov);
+                // System.out.println("pov: " + pov);
                 lastPov = pov;
             }
         }
 
         if (lTrigger + rTrigger > 0.05) {
+            BIGData.setPIDFalse();
             rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
+        } else {
+            rotate = 0;
         }
 
         if (Input.SWERVE_XBOX.getAButtonPressed()) {
@@ -72,14 +75,34 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        double azimuth = BIGData.getDouble("camera_azimuth");
+        double cameraAzimuth = BIGData.getDouble("camera_azimuth");
         // System.out.println(azimuth);
-        if (centeringCamera && Math.abs(azimuth) > 1) {
-            BIGData.setAngle(Math.toRadians(azimuth));
+        if (centeringCamera && Math.abs(cameraAzimuth) > 1) {
+            rotate = calcPID(cameraAzimuth);
         }
-        // System.out.println(BIGData.getDouble("relative_angle"));
+
+        if (Input.SWERVE_XBOX.getXButtonPressed()) {
+            centeringCameraLidar = true;
+        }
+
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            centeringCameraLidar = false;
+            BIGData.setPIDFalse();
+        }
+
+        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
+        double lidarRange = BIGData.getDouble("lidar_range");
+        // System.out.println(azimuth);
+        System.out.println(Math.toDegrees(lidarAzimuth) + "," + lidarRange);
+        if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
+            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        }
         BIGData.requestDrive(x, y, rotate);
 
+    }
+
+    public double calcPID(double azimuthDeg) {
+        return azimuthDeg * .005;
     }
 
 }

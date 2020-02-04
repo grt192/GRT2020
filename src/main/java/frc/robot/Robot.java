@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   public static double ROBOT_RADIUS;
   private boolean overridden;
 
-  private static ClientCamera clientCamera;
+  private static ClientLidar clientLidar;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    clientCamera = new ClientCamera();
+    clientLidar = new ClientLidar();
 
     brain = new Brain();
 

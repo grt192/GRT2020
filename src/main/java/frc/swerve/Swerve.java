@@ -65,6 +65,8 @@ public class Swerve {
 			w = calcPID();
 		}
 
+		System.out.println("calling changeMotors with w=" + w);
+
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 	}
@@ -76,7 +78,7 @@ public class Swerve {
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();
 		userW = BIGData.getRequestedW();
-		System.out.println(Math.abs(gyro.getAngle() - angle));
+		// System.out.println(Math.abs(gyro.getAngle() - angle));
 		if (userW != 0 || Math.abs(gyro.getAngle() % 360 - angle) < .5) {
 			BIGData.setPIDFalse();
 		}
@@ -106,11 +108,11 @@ public class Swerve {
 	private double calcPID() {
 		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
 				Math.toRadians(kF));
-		System.out.println("kP: " + kP);
-		System.out.println("kD: " + kD);
-		System.out.println("kF: " + kF);
-		System.out.println("Error: " + Math.toDegrees(error));
-		System.out.println();
+		// System.out.println("kP: " + kP);
+		// System.out.println("kD: " + kD);
+		// System.out.println("kF: " + kF);
+		// System.out.println("Error: " + Math.toDegrees(error));
+		// System.out.println();
 
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
 		// System.out.print("W: " + w);%
@@ -145,13 +147,6 @@ public class Swerve {
 	 *               the requested angular velocity
 	 */
 	private void changeMotors(double vx, double vy, double w) {
-		if (vx == 0 && vy == 0 && w == 0) {
-			// when stopped, set all wheels to point inward
-			for (int i = 0; i < wheels.length; i++) {
-				wheels[i].set(-getRelativeWheelAngle(i), 0);
-			}
-			return;
-		}
 		w *= ROTATE_SCALE;
 		double gyroAngle = (robotCentric ? 0 : Math.toRadians(gyro.getAngle()));
 		for (int i = 0; i < wheels.length; i++) {
@@ -165,6 +160,7 @@ public class Swerve {
 			double wheelVY = vy + wy;
 			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
+			System.out.println("power for wheel " + i + ":" + power);
 			wheels[i].set(wheelPos, power);
 		}
 	}
