@@ -1,28 +1,28 @@
 swerve xbox controller
 left joystick = swerve translation
-right joystick = ?
+right joystick = manual shooter control
 triggers = swerve rotation
 bumpers = ?
 pov buttons = ?
-a = ?
-b = ?
-x = ?
+a = run shooter
+b = line up to target
+x = stop everything (shooter, lining up, intake, linkage) button?
 y = ?
 -------------------------
 mech xbox controller
-left joystick = ?
-right joystick = ?
-triggers = ?
+left joystick = storage control
+right joystick = winch control
+triggers = minor shooter adjustments
 bumpers = ?
 pov buttons = ?
-a = ?
-b = ?
+a = linkage
+b = intake
 x = ?
-y = ?
+y = hold to toggle manual storage control
 -------------------------
 winch control - double
 lining up control - boolean (true=line up, false=nothing)
 shooter control - boolean & double (true=use auto control, false=use double val)
 storage control - boolean & double (false=use auto control, true= use double val)
-intake - boolean (true=out, false=in)
+intake - boolean & double (true=out, false=in, speed)
 linkage - boolean (true=up, false=down)
