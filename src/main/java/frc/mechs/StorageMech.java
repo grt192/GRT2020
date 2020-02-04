@@ -88,6 +88,9 @@ public class StorageMech implements Mech {
             // TODO Spin Motor once
         }
 
+        if (conveyerCount == 1 && top.getValue() < IRRange && middle.getValue() > IRRange) {
+            // TODO Spin Motor once backwards
+        }
         BIGData.put("ball_count", lemonCount);
         SmartDashboard.putNumber("Lemon Count", BIGData.getInt("ball_count"));
 
