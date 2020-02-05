@@ -21,7 +21,7 @@ public class Brain implements Runnable {
         // mechs = new MechCollection();
         tracking = new PositionTracking();
         shuffleboardCommands = new ShuffleboardCommands();
-        fieldGUI = new FieldGUI("10.1.92.151", 5000);
+        //fieldGUI = new FieldGUI("10.1.92.147", 5000);
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
     }
@@ -31,6 +31,6 @@ public class Brain implements Runnable {
         tracking.update();
         // mechs.update();
         shuffleboardCommands.update();
-        fieldGUI.update();
+        //fieldGUI.update();
     }
 }

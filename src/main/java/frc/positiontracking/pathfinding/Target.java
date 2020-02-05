@@ -52,4 +52,13 @@ public class Target {
     public static Vector getTarget() {
         return target;
     }
+
+    public static ArrayList<double[]> convert() {
+        ArrayList<double[]> converted = new ArrayList<double[]>();
+        for (int i = 0; i < size(); i++) {
+            double[] point = {get(i).x, get(i).y};
+            converted.add(point);
+        }
+        return converted;
+    }
 }

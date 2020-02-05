@@ -13,6 +13,7 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 
 import frc.gen.BIGData;
+import frc.positiontracking.pathfinding.Target;
 
 public class FieldGUI {
     private String address;
@@ -44,6 +45,7 @@ public class FieldGUI {
         goPost("swervedata", new Gson().toJson(working));
 
         goPost("lemondata", Integer.toString((int) (Math.random() * 6)));
+        goPost("getlidar", new Gson().toJson(Target.convert()));
     }
 
     public void goPost(String page, String inputData) {

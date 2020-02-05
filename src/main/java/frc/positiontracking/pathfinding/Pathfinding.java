@@ -2,7 +2,6 @@ package frc.positiontracking.pathfinding;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
-import java.util.Set;
 
 import frc.gen.BIGData;
 import frc.positiontracking.fieldmap.FieldMap;
@@ -55,38 +54,42 @@ public class Pathfinding {
         return (factorial(n) / (factorial(r) * factorial(n - r)));
     }
 
-    public void searchA(Vector curr) {
+    public void searchAStar(Vector pos) {
         setTargetNode(Target.getTarget());
         HashSet<Node> closed = new HashSet<>();
         PriorityQueue<Node> open = new PriorityQueue<>();
-        Node startNode = new Node(curr);
-        addNode(startNode);
-        startNode.calcH(targetNode);
-        open.add(startNode);
-
-        while (!open.isEmpty()) {
+        cleanTree();
+        Node start = new Node(pos);
+        addNode(start);
+        start.calcH(targetNode);
+        open.add(start);
+        while(!open.isEmpty()) {
             Node current = open.poll();
             closed.add(current);
-
-            if (current == targetNode) {
-                Node next = current;
-                Target.put(next.pos);
+            if (current.equals(targetNode)) {
+                Target.put(current.pos);
                 Node parent;
-                while ((parent = next.parent) != null) {
+                while((parent = current.parent) != null) {
                     Target.put(0, parent.pos);
-                    next = parent;
+                    current = parent;
                 }
+                open.clear();
             } else {
-                for (Node node : current.neighbors) {
-                    if (closed.contains(node))
+                for(Node node : current.neighbors) {
+                    if (closed.contains(node)) {
                         continue;
-                    if (!open.contains(node))
+                    }
+                    if (!open.contains(node)) {
                         open.add(node);
+                    }
                     node.update(current);
                 }
             }
         }
-        removeNode(startNode);
+        for(int i = 0; i < Target.size(); i++) {
+            System.out.println("x: " + Target.get(i).x + " y: " + Target.get(i).y);
+        }
+        removeNode(start);
     }
 
     public Vector searchPFP(Vector curr) {
@@ -136,11 +139,31 @@ public class Pathfinding {
 
     private void initNodes() {
         nodes = new HashSet<>();
-        Set<Vector> pos = field.generateNodes();
-        for (Vector v : pos){
-            System.out.println("x: " + v.x + " y: " + v.y);
-            addNode(new Node(v));
-        }
+        //blue initiation line
+        addNode(new Node(new Vector(120, 297.25)));
+        addNode(new Node(new Vector(120, 26)));
+        addNode(new Node(new Vector(120, 161.625)));
+
+        //red initiation line
+        addNode(new Node(new Vector(509.25, 297.25)));
+        addNode(new Node(new Vector(509.25, 26)));
+        addNode(new Node(new Vector(509.25, 297.25)));
+
+        //red trench run
+        addNode(new Node(new Vector(206.625, 297.25)));
+        addNode(new Node(new Vector(422.625, 297.25)));
+        addNode(new Node(new Vector(314.625, 297.25)));
+
+        //blue trech run
+        addNode(new Node(new Vector(206.625, 26)));
+        addNode(new Node(new Vector(422.625, 26)));
+        addNode(new Node(new Vector(314.625, 26)));
+
+        //target and loading zones
+        addNode(new Node(new Vector(30, 100.65)));
+        addNode(new Node(new Vector(30, 229.531)));
+        addNode(new Node(new Vector(599.25, 100.65)));
+        addNode(new Node(new Vector(599.25, 229.531)));
     }
 
     private void addNode(Node n) {
@@ -166,6 +189,12 @@ public class Pathfinding {
         addNode(targetNode);
         for (Node node : nodes) {
             node.calcH(targetNode);
+        }
+    }    
+
+    private void cleanTree() {
+        for (Node node : nodes) {
+            node.g = Double.POSITIVE_INFINITY;
         }
     }
 }

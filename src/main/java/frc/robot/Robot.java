@@ -48,9 +48,12 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     BIGData.start();
     JoystickProfile.init();
-    ROBOT_WIDTH = BIGData.getDouble("robot_width");
-    ROBOT_HEIGHT = BIGData.getDouble("robot_height");
-    ROBOT_RADIUS = Math.sqrt(ROBOT_WIDTH * ROBOT_WIDTH + ROBOT_HEIGHT * ROBOT_HEIGHT) / 2;
+    ROBOT_HEIGHT = 27 + 6;
+    ROBOT_WIDTH = 32.5 + 6;
+    // ROBOT_WIDTH = BIGData.getDouble("robot_width");
+    // ROBOT_HEIGHT = BIGData.getDouble("robot_height");
+    ROBOT_RADIUS = Math.max(ROBOT_WIDTH, ROBOT_HEIGHT) / 2;
+    //ROBOT_RADIUS = Math.sqrt(ROBOT_WIDTH * ROBOT_WIDTH + ROBOT_HEIGHT * ROBOT_HEIGHT) / 2;
 
     autonomous = new Autonomous(this);
     Mode.initModes();

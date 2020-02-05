@@ -23,8 +23,10 @@ public class PathfindingControl extends Mode {
     @Override
     public boolean loop() {
         Vector pos = BIGData.getPosition("curr");
+        //TODO: change this back to current position
+        pos = new Vector(30, 250);
         if (Target.size() <= 0) {
-            path.searchA(new Vector(0, 0));
+            path.searchAStar(pos);
         }
         Vector endPos = Target.getNext();
         if (endPos == null) {
@@ -41,13 +43,13 @@ public class PathfindingControl extends Mode {
         //System.out.println("d: " + d + " vx: " + velocity.x + " vy: " + velocity.y);
         double speed = SPEED * Math.min(d / 36.0, 1);
         velocity = velocity.multiply(speed);
-        if (d < 5) {
-            BIGData.requestDrive(0, 0, 0);
-            Target.remove(0);
-        }
-        BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
         if (Target.size() <= 0)
             return false;
+        if (d < 5) {
+            //BIGData.requestDrive(0, 0, 0);
+            Target.remove(0);
+        }
+        //BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
         return true;
     }
 
