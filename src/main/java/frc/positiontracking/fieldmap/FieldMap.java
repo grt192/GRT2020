@@ -76,7 +76,7 @@ public class FieldMap {
 		// Polygon RendezvousOpponent = new Polygon(new Vector(362.561, 56.563), new Vector(208.711, 121.073),
 		// 				new Vector(244.992, 190.5), new Vector(384.288, 132.861));
 
-		Polygon middle = new Polygon(new Vector(198.6974, 205.339), new Vector(365.6886, 212.6886), new Vector(430.5526, 117.911), new Vector(263.5614, 110.5614));
+		Polygon middle = new Polygon(new Vector(FIELD_LONG / 2 - 51.063, 52), new Vector(FIELD_LONG / 2 - 115.928, 205.399), new Vector(FIELD_LONG / 2 + 115.928, 117.911), new Vector(FIELD_LONG / 2 + 51.063, 274.509));
 
 		// Polygon RTPillar = new Polygon(new Vector(356, FIELD_SHORT - TRENCH_WIDTH), new Vector(372, FIELD_SHORT - TRENCH_WIDTH), new Vector(353,FIELD_SHORT - TRENCH_WIDTH - 14), new Vector(372, FIELD_SHORT - TRENCH_WIDTH - 14));
 		// Polygon LBPillar = new Polygon(new Vector(280, TRENCH_WIDTH), new Vector(258, TRENCH_WIDTH), new Vector(258, TRENCH_WIDTH + 14), new Vector(280, TRENCH_WIDTH + 14));

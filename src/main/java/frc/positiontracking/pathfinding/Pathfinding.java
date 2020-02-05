@@ -156,27 +156,43 @@ public class Pathfinding {
         addNode(new Node(new Vector(120, 297.25)));
         addNode(new Node(new Vector(120, 26)));
         addNode(new Node(new Vector(120, 161.625)));
+        addNode(new Node(new Vector(120, 100.65)));
+        addNode(new Node(new Vector(120, 299.531)));
 
         //red initiation line
         addNode(new Node(new Vector(509.25, 297.25)));
         addNode(new Node(new Vector(509.25, 26)));
-        addNode(new Node(new Vector(509.25, 297.25)));
+        addNode(new Node(new Vector(509.25, 161.625)));
+        addNode(new Node(new Vector(509.25, 100.65)));
+        addNode(new Node(new Vector(509.25, 299.531)));
 
-        //red trench run
+        //middle red trench run
         addNode(new Node(new Vector(206.625, 297.25)));
         addNode(new Node(new Vector(422.625, 297.25)));
         addNode(new Node(new Vector(314.625, 297.25)));
 
-        //blue trech run
+        //corner red trench run
+        addNode(new Node(new Vector(206.625, 271.25)));
+        addNode(new Node(new Vector(422.625, 271.25)));
+
+        //middle blue trech run
         addNode(new Node(new Vector(206.625, 26)));
         addNode(new Node(new Vector(422.625, 26)));
         addNode(new Node(new Vector(314.625, 26)));
+
+        //corner blue trench run
+        addNode(new Node(new Vector(206.625, 52)));
+        addNode(new Node(new Vector(422.625, 52)));
 
         //target and loading zones
         addNode(new Node(new Vector(30, 100.65)));
         addNode(new Node(new Vector(30, 229.531)));
         addNode(new Node(new Vector(599.25, 100.65)));
         addNode(new Node(new Vector(599.25, 229.531)));
+
+        //corner of shield generator
+        addNode(new Node(new Vector(179, 205)));
+        addNode(new Node(new Vector(450, 118)));
     }
 
     private void addNode(Node n) {

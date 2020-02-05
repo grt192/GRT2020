@@ -24,7 +24,7 @@ public class PathfindingControl extends Mode {
     public boolean loop() {
         Vector pos = BIGData.getPosition("curr");
         //TODO: change this back to current position
-        pos = new Vector(30, 250);
+        pos = new Vector(120, 200);
         if (Target.size() <= 0) {
             path.searchAStar(pos);
         }
