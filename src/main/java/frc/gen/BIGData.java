@@ -338,6 +338,20 @@ public class BIGData {
 		return getString("config_msg");
 	}
 
+	/** update lidar values
+	 * @param azimuth angle in radians between the 0 rad line of lidar and the line 
+	 * from lidar to center of target. the plane of this angle is parallel to the floor
+	 * @param range distance from lidar to center of the target in the plane parallel to the floor
+	 * @param relAngle angle of the robot relative to target, where 0 rad is right 
+	 * in front of target, and right of target are positive angles, and left of target 
+	 * are negative angles.
+	 */
+	public static void updateLidar(double azimuth, double range, double relAngle) {
+		put("lidar_range", range);
+		put("lidar_azimuth", azimuth);
+		put("lidar_rel_angle", relAngle);
+	}
+
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, String val) {
 		map.put(key, val);
