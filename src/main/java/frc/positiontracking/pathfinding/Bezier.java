@@ -16,12 +16,6 @@ public class Bezier {
 
     private List<Double> xnodes;
     private List<Double> ynodes;
-    private List<Double> dx;
-    private List<Double> dy;
-    private List<Double> angle;
-    private List<Double> hypotenuse;
-
-    private double distance;
 
     public Bezier(Vector start, Vector control1, Vector control2, Vector end) {
         vector = new Vector[4];
@@ -36,10 +30,6 @@ public class Bezier {
 
         xnodes = new ArrayList<Double>();
         ynodes = new ArrayList<Double>();
-        dx = new ArrayList<Double>();
-        dy = new ArrayList<Double>();
-        angle = new ArrayList<Double>();
-        hypotenuse = new ArrayList<Double>();
 
         put();
         find();
