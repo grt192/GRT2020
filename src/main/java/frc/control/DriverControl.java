@@ -14,6 +14,14 @@ import frc.gen.BIGData;
 
 class DriverControl extends Mode {
 
+    private final double WHEEL_RADIUS = 2;
+    private final double MINTUES_TO_SECONDS = 60;
+    private final double TICKS_PER_ROTATION = BIGData.getDouble("ticks_per_rotation");
+    private final double DRIVE_ENCODER_SCALE = BIGData.getDouble("drive_encoder_scale");
+    private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
+    private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
+    private boolean shooterUp = false;
+
     @Override
     public boolean loop() {
         JoystickProfile.updateProfilingPoints();
@@ -39,7 +47,27 @@ class DriverControl extends Mode {
     }
 
     private void driveMechs() {
-        
+
+        Input.MECH_XBOX.getBButtonPressed(){
+
+        }
+        // TODO Added Shooter Tilt
+
+        double wheelV = Math.sqrt(Math.pow(BIGData.getDouble("enc_vx") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2)
+                + Math.pow(BIGData.getDouble("enc_vy") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2));
+        double distanceRPM = 7;
+        // TODO: function to get RPM
+
+        double distanceV = distanceRPM * MINTUES_TO_SECONDS * WHEEL_RADIUS * Math.cos(shooterAngle);
+
+        double relativeAng = Math.PI / 2 - Math.abs(BIGData.getDouble("lidar_relative"));
+
+        double shooterV = Math
+                .sqrt(Math.pow(distanceV, 2) + Math.pow(wheelV, 2) - wheelV * distanceV * Math.cos(relativeAng))
+                / Math.cos(shooterAngle);
+
+        double newAzimuth = Math.signum(relativeAng) * Math.asin(Math.sin(-relativeAng) * wheelV / shooterV);
+
     }
 
 }

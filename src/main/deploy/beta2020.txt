@@ -26,7 +26,7 @@ fl_rotate=14
 fl_drive=13
 fl_offset=-859
 
-ticks_per_rotation=1024
+ticks_per_rotation=1024 
 drive_encoder_scale=1.83259571
 
 # joystick profile variables
@@ -42,3 +42,7 @@ linkage_sol_id=
 # intake motor CAN id
 intake_talon_id=
 intake_sol_id=
+
+#Shooter Tilts
+shooter_high_angle=50
+shooter_high_angle=25
