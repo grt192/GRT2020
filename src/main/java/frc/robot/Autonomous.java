@@ -17,8 +17,8 @@ import java.util.Queue;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.gen.BIGData;
-import frc.positiontracking.fieldmap.geometry.Vector;
-import frc.positiontracking.pathfinding.Target;
+import frc.pathfinding.fieldmap.geometry.*;
+import frc.pathfinding.*;
 
 public class Autonomous {
 

@@ -1,8 +1,8 @@
-package frc.positiontracking.pathfinding;
+package frc.pathfinding;
 
 import java.util.ArrayList;
 
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.geometry.*;
 
 public class Target {
 

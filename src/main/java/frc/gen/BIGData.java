@@ -3,7 +3,7 @@ package frc.gen;
 import java.util.HashMap;
 import java.util.Map;
 
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.geometry.*;
 import frc.swerve.SwerveData;
 
 public class BIGData {

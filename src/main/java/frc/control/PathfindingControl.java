@@ -1,10 +1,8 @@
 package frc.control;
 
 import frc.gen.BIGData;
-import frc.positiontracking.fieldmap.geometry.Vector;
-import frc.positiontracking.pathfinding.Bezier;
-import frc.positiontracking.pathfinding.Pathfinding;
-import frc.positiontracking.pathfinding.Target;
+import frc.pathfinding.fieldmap.geometry.*;
+import frc.pathfinding.*;
 
 public class PathfindingControl extends Mode {
 

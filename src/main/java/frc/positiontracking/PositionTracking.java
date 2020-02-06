@@ -7,7 +7,7 @@ import org.opencv.core.Mat;
 import org.opencv.video.KalmanFilter;
 
 import frc.gen.BIGData;
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.geometry.*;
 import frc.swerve.SwerveData;
 
 public class PositionTracking {
@@ -88,8 +88,6 @@ public class PositionTracking {
         }
         double tempX = getX();
         double tempY = getY();
-        //System.out.println("x: " + tempX + " y:" + tempY);
-        //TODO: Add this to big data later
         double FIELD_HEIGHT = 629.25;
         double FIELD_WIDTH = 323.31;
         if (tempX < (-1 * FIELD_HEIGHT) || tempX > (2 * FIELD_HEIGHT) || tempY < (-1 * FIELD_WIDTH) || tempY > (2 * FIELD_WIDTH)) {
@@ -101,7 +99,5 @@ public class PositionTracking {
         }
         Vector curr_pos = new Vector(tempX, tempY);
         BIGData.setPosition(curr_pos, "curr");
-        //TODO: Remove this after debugging
-        //System.out.println("x: " + curr_pos.x + " y: " + curr_pos.y);
     }
 }

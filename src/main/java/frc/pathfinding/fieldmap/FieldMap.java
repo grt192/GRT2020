@@ -1,12 +1,10 @@
-package frc.positiontracking.fieldmap;
+package frc.pathfinding.fieldmap;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import frc.gen.BIGData;
-import frc.positiontracking.fieldmap.geometry.Circle;
-import frc.positiontracking.fieldmap.geometry.Polygon;
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.geometry.*;
 import frc.robot.Robot;
 
 public class FieldMap {

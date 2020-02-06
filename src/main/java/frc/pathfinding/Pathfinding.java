@@ -1,12 +1,11 @@
-package frc.positiontracking.pathfinding;
+package frc.pathfinding;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import frc.gen.BIGData;
-import frc.positiontracking.fieldmap.FieldMap;
-import frc.positiontracking.fieldmap.geometry.Polygon;
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.*;
+import frc.pathfinding.fieldmap.geometry.*;
 
 public class Pathfinding {
 
@@ -111,7 +110,6 @@ public class Pathfinding {
 
     private void initNodes() {
         nodes = new HashSet<>();
-        // TODO: Add more nodes for better bezier curves
 
         addNode(new Node(new Vector(120, 53.875)));
         addNode(new Node(new Vector(509.25, 53.875)));

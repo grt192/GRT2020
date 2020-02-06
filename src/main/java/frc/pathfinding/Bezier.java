@@ -1,9 +1,10 @@
-package frc.positiontracking.pathfinding;
+package frc.pathfinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.*;
+import frc.pathfinding.fieldmap.geometry.*;
 
 public class Bezier {
 

@@ -17,7 +17,7 @@ import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
-import frc.positiontracking.pathfinding.Target;
+import frc.pathfinding.*;
 import frc.sockets.ClientCamera;
 
 /**

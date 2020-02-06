@@ -13,7 +13,7 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 
 import frc.gen.BIGData;
-import frc.positiontracking.pathfinding.Target;
+import frc.pathfinding.*;
 
 public class FieldGUI {
     private String address;

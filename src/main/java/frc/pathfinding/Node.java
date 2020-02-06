@@ -1,8 +1,8 @@
-package frc.positiontracking.pathfinding;
+package frc.pathfinding;
 
 import java.util.HashSet;
 
-import frc.positiontracking.fieldmap.geometry.Vector;
+import frc.pathfinding.fieldmap.geometry.*;
 
 public class Node implements Comparable<Node> {
 
