@@ -11,7 +11,8 @@ y = ?
 -------------------------
 mech xbox controller
 left joystick = storage control
-right joystick = winch control
+right joystick = winch control -- NOTE: need some sort of dead mans switch because accidental usage could destroy linkage
+- maybe need one button to be pressed along with joystick to activate
 triggers = minor shooter adjustments
 bumpers = ?
 pov buttons = ?
