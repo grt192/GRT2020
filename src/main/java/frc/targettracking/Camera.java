@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
 
-public class Lidar implements Runnable {
+public class Camera implements Runnable {
     // thread that contains code to connect to and read from socket
     private Thread thread;
     // socket that is connected to jetson
@@ -22,14 +22,14 @@ public class Lidar implements Runnable {
     private String jetsonAddress;
     // reader that reads from socket
     private BufferedReader stdIn;
-
+    
     // default port of jetson to connect to
-    private final static int DEFAULT_PORT = 1030;
+    private final static int DEFAULT_PORT = 1337;
 
-    public Lidar() {
-        port = BIGData.getInt("jetson_lidar_port");
+    public Camera() {
+        port = BIGData.getInt("jetson_camera_port");
         if (port == -1) {
-            System.out.println("unable to read valid config file value for port number for lidar on jetson"
+            System.out.println("unable to read valid config file value for port number for camera on jetson"
                 + ", using default port " + DEFAULT_PORT);
             port = DEFAULT_PORT;
         }
@@ -37,25 +37,26 @@ public class Lidar implements Runnable {
         thread = new Thread(this);
         thread.start();
     }
-
+    
     @Override
     public void run() {
         while (true) {
             try {
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
-                    System.out.println("lidar code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
+                    System.out.println("camera code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);
                     }
                 } else {
-                    lidarData();
+                    cameraData();
                 }
             } catch (Exception e) {
-                System.out.println("Outer exception caught in LIDAR code. unknown error");
+                System.out.println("Outer exception caught in CAMERA code. unknown error");
             }
         }
     }
+
 
     public boolean connect() {
         boolean connected = false;
@@ -73,18 +74,17 @@ public class Lidar implements Runnable {
         } catch (Exception e) {
             socket = null;
             stdIn = null;
-            System.out.println("UNKNOWN ERROR: SOMETHING WENT SERIOUSLY WRONG IN LIDAR CONNECTING!");
+            System.out.println("UNKNOWN ERROR: SOMETHING WENT SERIOUSLY WRONG IN CAMERA CONNECTING!");
         }
         return connected;
     }
 
-    public void lidarData() {
+    public void cameraData() {
         try {
             String in = stdIn.readLine();
             if (in != null) {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
-                // data[0], data[3] should be in radians.
-                BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]));
+                BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]));
             }
         } catch (IOException e) {
             e.printStackTrace();

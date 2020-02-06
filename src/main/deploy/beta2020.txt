@@ -43,3 +43,8 @@ linkage_sol_id=
 # intake motor CAN id
 intake_talon_id=
 intake_sol_id=
+
+# jetson addresses and ports to connect to
+jetson_address=10.1.92.14
+jetson_lidar_port=1030
+jetson_camera_port=1337
