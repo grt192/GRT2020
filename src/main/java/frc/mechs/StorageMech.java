@@ -29,7 +29,7 @@ public class StorageMech implements Mech {
     private int conveyerCount = 0;
 
     private boolean lemonsInCoveyer = false;
-    private boolean lemonInTop, lemonInMiddle, lemonInBottom = false;
+    private boolean lemonInTop, lemonInMiddle, lemonInBottom, intakeSeen, shooterSeen = false;
 
     public StorageMech() {
         intake = new AnalogInput(BIGData.getInt("intake_analog"));
@@ -56,28 +56,46 @@ public class StorageMech implements Mech {
     }
 
     public void update() {
+        boolean state = BIGData.getStorageState();
+        if (state) {
+            automaticControl();
+        } else {
+            // TODO: figure out reduction and speeds, rpm
+            double speed = BIGData.getStorageSpeed();
+            setSpeeds(6000 * speed);
+        }
+    }
+
+    public void automaticControl() {
         // setSpeeds(BIGData.getDouble("storage_rpm"));
         lemonInTop = top.getValue() < IRRange;
         lemonInMiddle = middle.getValue() < IRRange;
         lemonInBottom = bottom.getValue() < IRRange;
+        intakeSeen = intake.getValue() < ultrasonicRange;
+        shooterSeen = SHOOTER.getProximity() < revRange;
 
         // SmartDashboard.putNumber("Proximity Storage", storageDistance);
         // SmartDashboard.putNumber("Proximity Shooter", shooterDistance);
 
-        if (intake.getValue() < ultrasonicRange && !intakingLemon) {
+        // only count a new lemon if not intaking one currently
+        if (intakeSeen && !intakingLemon) {
             lemonCount++;
             intakingLemon = true;
         }
 
-        if (intake.getValue() > ultrasonicRange) {
+        // if no lemon is being intaked, set to false so new one can be counted
+        if (!intakeSeen) {
             intakingLemon = false;
             // seenLemon = true;
         }
-        if (SHOOTER.getProximity() < revRange) {
+
+        // when balls leave through shooter, must have been counted and in conveyor
+        if (shooterSeen) {
             lemonCount--;
             conveyerCount--;
         }
 
+        // only room for two balls in conveyor
         if (lemonInBottom && conveyerCount < 2) {
             conveyerCount++;
         }
@@ -86,20 +104,23 @@ public class StorageMech implements Mech {
         // conveyerSeenLemon = true;
         // }
 
+        // if only one ball in conveyor, try to get to middle storage spot
         if (conveyerCount == 1 && !lemonInMiddle) {
             // TODO Spin Motor once
         }
 
+        // if two balls in conveyor, try to get them in top and middle spots
         if (conveyerCount == 2 && !lemonInMiddle && !lemonInTop) {
             // TODO Spin Motor once
         }
 
+        // means that one ball got too far, reverse to maintain consistency
         if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
             // TODO Spin Motor once backwards
         }
+
         BIGData.put("lemon_count", lemonCount);
         SmartDashboard.putNumber("Lemon Count", BIGData.getInt("lemon_count"));
-
     }
 
     public void configTalons(TalonSRX tal) {
