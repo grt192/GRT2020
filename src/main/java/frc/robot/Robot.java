@@ -18,7 +18,7 @@ import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
 
-import frc.sockets.*;
+import frc.targettracking.JetsonCamera;
 import frc.targettracking.Lidar;
 
 /**
@@ -39,8 +39,6 @@ public class Robot extends TimedRobot {
   public static double ROBOT_RADIUS;
   private boolean overridden;
 
-  private static Lidar clientLidar;
-
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -59,7 +57,6 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    clientLidar = new Lidar();
 
     brain = new Brain();
 

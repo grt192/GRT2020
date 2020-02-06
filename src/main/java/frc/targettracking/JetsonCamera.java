@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
 
-public class Camera implements Runnable {
+public class JetsonCamera implements Runnable {
     // thread that contains code to connect to and read from socket
     private Thread thread;
     // socket that is connected to jetson
@@ -26,7 +26,7 @@ public class Camera implements Runnable {
     // default port of jetson to connect to
     private final static int DEFAULT_PORT = 1337;
 
-    public Camera() {
+    public JetsonCamera() {
         port = BIGData.getInt("jetson_camera_port");
         if (port == -1) {
             System.out.println("unable to read valid config file value for port number for camera on jetson"
