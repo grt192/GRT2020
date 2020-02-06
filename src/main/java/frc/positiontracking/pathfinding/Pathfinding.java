@@ -35,19 +35,19 @@ public class Pathfinding {
         addNode(start);
         start.calcH(targetNode);
         open.add(start);
-        while(!open.isEmpty()) {
+        while (!open.isEmpty()) {
             Node current = open.poll();
             closed.add(current);
             if (current.equals(targetNode)) {
                 Target.put(current.pos);
                 Node parent;
-                while((parent = current.parent) != null) {
+                while ((parent = current.parent) != null) {
                     Target.put(0, parent.pos);
                     current = parent;
                 }
                 open.clear();
             } else {
-                for(Node node : current.neighbors) {
+                for (Node node : current.neighbors) {
                     if (closed.contains(node)) {
                         continue;
                     }
@@ -58,7 +58,7 @@ public class Pathfinding {
                 }
             }
         }
-        for(int i = 0; i < Target.size(); i++) {
+        for (int i = 0; i < Target.size(); i++) {
             System.out.println("x: " + Target.get(i).x + " y: " + Target.get(i).y);
         }
         removeNode(start);
@@ -111,48 +111,75 @@ public class Pathfinding {
 
     private void initNodes() {
         nodes = new HashSet<>();
-        //TODO: Add more nodes for better bezier curves
-        //blue initiation line
+        // TODO: Add more nodes for better bezier curves
+
+        addNode(new Node(new Vector(120, 53.875)));
+        addNode(new Node(new Vector(509.25, 53.875)));
+
+        modulateY(53.875, 53.875, 4);
+        modulateX(509.25, 60, 1);
+        modulateX(509.25, -60, 1);
+        modulateX(120, 60, 1);
+        modulateX(120, -60, 1);
+
+        // blue initiation line
         addNode(new Node(new Vector(120, 297.25)));
         addNode(new Node(new Vector(120, 26)));
-        addNode(new Node(new Vector(120, 161.625)));
-        addNode(new Node(new Vector(120, 100.65)));
-        addNode(new Node(new Vector(120, 299.531)));
 
-        //red initiation line
+        // red initiation line
         addNode(new Node(new Vector(509.25, 297.25)));
         addNode(new Node(new Vector(509.25, 26)));
-        addNode(new Node(new Vector(509.25, 161.625)));
-        addNode(new Node(new Vector(509.25, 100.65)));
-        addNode(new Node(new Vector(509.25, 299.531)));
 
-        //middle red trench run
-        addNode(new Node(new Vector(206.625, 297.25)));
-        addNode(new Node(new Vector(422.625, 297.25)));
-        addNode(new Node(new Vector(314.625, 297.25)));
-
-        //corner red trench run
+        //middle trench runs
+        addNode(new Node(new Vector(206.625, 26)));
         addNode(new Node(new Vector(206.625, 271.25)));
+        modulateX(206.625, 43.2, 4);
+
+        //outer red trench run
+        addNode(new Node(new Vector(206.625, 271.25)));
+        addNode(new Node(new Vector(249.825, 271.25)));
+        addNode(new Node(new Vector(293.025, 297.25)));
         addNode(new Node(new Vector(422.625, 271.25)));
 
-        //middle blue trech run
-        addNode(new Node(new Vector(206.625, 26)));
-        addNode(new Node(new Vector(422.625, 26)));
-        addNode(new Node(new Vector(314.625, 26)));
-
-        //corner blue trench run
+        //outer blue trench run
         addNode(new Node(new Vector(206.625, 52)));
+        addNode(new Node(new Vector(336.225, 52)));
+        addNode(new Node(new Vector(379.425, 52)));
         addNode(new Node(new Vector(422.625, 52)));
 
-        //target and loading zones
+        // target and loading zones
         addNode(new Node(new Vector(30, 100.65)));
         addNode(new Node(new Vector(30, 229.531)));
         addNode(new Node(new Vector(599.25, 100.65)));
         addNode(new Node(new Vector(599.25, 229.531)));
 
-        //corner of shield generator
+        // middle of target and loading zones
+        addNode(new Node(new Vector(30, 161.625)));
+        addNode(new Node(new Vector(599.25, 161.625)));
+
+        // corner of shield generator
         addNode(new Node(new Vector(179, 205)));
         addNode(new Node(new Vector(450, 118)));
+    }
+
+    private void modulateX(double comparison, double n, int times) {
+        for (Node node : nodes) {
+            if (node.pos.x == comparison) {
+                for (int i = 1; i <= times; i++) {
+                    addNode(new Node(new Vector(comparison + n * i, node.pos.y)));
+                }
+            }
+        }
+    }
+
+    private void modulateY(double comparison, double n, int times) {
+        for (Node node : nodes) {
+            if (node.pos.y == comparison) {
+                for (int i = 0; i < times; i++) {
+                    addNode(new Node(new Vector(node.pos.x, comparison + n * i)));
+                }
+            }
+        }
     }
 
     private void addNode(Node n) {
@@ -179,7 +206,7 @@ public class Pathfinding {
         for (Node node : nodes) {
             node.calcH(targetNode);
         }
-    }    
+    }
 
     private void cleanTree() {
         for (Node node : nodes) {

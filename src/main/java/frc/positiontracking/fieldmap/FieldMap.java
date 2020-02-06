@@ -32,76 +32,24 @@ public class FieldMap {
 		visionTargets = new VisionTarget[1];
 		FIELD_SHORT = 323.25;
 		FIELD_LONG = 629.25;
-
 		double TRENCH_WIDTH = 52;
 		bounds = new Vector(FIELD_LONG, FIELD_SHORT);
 
 		Polygon RedTrench = new Polygon(new Vector(349.1886, FIELD_SHORT - TRENCH_WIDTH), new Vector(379.1886, FIELD_SHORT - TRENCH_WIDTH), new Vector(349.1886, FIELD_SHORT - TRENCH_WIDTH + 4), new Vector(379.1886, FIELD_SHORT - TRENCH_WIDTH + 4));
 		Polygon BlueTrench = new Polygon(new Vector(248.5614, TRENCH_WIDTH), new Vector(278.5614, TRENCH_WIDTH), new Vector(248.5614, TRENCH_WIDTH - 4), new Vector(278.5614, TRENCH_WIDTH - 4));   
-		// Polygon RightSideTrench = new Polygon(new Vector(254, 320), new Vector(254, FIELD_WIDTH),
-		// 				new Vector(285, FIELD_WIDTH), new Vector(285, 320));
-		// Polygon LeftSideTrench = new Polygon(new Vector(254, 266), new Vector(285, 266), new Vector(285, 270),
-		// 				new Vector(254, 270));
-
 		Polygon LeftCornerNear = new Polygon(new Vector(0, 0), new Vector(25.715, 0), new Vector(0, 70.655));
-		Polygon RightCornerNear = new Polygon(new Vector(0, 253.531), new Vector(0, FIELD_SHORT),
-						new Vector(25.715, FIELD_SHORT));
-		Polygon LeftCornerFar = new Polygon(new Vector(FIELD_LONG, 0), new Vector(604.18, 0),
-						new Vector(FIELD_LONG, 70.655));
-		Polygon RightCornerFar = new Polygon(new Vector(FIELD_LONG, 253.531),
-						new Vector(FIELD_LONG, FIELD_SHORT), new Vector(603.545, FIELD_SHORT));
-
-		// Polygon BlueTrench = new Polygon(new Vector(206.630, 0), new Vector(206.630, 55.5),
-		// 				new Vector(422.63, 0), new Vector(422.63, 55.5));
-
-		// Polygon RendezvousZoneClose = new Polygon(new Vector(206.556, 121.414), new Vector(217.614, 116.591),
-		// 				new Vector(222.366, 127.61), new Vector(211.024, 206.847));
-
-		// Polygon RendezvousOurTrench = new Polygon(new Vector(262.284, 255.531), new Vector(273.072, 251.062),
-		// 				new Vector(277.895, 262.121), new Vector(265.924, 267));
-
-		// Polygon RendezvousTheirTrench = new Polygon(new Vector(351.365, 61.19), new Vector(362.22, 56.693),
-		// 				new Vector(367.043, 67.684), new Vector(355.957, 72.277));
-
-		// Polygon RendezvousZoneFar = new Polygon(new Vector(407.148, 195.864), new Vector(411.617, 206.652),
-		// 				new Vector(422.731, 202.127), new Vector(418.139, 191.041));
-
-		// Polygon SafeCloseOpponent = new Polygon(new Vector(0, 70.655 - ROBOT_WIDTH),
-		// 				new Vector(0, 118.655 + ROBOT_WIDTH), new Vector(30.072 + ROBOT_WIDTH, 94.655));
-
-		// Polygon SafeFarOpponent = new Polygon(new Vector(FIELD_HEIGHT, 70.655 - ROBOT_WIDTH),
-		// 				new Vector(FIELD_HEIGHT, 130.655 + ROBOT_WIDTH),
-		// 				new Vector(599.187 - ROBOT_WIDTH, 100.655));
-
-		// Polygon RendezvousOpponent = new Polygon(new Vector(362.561, 56.563), new Vector(208.711, 121.073),
-		// 				new Vector(244.992, 190.5), new Vector(384.288, 132.861));
-
+		Polygon RightCornerNear = new Polygon(new Vector(0, 253.531), new Vector(0, FIELD_SHORT), new Vector(25.715, FIELD_SHORT));
+		Polygon LeftCornerFar = new Polygon(new Vector(FIELD_LONG, 0), new Vector(604.18, 0), new Vector(FIELD_LONG, 70.655));
+		Polygon RightCornerFar = new Polygon(new Vector(FIELD_LONG, 253.531), new Vector(FIELD_LONG, FIELD_SHORT), new Vector(603.545, FIELD_SHORT));
 		Polygon middle = new Polygon(new Vector(FIELD_LONG / 2 - 51.063, 52), new Vector(FIELD_LONG / 2 - 115.928, 205.399), new Vector(FIELD_LONG / 2 + 115.928, 117.911), new Vector(FIELD_LONG / 2 + 51.063, 274.509));
 
-		// Polygon RTPillar = new Polygon(new Vector(356, FIELD_SHORT - TRENCH_WIDTH), new Vector(372, FIELD_SHORT - TRENCH_WIDTH), new Vector(353,FIELD_SHORT - TRENCH_WIDTH - 14), new Vector(372, FIELD_SHORT - TRENCH_WIDTH - 14));
-		// Polygon LBPillar = new Polygon(new Vector(280, TRENCH_WIDTH), new Vector(258, TRENCH_WIDTH), new Vector(258, TRENCH_WIDTH + 14), new Vector(280, TRENCH_WIDTH + 14));
-		// Polygon RBPillar = new Polygon(new Vector(431, 113), new Vector(431, 134), new Vector(417, 113), new Vector(417, 134));
-		// Polygon LTPillar = new Polygon(new Vector(197, 211), new Vector(197, 190), new Vector(211, 211), new Vector(211, 190));
 		obstacles[0] = RedTrench;
 		obstacles[1] = BlueTrench;
-
 		obstacles[2] = LeftCornerFar;
 		obstacles[3] = LeftCornerNear;
 		obstacles[4] = RightCornerFar;
 		obstacles[5] = RightCornerNear;
-
 		obstacles[6] = middle;
-
-		// obstacles[6] = RTPillar;
-		// obstacles[7] = RBPillar;
-		// obstacles[8] = LTPillar;
-		// obstacles[9] = LBPillar;
-		// obstacles[10] = RendezvousZoneClose;
-
-		// obstacles[11] = SafeCloseOpponent;
-		// obstacles[12] = SafeFarOpponent;
-
-		// obstacles[13] = RendezvousOpponent;
 
 		Polygon SafeCloseAlliance = new Polygon(new Vector(0, 192.655 - SHORTEST_SIDE),
 						new Vector(0, 252.655 + SHORTEST_SIDE), new Vector(30.72 + SHORTEST_SIDE, 119.655));
