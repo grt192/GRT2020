@@ -261,6 +261,16 @@ public class BIGData {
 		return getDouble("storage_speed");
 	}
 
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeedAuto(double speed) {
+		put("storage_speed_auto", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeedAuto() {
+		return getDouble("storage_speed_auto");
+	}
+
 	/**
 	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
 	 * make it turn one way
