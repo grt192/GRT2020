@@ -17,8 +17,6 @@ public class Pathfinding {
     private HashSet<Node> nodes;
     private Node targetNode;
 
-    private double[] factCache;
-
     public Pathfinding() {
         target = new Vector(0, 0);
         field = new FieldMap();
@@ -26,45 +24,6 @@ public class Pathfinding {
         targetNode = new Node(new Vector(0, 0));
         ROBOT_RADIUS = Math.sqrt(
                 Math.pow(BIGData.getDouble("robot_width"), 2) + Math.pow(BIGData.getDouble("robot_height"), 2)) / 2;
-        precomp(151);
-    }
-
-    public Vector bezier(double t) {
-        int size = Target.size();
-        if (size >= 3) {
-            int k = size - 1;
-            double x = 0;
-            double y = 0;
-            for (int i = k; i >= 0; i--) {
-                x += choose(k, i) * Target.get(i).x * Math.pow(t, k - i) * Math.pow((1 - t), i);
-                y += choose(k, i) * Target.get(i).y * Math.pow(t, k - i) * Math.pow((1 - t), i);
-            }
-            return new Vector(x, y);
-        }
-        return null;
-    }
-
-    private void precomp(int n) {
-        factCache = new double[n];
-        factCache[0] = 1;
-        for (int i = 1; i < factCache.length; i++) {
-            factCache[i] = factCache[i - 1] * i;
-        }
-    }
-
-    private double factorial(int n) {
-        int num = 1;
-        for (int i = n; i >= 1; i--) {
-            if (i < factCache.length) {
-                return num * factCache[i];
-            }
-            num *= i;
-        }
-        return num;
-    }
-
-    private double choose(int n, int r) {
-        return (factorial(n) / (factorial(r) * factorial(n - r)));
     }
 
     public void searchAStar(Vector pos) {
@@ -152,6 +111,7 @@ public class Pathfinding {
 
     private void initNodes() {
         nodes = new HashSet<>();
+        //TODO: Add more nodes for better bezier curves
         //blue initiation line
         addNode(new Node(new Vector(120, 297.25)));
         addNode(new Node(new Vector(120, 26)));

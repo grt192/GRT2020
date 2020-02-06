@@ -1,6 +1,8 @@
 # Config file for 2020 SWERVE BASE
 # Domain: roborio-192-frc.local
 
+with_spline=false
+
 swerve_width=23.625
 swerve_height=23.375
 
