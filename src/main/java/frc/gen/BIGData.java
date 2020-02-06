@@ -124,6 +124,19 @@ public class BIGData {
 		put("requested_w", w);
 	}
 
+	public static void setAngle(double theta) {
+		setPIDTrue();
+		put("requested_angle", theta);
+	}
+
+	public static void setPIDTrue() {
+		put("PID?", true);
+	}
+
+	public static void setPIDFalse() {
+		put("PID?", false);
+	}
+
 	/** get the requested x velocity of the robot */
 	public static double getRequestedVX() {
 		return getDouble("requested_vx");
@@ -147,7 +160,7 @@ public class BIGData {
 		put("enc_w", data.encoderW);
 	}
 
-	/** set the gyro's angle */
+	/** set the gyro's angle in degrees */
 	public static void putGyroAngle(double angle) {
 		put("gyro_ang", angle);
 	}
@@ -157,7 +170,7 @@ public class BIGData {
 		put("gyro_w", w);
 	}
 
-	/** get the gyro's current angle */
+	/** get the gyro's current angle in degrees */
 	public static double getGyroAngle() {
 		return getDouble("gyro_ang");
 	}
@@ -355,6 +368,11 @@ public class BIGData {
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, String val) {
 		map.put(key, val);
+	}
+
+	public static void updateLidar(double a, double r) {
+		put("lidar_range", r);
+		put("lidar_azimuth", a);
 	}
 
 	/** put (or update) a key/value mapping into the map */

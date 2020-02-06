@@ -76,7 +76,7 @@ public class Lidar implements Runnable {
         } catch (NumberFormatException e) {
             System.out.println("unable to parse lidar data, NumberFormatException");
         } catch (Exception e) {
-            System.out.println("UNKNOWN ERROR: Attempted to read lidar data but something bad happened.")
+            System.out.println("UNKNOWN ERROR: Attempted to read lidar data but something bad happened.");
         }
 
     }

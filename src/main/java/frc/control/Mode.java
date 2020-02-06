@@ -8,13 +8,14 @@
 package frc.control;
 
 public abstract class Mode {
-    private static DriverControl driverControl;
+    private static DriverControl DRIVER_CONTROL;
     private static Mode[] modes;
 
     public static void initModes() {
-        driverControl = new DriverControl();
-        modes = new Mode[2];
-        modes[0] = driverControl;
+        DRIVER_CONTROL = new DriverControl();
+        modes = new Mode[1];
+        modes[0] = DRIVER_CONTROL;
+
     }
 
     public abstract boolean loop();
