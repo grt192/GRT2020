@@ -4,6 +4,9 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Solenoid;
+
 import com.revrobotics.ControlType;
 
 import frc.gen.BIGData;
@@ -14,6 +17,8 @@ public class ShooterMech implements Mech {
     private CANEncoder encoder;
     private CANPIDController pid;
     private double kP, kI, kFF, kMaxOutput, kMinOutput;
+    private Solenoid hood;
+    private boolean shooterUp;
 
     public ShooterMech() {
         this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
@@ -22,9 +27,20 @@ public class ShooterMech implements Mech {
         configPID();
         this.encoder = motor.getEncoder();
         BIGData.putShooterState(0);
+
+        this.shooterUp = BIGData.getBoolean("shooter_up");
+        this.hood = new Solenoid(BIGData.getInt("one_wheel_hood"));
+
     }
 
     public void update() {
+
+        // Hood Toggle
+        shooterUp = BIGData.getBoolean("shooter_up");
+        if (shooterUp) {
+            hood.set(shooterUp);
+        }
+
         int mode = BIGData.getInt("shooter_state");
         // mode being 0 means shooter is off
         if (mode == 0) {

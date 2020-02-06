@@ -47,3 +47,6 @@ intake_sol_id=
 #Shooter Tilts
 shooter_high_angle=50
 shooter_high_angle=25
+shooter_up=false
+#Solenoid
+one_wheel_hood=4

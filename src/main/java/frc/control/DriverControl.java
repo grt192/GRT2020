@@ -23,6 +23,7 @@ class DriverControl extends Mode {
     private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
     private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
     private boolean shooterUp = false;
+    private double shooterAngle;
 
     @Override
     public boolean loop() {
@@ -68,15 +69,20 @@ class DriverControl extends Mode {
         }
 
         BIGData.requestDrive(x, y, rotate);
-        
+
     }
 
     private void driveMechs() {
 
-        Input.MECH_XBOX.getBButtonPressed(){
-
+        if (Input.MECH_XBOX.getBButtonPressed()) {
+            shooterUp = !shooterUp;
+            BIGData.put("shooter_up", shooterUp);
+            if (shooterUp) {
+                shooterAngle = SHOOTER_HIGH_ANGLE;
+            } else {
+                shooterAngle = LOW_HIGH_ANGLE;
+            }
         }
-        // TODO Added Shooter Tilt
 
         double wheelV = Math.sqrt(Math.pow(BIGData.getDouble("enc_vx") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2)
                 + Math.pow(BIGData.getDouble("enc_vy") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2));
