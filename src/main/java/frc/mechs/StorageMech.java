@@ -86,15 +86,15 @@ public class StorageMech implements Mech {
         // conveyerSeenLemon = true;
         // }
 
-        if (conveyerCount == 0 && !lemonInMiddle) {
+        if (conveyerCount == 1 && !lemonInMiddle) {
             // TODO Spin Motor once
         }
 
-        if (conveyerCount == 1 && !lemonInMiddle && !lemonInTop) {
+        if (conveyerCount == 2 && !lemonInMiddle && !lemonInTop) {
             // TODO Spin Motor once
         }
 
-        if (conveyerCount == 1 && lemonInTop && !lemonInMiddle) {
+        if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
             // TODO Spin Motor once backwards
         }
         BIGData.put("lemon_count", lemonCount);
