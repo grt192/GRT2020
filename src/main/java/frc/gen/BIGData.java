@@ -124,6 +124,19 @@ public class BIGData {
 		put("requested_w", w);
 	}
 
+	public static void setAngle(double theta) {
+		setPIDTrue();
+		put("requested_angle", theta);
+	}
+
+	public static void setPIDTrue() {
+		put("PID?", true);
+	}
+
+	public static void setPIDFalse() {
+		put("PID?", false);
+	}
+
 	/** get the requested x velocity of the robot */
 	public static double getRequestedVX() {
 		return getDouble("requested_vx");
@@ -218,25 +231,54 @@ public class BIGData {
 		return getDouble("intake_speed");
 	}
 
-	/**
-	 * Set the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
-	 */
+	/** Set the state of shooter; 0 = off, 1 = manual, 2 = automatic */
 	public static void putShooterState(int state) {
 		put("shooter_state", state);
 	}
 
-	/**
-	 * Get the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
-	 */
+	/** Get the state of shooter; 0 = off, 1 = manual, 2 = automatic */
 	public static int getShooterState() {
 		return getInt("shooter_state");
 	}
 
-	/** set the output speed of the winch motor, from -1.0 to 1.0
-	 * TODO maybe only make it turn one way */
+	/** Set the state of storage; true = automatic, false = manual */
+	public static void requestStorageState(boolean state) {
+		put("storage_state", state);
+	}
+
+	/** Get the state of storage; true = automatic, false = manual */
+	public static boolean getStorageState() {
+		return getBoolean("storage_state");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeed(double speed) {
+		put("storage_speed", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeed() {
+		return getDouble("storage_speed");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeedAuto(double speed) {
+		put("storage_speed_auto", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeedAuto() {
+		return getDouble("storage_speed_auto");
+	}
+
+	/**
+	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
+	 * make it turn one way
+	 */
 	public static void requestWinchSpeed(double output) {
 		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
 	}
+
 	public static double getWinchSpeed() {
 		return getDouble("winch_speed");
 	}

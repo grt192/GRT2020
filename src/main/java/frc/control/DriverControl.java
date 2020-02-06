@@ -13,6 +13,8 @@ import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 
 class DriverControl extends Mode {
+    private int pov = -1;
+    private int lastPov;
 
     private final double WHEEL_RADIUS = 2;
     private final double MINTUES_TO_SECONDS = 60;
@@ -40,10 +42,33 @@ class DriverControl extends Mode {
         double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
         double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
         double rotate = 0;
+
+        boolean buttonPressed = false;
+        if (pov == -1) {
+            buttonPressed = true;
+        }
+        pov = Input.SWERVE_XBOX.getPOV();
+        if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
+            pov = lastPov - 45;
+        }
+        if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
+            pov = lastPov + 45;
+        }
+        if (buttonPressed) {
+            if (pov == -1) {
+            } else {
+                BIGData.setAngle(Math.toRadians(pov));
+                System.out.println("pov: " + pov);
+                lastPov = pov;
+            }
+        }
+
         if (lTrigger + rTrigger > 0.05) {
             rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
         }
+
         BIGData.requestDrive(x, y, rotate);
+        
     }
 
     private void driveMechs() {

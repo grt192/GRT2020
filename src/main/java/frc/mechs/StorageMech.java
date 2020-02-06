@@ -1,7 +1,6 @@
 package frc.mechs;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 
@@ -18,18 +17,15 @@ public class StorageMech implements Mech {
 
     private int ultrasonicRange, revRange, IRRange;
 
-    private int TICKS_PER_ROTATION;
-    private int REDUCTION;
-    private double RPM;
+    private double storageVelocity;
 
     // private final int range = 400;
-    private boolean seenLemon, conveyerSeenLemon, intakingLemon = false;
+    private boolean intakingLemon = false;
 
     private int lemonCount = 0;
     private int conveyerCount = 0;
 
-    private boolean lemonsInCoveyer = false;
-    private boolean lemonInTop, lemonInMiddle, lemonInBottom = false;
+    private boolean lemonInTop, lemonInMiddle, lemonInBottom, intakeSeen, shooterSeen = false;
 
     public StorageMech() {
         intake = new AnalogInput(BIGData.getInt("intake_analog"));
@@ -37,47 +33,53 @@ public class StorageMech implements Mech {
         middle = new AnalogInput(BIGData.getInt("middle_analog"));
         bottom = new AnalogInput(BIGData.getInt("bottom_analog"));
         this.motor = new TalonSRX(BIGData.getInt("storage_motor"));
-        configTalons(motor);
-        TICKS_PER_ROTATION = BIGData.getInt("storage_ticks_per_rotation");
-        REDUCTION = BIGData.getInt("storage_reduction");
-        BIGData.put("storage_rpm", 0);
+        storageVelocity = BIGData.getStorageSpeedAuto();
         ultrasonicRange = BIGData.getInt("ultrasonic_range");
         revRange = BIGData.getInt("rev_range");
         IRRange = BIGData.getInt("ir_range");
         BIGData.put("lemon_count", 3);
     }
 
-    private void setSpeeds(double RPM) {
-        // System.out.println(aRPM + " " + bRPM);
-        this.RPM = rpmToTalonVeloc(RPM);
-
-        motor.set(ControlMode.Velocity, this.RPM);
-
+    public void update() {
+        boolean state = BIGData.getStorageState();
+        if (state) {
+            automaticControl();
+        } else {
+            double speed = BIGData.getStorageSpeed();
+            motor.set(ControlMode.PercentOutput, speed);
+        }
     }
 
-    public void update() {
+    public void automaticControl() {
         // setSpeeds(BIGData.getDouble("storage_rpm"));
         lemonInTop = top.getValue() < IRRange;
         lemonInMiddle = middle.getValue() < IRRange;
         lemonInBottom = bottom.getValue() < IRRange;
+        intakeSeen = intake.getValue() < ultrasonicRange;
+        shooterSeen = SHOOTER.getProximity() < revRange;
 
         // SmartDashboard.putNumber("Proximity Storage", storageDistance);
         // SmartDashboard.putNumber("Proximity Shooter", shooterDistance);
 
-        if (intake.getValue() < ultrasonicRange && !intakingLemon) {
+        // only count a new lemon if not intaking one currently
+        if (intakeSeen && !intakingLemon) {
             lemonCount++;
             intakingLemon = true;
         }
 
-        if (intake.getValue() > ultrasonicRange) {
+        // if no lemon is being intaked, set to false so new one can be counted
+        if (!intakeSeen) {
             intakingLemon = false;
             // seenLemon = true;
         }
-        if (SHOOTER.getProximity() < revRange) {
+
+        // when lemon leave through shooter, must have been counted and in conveyor
+        if (shooterSeen) {
             lemonCount--;
             conveyerCount--;
         }
 
+        // only room for two lemons in conveyor
         if (lemonInBottom && conveyerCount < 2) {
             conveyerCount++;
         }
@@ -86,33 +88,28 @@ public class StorageMech implements Mech {
         // conveyerSeenLemon = true;
         // }
 
+        // if only one lemon in conveyor, try to get to middle storage spot
         if (conveyerCount == 1 && !lemonInMiddle) {
-            // TODO Spin Motor once
+            motor.set(ControlMode.PercentOutput, storageVelocity);
+        } else {
+            motor.set(ControlMode.PercentOutput, 0.0);
         }
 
+        // if two lemons in conveyor, try to get them in top and middle spots
         if (conveyerCount == 2 && !lemonInMiddle && !lemonInTop) {
-            // TODO Spin Motor once
+            motor.set(ControlMode.PercentOutput, storageVelocity);
+        } else {
+            motor.set(ControlMode.PercentOutput, 0.0);
         }
 
+        // means that one lemon got too far, reverse to maintain consistency
         if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
-            // TODO Spin Motor once backwards
+            motor.set(ControlMode.PercentOutput, -storageVelocity);
+        } else {
+            motor.set(ControlMode.PercentOutput, 0.0);
         }
+
         BIGData.put("lemon_count", lemonCount);
         SmartDashboard.putNumber("Lemon Count", BIGData.getInt("lemon_count"));
-
     }
-
-    public void configTalons(TalonSRX tal) {
-        tal.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-        tal.config_kP(0, 0.04);
-        tal.config_kI(0, 0);
-        tal.config_kD(0, 0);
-        tal.config_kF(0, .009);
-        tal.selectProfileSlot(0, 0);
-    }
-
-    public double rpmToTalonVeloc(double rpm) {
-        return rpm * REDUCTION * TICKS_PER_ROTATION / (60 * 10);
-    }
-
 }
