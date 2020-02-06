@@ -19,6 +19,7 @@ import frc.gen.BIGData;
 import frc.gen.Brain;
 
 import frc.sockets.*;
+import frc.targettracking.Lidar;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,7 +39,7 @@ public class Robot extends TimedRobot {
   public static double ROBOT_RADIUS;
   private boolean overridden;
 
-  private static ClientLidar clientLidar;
+  private static Lidar clientLidar;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -58,7 +59,7 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    clientLidar = new ClientLidar();
+    clientLidar = new Lidar();
 
     brain = new Brain();
 

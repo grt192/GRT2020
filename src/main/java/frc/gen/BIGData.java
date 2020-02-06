@@ -370,9 +370,10 @@ public class BIGData {
 		map.put(key, val);
 	}
 
-	public static void updateLidar(double a, double r) {
-		put("lidar_range", r);
-		put("lidar_azimuth", a);
+	public static void updateCamera(double r, double a, double t) {
+		put("camera_azimuth", a);
+		put("camera_range", r);
+		put("relative_angle", t);
 	}
 
 	/** put (or update) a key/value mapping into the map */
