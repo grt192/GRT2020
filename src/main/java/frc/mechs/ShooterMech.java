@@ -18,9 +18,10 @@ public class ShooterMech implements Mech {
     public ShooterMech() {
         this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
         this.pid = motor.getPIDController();
+        // TODO: improve PID
         configPID();
         this.encoder = motor.getEncoder();
-        BIGData.put("one_wheel_shooter", 0.0);
+        BIGData.putShooterState(0);
     }
 
     public void update() {

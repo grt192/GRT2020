@@ -231,25 +231,44 @@ public class BIGData {
 		return getDouble("intake_speed");
 	}
 
-	/**
-	 * Set the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
-	 */
+	/** Set the state of shooter; 0 = off, 1 = manual, 2 = automatic */
 	public static void putShooterState(int state) {
 		put("shooter_state", state);
 	}
 
-	/**
-	 * Get the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
-	 */
+	/** Get the state of shooter; 0 = off, 1 = manual, 2 = automatic */
 	public static int getShooterState() {
 		return getInt("shooter_state");
 	}
 
-	/** set the output speed of the winch motor, from -1.0 to 1.0
-	 * TODO maybe only make it turn one way */
+	/** Set the state of storage; true = automatic, false = manual */
+	public static void requestStorageState(boolean state) {
+		put("storage_state", state);
+	}
+
+	/** Get the state of storage; true = automatic, false = manual */
+	public static boolean getStorageState() {
+		return getBoolean("storage_state");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeed(double speed) {
+		put("storage_speed", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeed() {
+		return getDouble("storage_speed");
+	}
+
+	/**
+	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
+	 * make it turn one way
+	 */
 	public static void requestWinchSpeed(double output) {
 		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
 	}
+
 	public static double getWinchSpeed() {
 		return getDouble("winch_speed");
 	}
