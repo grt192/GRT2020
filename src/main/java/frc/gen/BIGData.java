@@ -124,6 +124,19 @@ public class BIGData {
 		put("requested_w", w);
 	}
 
+	public static void setAngle(double theta) {
+		setPIDTrue();
+		put("requested_angle", theta);
+	}
+
+	public static void setPIDTrue() {
+		put("PID?", true);
+	}
+
+	public static void setPIDFalse() {
+		put("PID?", false);
+	}
+
 	/** get the requested x velocity of the robot */
 	public static double getRequestedVX() {
 		return getDouble("requested_vx");

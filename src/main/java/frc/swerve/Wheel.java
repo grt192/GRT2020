@@ -62,29 +62,31 @@ class Wheel {
 	}
 
 	public void set(double radians, double speed) {
-		double targetPosition = radians / TWO_PI;
-		targetPosition = GRTUtil.positiveMod(targetPosition, 1.0);
+		if (speed != 0.0) {
+			double targetPosition = radians / TWO_PI;
+			targetPosition = GRTUtil.positiveMod(targetPosition, 1.0);
 
-		int encoderPosition = rotateMotor.getSelectedSensorPosition(0) - OFFSET;
-		double currentPosition = encoderPosition / TICKS_PER_ROTATION;
-		double rotations = Math.floor(currentPosition);
-		currentPosition -= rotations;
-		double delta = currentPosition - targetPosition;
-		if (Math.abs(delta) > 0.5) {
-			targetPosition += Math.signum(delta);
+			int encoderPosition = rotateMotor.getSelectedSensorPosition(0) - OFFSET;
+			double currentPosition = encoderPosition / TICKS_PER_ROTATION;
+			double rotations = Math.floor(currentPosition);
+			currentPosition -= rotations;
+			double delta = currentPosition - targetPosition;
+			if (Math.abs(delta) > 0.5) {
+				targetPosition += Math.signum(delta);
+			}
+			delta = currentPosition - targetPosition;
+			boolean newReverse = false;
+			if (Math.abs(delta) > 0.25) {
+				targetPosition += Math.signum(delta) * 0.5;
+				newReverse = true;
+			}
+			targetPosition += rotations;
+			reversed = newReverse;
+			double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
+			rotateMotor.set(ControlMode.Position, encoderPos);
+			
+			speed *= (reversed ? -1 : 1);
 		}
-		delta = currentPosition - targetPosition;
-		boolean newReverse = false;
-		if (Math.abs(delta) > 0.25) {
-			targetPosition += Math.signum(delta) * 0.5;
-			newReverse = true;
-		}
-		targetPosition += rotations;
-		reversed = newReverse;
-		double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
-		rotateMotor.set(ControlMode.Position, encoderPos);
-		
-		speed *= (reversed ? -1 : 1);
 		driveMotor.set(speed);
 	}
 
