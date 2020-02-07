@@ -32,6 +32,11 @@ public class ShuffleboardCommands {
     private NetworkTableEntry wheelRotateSpeeds[];
     private NetworkTableEntry gyroAngle;
     private NetworkTableEntry gyroRate;
+    private ShuffleboardLayout swerveEnableLayout;
+    private NetworkTableEntry wheelEnable[];
+    // modulePositions[i] gives {col, row} of module for pretty shuffleboard positioning
+    private int[][] modulePositions = {{1,0}, {1,1}, {0,1}, {0,0}}; 
+
     // config
     private NetworkTableEntry configMessage;
 
@@ -50,6 +55,7 @@ public class ShuffleboardCommands {
         wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2,2).withPosition(0, 2);
         wheelDriveSpeedsLayout = swerveTab.getLayout("Wheel Drive Speeds", "Grid Layout").withSize(2,2).withPosition(2,2);
         wheelRotateSpeedsLayout = swerveTab.getLayout("Wheel Rotate Speeds", "Grid Layout").withSize(2,2).withPosition(4,2);
+        swerveEnableLayout = swerveTab.getLayout("Wheels Enabled", "Grid Layout").withSize(2,2).withPosition(2,0);
 
         CommandBase resetTempConfigCommand = new CommandBase() {
             @Override
@@ -130,11 +136,30 @@ public class ShuffleboardCommands {
             }
         };
         
-        swerveTab.add("zero swerve WHEELS", zeroRotateCommand).withWidget(BuiltInWidgets.kCommand);
+        swerveTab.add("zero WHEELS", zeroRotateCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 1).withSize(1,1);
         for (int i = 0; i < 4; i++) {
-            wheelZeros[i] = wheelZerosLayout.add(BIGData.getWheelName(i) + " zero:", BIGData.getWheelZero(i)).getEntry();
-            wheelDriveSpeeds[i] = wheelDriveSpeedsLayout.add(BIGData.getWheelName(i) + " drive speed", BIGData.getWheelRawDriveSpeed(i)).getEntry();
-            wheelRotateSpeeds[i] = wheelRotateSpeedsLayout.add(BIGData.getWheelName(i) + " rotate speed", BIGData.getWheelRawRotateSpeed(i)).getEntry();
+            final int finalI = i;
+            wheelZeros[i] = wheelZerosLayout.add(BIGData.getWheelName(i) + " zero:", BIGData.getWheelZero(i))
+                .withPosition(modulePositions[i][0], modulePositions[i][1]).getEntry();
+            wheelDriveSpeeds[i] = wheelDriveSpeedsLayout.add(BIGData.getWheelName(i) + " drive speed", BIGData.getWheelRawDriveSpeed(i))
+                .withPosition(modulePositions[i][0], modulePositions[i][1]).getEntry();
+            wheelRotateSpeeds[i] = wheelRotateSpeedsLayout.add(BIGData.getWheelName(i) + " rotate speed", BIGData.getWheelRawRotateSpeed(i))
+                .withPosition(modulePositions[i][0], modulePositions[i][1]).getEntry();
+            CommandBase enableSwerve = new CommandBase() {
+                @Override
+                public void initialize() { 
+                    System.out.println("disabled=" + BIGData.getSwerveDisable(finalI));
+                    BIGData.setSwerveDisable(finalI, !BIGData.getSwerveDisable(finalI));
+                    this.setName("enabled=" + !BIGData.getSwerveDisable(finalI));
+                }
+                @Override
+                public boolean isFinished() {
+                    return true;
+                }
+            };
+            enableSwerve.setName("enabled=" + !BIGData.getSwerveDisable(i));
+            swerveEnableLayout.add(BIGData.getWheelName(i) + " enabled", enableSwerve)
+                .withPosition(modulePositions[i][0], modulePositions[i][1]);
         }
 
         CommandBase zeroGyroCommand = new CommandBase() {
@@ -148,9 +173,10 @@ public class ShuffleboardCommands {
                 return true;
             }
         };
-        swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand);
-        gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).getEntry();
-        gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).getEntry();
+        swerveTab.add("zero GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 0).withSize(1,1);
+        gyroAngle = swerveTab.add("Angle", BIGData.getGyroAngle()).withPosition(1,0).withSize(1,1).getEntry();
+        gyroRate = swerveTab.add("Angular Veloc", BIGData.getGyroW()).withPosition(1, 1).withSize(1,1).getEntry();
+        
     }
 
     public void update() {

@@ -287,6 +287,19 @@ public class BIGData {
 		return getDouble(getWheelName(wheelNum) + "_raw_rotate");
 	}
 
+	/** @param wheelNum the number of the wheel check
+	 * @return true if the swerve should be disabled, false otherwise */
+	public static boolean getSwerveDisable(int wheelNum) {
+		return getBoolean(getWheelName(wheelNum) + "_disabled");
+	}
+
+	/** @param wheelNum the number of the wheel to disable or enable
+	 * @param disabled true if the wheel should be disabled, false if it should be enabled
+	 */
+	public static void setSwerveDisable(int wheelNum, boolean disabled) {
+		put(getWheelName(wheelNum) + "_disabled", disabled);
+	}
+
 	/** set the config file message to display to drivers */
 	public static void putConfigFileMsg(String msg) {
 		put("config_msg", msg);
