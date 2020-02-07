@@ -8,7 +8,7 @@ import frc.pathfinding.fieldmap.geometry.*;
 import frc.robot.Robot;
 
 public class FieldMap {
-        
+
 	private static double FIELD_SHORT, FIELD_LONG;
 	private static Vector bounds;
 	private Polygon wall;
@@ -16,12 +16,14 @@ public class FieldMap {
 	private static Polygon[] safeZones;
 	private static VisionTarget[] visionTargets;
 	private static double SHORTEST_SIDE;
+	private static double ROBOT_RADIUS;
 
 	public FieldMap() {
 		SHORTEST_SIDE = Math.min(BIGData.getDouble("robot_width"), BIGData.getDouble("robot_height"));
 		buildMap();
 		wall = new Polygon(new Vector(0, 0), new Vector(FIELD_LONG, 0), new Vector(FIELD_LONG, FIELD_SHORT),
 						new Vector(0, FIELD_SHORT));
+		ROBOT_RADIUS = Math.max(BIGData.getDouble("robot_width"), BIGData.getDouble("robot_height")) / 2;
 	}
 
 	private static void buildMap() {
@@ -124,6 +126,26 @@ public class FieldMap {
 		Polygon rect = new Polygon(v1.add(norm), v2.add(norm), v2.subtract(norm), v1.subtract(norm));
 		Circle startCircle = new Circle(v1, Robot.ROBOT_RADIUS);
 		Circle endCircle = new Circle(v2, Robot.ROBOT_RADIUS);
+		if (shapeIntersects(rect))
+				return false;
+		if (shapeIntersects(startCircle))
+				return false;
+		if (shapeIntersects(endCircle))
+				return false;
+		return true;
+	}
+
+	public boolean lineOfSightConstrained(Vector v1, Vector v2) {
+		Vector dif = v2.subtract(v1);
+		double d = v1.distanceTo(v2);
+		if (d == 0.0)
+			return true;
+		if (d > 200)
+			return false;
+		Vector norm = dif.multiply(ROBOT_RADIUS / d).normal();
+		Polygon rect = new Polygon(v1.add(norm), v2.add(norm), v2.subtract(norm), v1.subtract(norm));
+		Circle startCircle = new Circle(v1, ROBOT_RADIUS);
+		Circle endCircle = new Circle(v2, ROBOT_RADIUS);
 		if (shapeIntersects(rect))
 				return false;
 		if (shapeIntersects(startCircle))

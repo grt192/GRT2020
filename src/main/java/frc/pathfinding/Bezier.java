@@ -3,7 +3,6 @@ package frc.pathfinding;
 import java.util.ArrayList;
 import java.util.List;
 
-import frc.pathfinding.fieldmap.*;
 import frc.pathfinding.fieldmap.geometry.*;
 
 public class Bezier {
@@ -15,8 +14,8 @@ public class Bezier {
     private double[] xvals;
     private double[] yvals;
 
-    private List<Double> xnodes;
-    private List<Double> ynodes;
+    private static List<Double> xnodes;
+    private static List<Double> ynodes;
 
     public Bezier(Vector start, Vector control1, Vector control2, Vector end) {
         vector = new Vector[4];

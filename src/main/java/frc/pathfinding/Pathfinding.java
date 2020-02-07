@@ -20,9 +20,9 @@ public class Pathfinding {
         target = new Vector(0, 0);
         field = new FieldMap();
         initNodes();
+        initBezierNodes();
         targetNode = new Node(new Vector(0, 0));
-        ROBOT_RADIUS = Math.sqrt(
-                Math.pow(BIGData.getDouble("robot_width"), 2) + Math.pow(BIGData.getDouble("robot_height"), 2)) / 2;
+        ROBOT_RADIUS = Math.max(BIGData.getDouble("robot_width"), BIGData.getDouble("robot_height")) / 2;
     }
 
     public void searchAStar(Vector pos) {
@@ -109,29 +109,39 @@ public class Pathfinding {
     }
 
     private void initNodes() {
+    }
+
+    private void initBezierNodes() {
         nodes = new HashSet<>();
 
         addNode(new Node(new Vector(120, 53.875)));
         addNode(new Node(new Vector(509.25, 53.875)));
 
-        modulateY(53.875, 53.875, 4);
-        modulateX(509.25, 60, 1);
-        modulateX(509.25, -60, 1);
-        modulateX(120, 60, 1);
-        modulateX(120, -60, 1);
-
+        modulateY(53.875, 53.875, 5);
+        modulateX(509.25, 30, 3);
+        modulateX(509.25, -30, 2);
+        modulateX(120, 30, 2);
+        modulateX(120, -30, 3);
+        
         // blue initiation line
         addNode(new Node(new Vector(120, 297.25)));
+        addNode(new Node(new Vector(120, 271.25)));
+        addNode(new Node(new Vector(120, 161.625)));
+        addNode(new Node(new Vector(120, 52)));
         addNode(new Node(new Vector(120, 26)));
 
         // red initiation line
         addNode(new Node(new Vector(509.25, 297.25)));
+        addNode(new Node(new Vector(509.25, 271.25)));
+        addNode(new Node(new Vector(509.25, 161.625)));
+        addNode(new Node(new Vector(509.25, 52)));
         addNode(new Node(new Vector(509.25, 26)));
 
         //middle trench runs
-        addNode(new Node(new Vector(206.625, 26)));
-        addNode(new Node(new Vector(206.625, 271.25)));
-        modulateX(206.625, 43.2, 4);
+        addNode(new Node(new Vector(206.625, 25)));
+        addNode(new Node(new Vector(206.625, 298.25)));
+        modulateX(206.625, 43.2, 8);
+        modulateX(206.625, -43.2, 3);
 
         //outer red trench run
         addNode(new Node(new Vector(206.625, 271.25)));
@@ -154,40 +164,48 @@ public class Pathfinding {
         // middle of target and loading zones
         addNode(new Node(new Vector(30, 161.625)));
         addNode(new Node(new Vector(599.25, 161.625)));
-
-        // corner of shield generator
-        addNode(new Node(new Vector(179, 205)));
-        addNode(new Node(new Vector(450, 118)));
     }
 
     private void modulateX(double comparison, double n, int times) {
+        HashSet<Node> newNodes = new HashSet<>();
         for (Node node : nodes) {
             if (node.pos.x == comparison) {
                 for (int i = 1; i <= times; i++) {
-                    addNode(new Node(new Vector(comparison + n * i, node.pos.y)));
+                    newNodes.add(new Node(new Vector(comparison + n * i, node.pos.y)));
                 }
             }
+        }
+        for (Node node : newNodes) {
+            addNode(node);
         }
     }
 
     private void modulateY(double comparison, double n, int times) {
+        HashSet<Node> newNodes = new HashSet<>();
         for (Node node : nodes) {
             if (node.pos.y == comparison) {
                 for (int i = 0; i < times; i++) {
-                    addNode(new Node(new Vector(node.pos.x, comparison + n * i)));
+                    newNodes.add(new Node(new Vector(node.pos.x, comparison + n * i)));
                 }
             }
         }
+        for (Node node : newNodes) {
+            addNode(node);
+        }
     }
 
-    private void addNode(Node n) {
+    private void constrainedAdd(Node n) {
         for (Node node : nodes) {
-            if (field.lineOfSight(n.pos, node.pos)) {
+            if (field.lineOfSightConstrained(n.pos, node.pos)) {
                 node.neighbors.add(n);
                 n.neighbors.add(node);
             }
         }
         nodes.add(n);
+    } 
+
+    private void addNode(Node n) {
+        constrainedAdd(n);
     }
 
     private void removeNode(Node n) {
@@ -210,5 +228,9 @@ public class Pathfinding {
         for (Node node : nodes) {
             node.g = Double.POSITIVE_INFINITY;
         }
+    }
+
+    public HashSet<Node> getNodes() {
+        return nodes;
     }
 }

@@ -1,6 +1,7 @@
 package frc.gen;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import frc.control.FieldGUI;
 import frc.control.ShuffleboardCommands;
 import frc.mechs.MechCollection;
@@ -13,6 +14,7 @@ public class Brain implements Runnable {
     public static PositionTracking tracking;
     public static ShuffleboardCommands shuffleboardCommands;
     public static FieldGUI fieldGUI;
+    public static PowerDistributionPanel pdp;
 
     Notifier notif;
 
@@ -22,6 +24,7 @@ public class Brain implements Runnable {
         tracking = new PositionTracking();
         shuffleboardCommands = new ShuffleboardCommands();
         //fieldGUI = new FieldGUI("10.1.92.147", 5000);
+        pdp = new PowerDistributionPanel();
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
     }
@@ -32,5 +35,7 @@ public class Brain implements Runnable {
         // mechs.update();
         shuffleboardCommands.update();
         //fieldGUI.update();
+
+        BIGData.put("voltage", pdp.getVoltage());
     }
 }

@@ -179,15 +179,6 @@ public class BIGData {
 		return vec;
 	}
 
-	public static void setTarget(double x, double y) {
-		put("tar_x", x);
-		put("tar_y", y);
-	}
-
-	public static Vector getTarget() {
-		return new Vector(getDouble("tar_x"), getDouble("tar_y"));
-	}
-
 	/** set the gyro's angle */
 	public static void putGyroAngle(double angle) {
 		put("gyro_ang", angle);

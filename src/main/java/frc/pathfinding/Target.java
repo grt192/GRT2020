@@ -9,6 +9,8 @@ public class Target {
     private static ArrayList<Vector> targets;
     private static Vector target;
 
+    private static Vector c1, c2;
+
     public Target() {
         targets = new ArrayList<Vector>();
     }
@@ -51,6 +53,20 @@ public class Target {
 
     public static Vector getTarget() {
         return target;
+    }
+
+    public static void setBezier(Vector control1, Vector control2, Vector t) {
+        target = t;
+        c1 = control1;
+        c2 = control2;
+    }
+
+    public static ArrayList<Vector> getBezier() {
+        ArrayList<Vector> array = new ArrayList<>();
+        array.add(c1);
+        array.add(c2);
+        array.add(target);
+        return array;
     }
 
     public static ArrayList<double[]> convert() {

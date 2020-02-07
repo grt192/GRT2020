@@ -1,7 +1,5 @@
 package frc.pathfinding.fieldmap.geometry;
 
-import frc.pathfinding.fieldmap.geometry.*;
-
 public class VisionTarget {
 
     private static final double HIGH_HEIGHT = 98.188;
