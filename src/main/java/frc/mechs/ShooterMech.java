@@ -4,11 +4,9 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.Solenoid;
-
 import com.revrobotics.ControlType;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import frc.gen.BIGData;
 
 public class ShooterMech implements Mech {
@@ -26,11 +24,9 @@ public class ShooterMech implements Mech {
         // TODO: improve PID
         configPID();
         this.encoder = motor.getEncoder();
-        BIGData.putShooterState(0);
-
+        BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(BIGData.getInt("one_wheel_hood"));
-
     }
 
     public void update() {
@@ -41,22 +37,20 @@ public class ShooterMech implements Mech {
             hood.set(shooterUp);
         }
 
-        int mode = BIGData.getInt("shooter_state");
-        // mode being 0 means shooter is off
-        if (mode == 0) {
-            setSpeed(0);
-            // mode being 1 means it's in manual control, speed in BIGData adjusted by
-            // buttons and driver input
-        } else if (mode == 1) {
-            setSpeed(BIGData.getDouble("one_wheel_shooter"));
-            // mode being 2 means it's in automatic control, speed calculated based on
+        boolean mode = BIGData.getShooterState();
+        // mode being false means shooter is off
+        if (!mode) {
+            pid.setReference(BIGData.getDouble("shooter_manual"), ControlType.kVoltage);
+            // mode being true means it's in automatic control, speed calculated based on
             // distance to vision target
         } else {
             double range = BIGData.getDouble("camera_range");
             double rpm = calcSpeed(range);
-            // put current rpm in BIGData so if driver wants to adjust speed based off that
-            BIGData.put("one_wheel_shooter", rpm);
-            setSpeed(rpm);
+            int offset = BIGData.getInt("shooter_offset_change");
+            double newSpeed = rpm + offset;
+            // put current rpm in BIGData so driver can to adjust speed based off that
+            BIGData.put("shooter_auto", rpm);
+            pid.setReference(newSpeed, ControlType.kVelocity);
         }
     }
 

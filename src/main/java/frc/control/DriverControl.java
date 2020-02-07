@@ -22,7 +22,6 @@ class DriverControl extends Mode {
     private final double DRIVE_ENCODER_SCALE = BIGData.getDouble("drive_encoder_scale");
     private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
     private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
-    private boolean shooterUp = false;
     private double shooterAngle;
 
     @Override
@@ -73,8 +72,30 @@ class DriverControl extends Mode {
     }
 
     private void driveMechs() {
+        BIGData.putShooterState(Input.MECH_XBOX.getAButtonPressed());
 
-        if (Input.MECH_XBOX.getBButtonPressed()) {
+        if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
+            int offsetChange = BIGData.getInt("shooter_offset_change");
+            int currOffset = BIGData.getInt("shooter_auto_offset");
+            BIGData.put("shooter_auto_offset", currOffset - offsetChange);
+        }
+
+        if (Input.MECH_XBOX.getBumperReleased(Hand.kRight)) {
+            int offsetChange = BIGData.getInt("shooter_offset_change");
+            int currOffset = BIGData.getInt("shooter_auto_offset");
+            BIGData.put("shooter_auto_offset", currOffset + offsetChange);
+        }
+
+        BIGData.putStorageState(!Input.MECH_XBOX.getYButtonPressed());
+
+        double lTrigger = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
+        BIGData.requestStorageSpeed(lTrigger);
+
+        double rTrigger = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
+        BIGData.put("shooter_manual", rTrigger);
+
+        if (Input.MECH_XBOX.getBButtonReleased()) {
+            boolean shooterUp = BIGData.getBoolean("shooter_up");
             shooterUp = !shooterUp;
             BIGData.put("shooter_up", shooterUp);
             if (shooterUp) {
@@ -82,6 +103,11 @@ class DriverControl extends Mode {
             } else {
                 shooterAngle = LOW_HIGH_ANGLE;
             }
+        }
+
+        if (Input.MECH_XBOX.getXButtonReleased()) {
+            boolean currState = BIGData.getIntakeState();
+            BIGData.requestIntakeState(!currState);
         }
 
         double wheelV = Math.sqrt(Math.pow(BIGData.getDouble("enc_vx") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2)

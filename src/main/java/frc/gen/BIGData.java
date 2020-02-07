@@ -221,28 +221,18 @@ public class BIGData {
 		return getBoolean("intake_state");
 	}
 
-	/** Set the motor spin speed with percentage motor output */
-	public static void requestIntakeSpeed(double speed) {
-		put("intake_speed", GRTUtil.clamp(-1.0, speed, 1.0));
-	}
-
-	/** Get the motor spin speed, in percentage motor output */
-	public static double getIntakeSpeed() {
-		return getDouble("intake_speed");
-	}
-
-	/** Set the state of shooter; 0 = off, 1 = manual, 2 = automatic */
-	public static void putShooterState(int state) {
+	/** Set the state of shooter; false = manual, true = automatic */
+	public static void putShooterState(boolean state) {
 		put("shooter_state", state);
 	}
 
-	/** Get the state of shooter; 0 = off, 1 = manual, 2 = automatic */
-	public static int getShooterState() {
-		return getInt("shooter_state");
+	/** Get the state of shooter; false = manual, true = automatic */
+	public static boolean getShooterState() {
+		return getBoolean("shooter_state");
 	}
 
 	/** Set the state of storage; true = automatic, false = manual */
-	public static void requestStorageState(boolean state) {
+	public static void putStorageState(boolean state) {
 		put("storage_state", state);
 	}
 

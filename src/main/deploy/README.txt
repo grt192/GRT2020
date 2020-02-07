@@ -1,24 +1,24 @@
 swerve xbox controller
 left joystick = swerve translation
-right joystick = manual shooter control
+right joystick = winch control -- NOTE: need some sort of dead mans switch because accidental usage could destroy linkage
+- maybe need one button to be pressed along with joystick to activate
 triggers = swerve rotation
 bumpers = ?
 pov buttons = ?
-a = run shooter
+a = linkage
 b = line up to target
 x = stop everything (shooter, lining up, intake, linkage) button?
 y = ?
 -------------------------
 mech xbox controller
 left joystick = storage control
-right joystick = winch control -- NOTE: need some sort of dead mans switch because accidental usage could destroy linkage
-- maybe need one button to be pressed along with joystick to activate
+right joystick = manual shooter control
 triggers = minor shooter adjustments
 bumpers = ?
 pov buttons = ?
-a = linkage
-b = intake
-x = ?
+a = hold to toggle automatic shooter
+b = shooter flap
+x = intake
 y = hold to toggle manual storage control
 -------------------------
 winch control - double

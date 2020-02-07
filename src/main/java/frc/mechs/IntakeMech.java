@@ -17,7 +17,8 @@ public class IntakeMech implements Mech {
 
     @Override
     public void update() {
-        motor.set(ControlMode.PercentOutput, BIGData.getIntakeSpeed());
-        sol.set(BIGData.getIntakeState());
+        boolean state = BIGData.getIntakeState();
+        motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
+        sol.set(state);
     }
 }
