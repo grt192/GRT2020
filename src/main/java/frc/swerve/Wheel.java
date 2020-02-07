@@ -13,23 +13,34 @@ import frc.util.GRTUtil;
 import frc.gen.BIGData;
 
 class Wheel {
-
+	/* encoder ticks per rotation of the rotateMotor */
 	private final double TICKS_PER_ROTATION;
+	/* offset of the encoder that is the zero value of the angle of the wheel. */
 	private int OFFSET;
 	private final double DRIVE_TICKS_TO_METERS;
 
+	/* 2*pi=6.28ish */
 	private static final double TWO_PI = Math.PI * 2;
 
+	/* proportional gain constant for turning swerve to an angle */
 	private static final double kP = 9000.0;
+	/* derivative gain constant for turning swerve to an angle */
 	private static final double kD = 0.0;
 
+	/* talon srx to control rotate motor */
 	private TalonSRX rotateMotor;
+	/* spark max to control drive motor */
 	private CANSparkMax driveMotor;
+	/* encoder for the drive motor */
 	private CANEncoder driveEncoder;
 
+	/** Name of the wheel "fr", "br", "bl", "fl" */
 	private String name;
 
+	/* whether the wheel is currently in its reversed position. */
 	private boolean reversed;
+	/* true if this Wheel is enabled, false if it is disabled. call Wheel.enable() or Wheel.disable() to change */
+	private boolean enabled;
 
 	public Wheel(String name) {
 		this.name = name;
@@ -42,11 +53,7 @@ class Wheel {
 		DRIVE_TICKS_TO_METERS = BIGData.getDouble("drive_encoder_scale");
 		configRotateMotor();
 		configDriveMotor();
-	}
-
-	public void enable() {
-		rotateMotor.set(ControlMode.Disabled, 0);
-		set(0, 0);
+		enabled = true;
 	}
 
 	/** Zeroes the wheel by updating the offset, and returns the new offset */
@@ -56,12 +63,34 @@ class Wheel {
 		return OFFSET;
 	}
 
-	public void disable() {
-		rotateMotor.set(ControlMode.Disabled, 0);
-		driveMotor.disable();
+	/** set whether this swerve module should be enabled or not.
+	 * @param enabled true if this module should be enabled, false if it should be disabled
+	 */
+	public void setEnabled(boolean enabled) {
+		System.out.println("wheel" + name + "=" + enabled);
+		if (enabled) {
+			this.enabled = true;
+			rotateMotor.set(ControlMode.Disabled, 0);
+			set(0, 0);
+		} else {
+			this.enabled = false;
+			rotateMotor.set(ControlMode.Disabled, 0);
+			driveMotor.disable();
+		}
+		System.out.println("realenable:" + this.enabled);
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 	public void set(double radians, double speed) {
+		System.out.println(enabled);
+		if (!enabled) {
+			rotateMotor.set(ControlMode.PercentOutput, 0);
+			driveMotor.set(0);
+			return;
+		}
 		if (speed != 0.0) {
 			double targetPosition = radians / TWO_PI;
 			targetPosition = GRTUtil.positiveMod(targetPosition, 1.0);

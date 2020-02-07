@@ -58,7 +58,6 @@ public class Swerve {
 	}
 
 	public void update() {
-
 		refreshVals();
 		double w = userW;
 		if (BIGData.getBoolean("PID?")) {
@@ -69,6 +68,7 @@ public class Swerve {
 		calcSwerveData();
 	}
 
+	/** load values from BIGData into this object */
 	private void refreshVals() {
 		withPID = BIGData.getBoolean("PID?");
 		angle = BIGData.getDouble("requested_angle");
@@ -91,8 +91,18 @@ public class Swerve {
 			BIGData.putZeroGyroRequest(false);
 		}
 		BIGData.putGyroAngle(gyro.getAngle());
-
+		// check if some swerve modules should be disabled or enabled
+		for (int i = 0; i < 4; i++) {
+			if (wheels[i].isEnabled() == BIGData.getSwerveDisable(i)) {
+				System.out.println("calling setEnable on " + wheels[i].getName());
+				System.out.println("enabled=" + wheels[i].isEnabled() + ",disabled=" + BIGData.getSwerveDisable(i));
+				// if wheel is enabled but it should be disabled
+				// or if wheel is disabled but should be enabled
+				wheels[i].setEnabled(!BIGData.getSwerveDisable(i));
+			}
+		}
 		for (Wheel wheel : wheels) {
+			// put readable wheel speeds to BIGData
 			BIGData.putWheelRawDriveSpeed(wheel.getName(), wheel.getRawDriveSpeed());
 			BIGData.putWheelRawRotateSpeed(wheel.getName(), wheel.getRawRotateSpeed());
 		}
@@ -117,10 +127,7 @@ public class Swerve {
 
 	/**
 	 * sets the angle of the robot
-	 * 
-	 * 
-	 * @param angle
-	 *                  the angle to turn the robot to, in radians
+	 * @param angle the angle to turn the robot to, in radians
 	 */
 	private void setAngle(double angle) {
 		withPID = true;
