@@ -17,9 +17,8 @@ public class WinchMech implements Mech {
 
     @Override
     public void update() {
-        if (BIGData.getWinchState()) {
-            speed = BIGData.getWinchSpeed();
-            motor.set(speed);
-        }
+        boolean state = BIGData.getWinchState();
+        speed = BIGData.getWinchSpeed();
+        motor.set(state ? speed : 0);
     }
 }
