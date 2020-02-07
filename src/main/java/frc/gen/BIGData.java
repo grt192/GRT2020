@@ -273,6 +273,14 @@ public class BIGData {
 		return getDouble("winch_speed");
 	}
 
+	public static void putWinchState(boolean state) {
+		put("winch_state", state);
+	}
+
+	public static boolean getWinchState() {
+		return getBoolean("winch_state");
+	}
+
 	/** set the original value of the first joystick profile point */
 	public static void setJoystickX1(double x1) {
 		put("joystick_x1", x1);
