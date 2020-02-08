@@ -28,8 +28,8 @@ public class Bezier {
         xvals = new double[4]; 
         yvals = new double[4];
 
-        xnodes = new ArrayList<Double>();
-        ynodes = new ArrayList<Double>();
+        xnodes = new ArrayList<>();
+        ynodes = new ArrayList<>();
 
         put();
         find();
@@ -45,7 +45,7 @@ public class Bezier {
     }
 
     public ArrayList<Node> find(){
-        ArrayList<Node> nodes = new ArrayList<Node>();
+        ArrayList<Node> nodes = new ArrayList<>();
 		double xval;
 		double yval;
 		xnodes.clear();

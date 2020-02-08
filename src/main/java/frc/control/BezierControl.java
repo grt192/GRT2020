@@ -13,10 +13,12 @@ public class BezierControl extends Mode {
 
     private static Vector velocity;
     private static Vector currentPos;
+    private static Vector targetPos;
 
     private static boolean newSpline;
 
     private static double d;
+    private static double distance;
     private static int counter;
 
     private static ArrayList<Vector> control_pts;
@@ -31,8 +33,9 @@ public class BezierControl extends Mode {
 
     @Override
     public boolean loop() {
+        BIGData.put("robot_centric", false);
         currentPos = BIGData.getPosition("curr");
-        currentPos = new Vector(30, 100);
+        targetPos = Target.getTarget();
         control_pts = Target.getBezier();
 
         runBezier();
@@ -40,7 +43,7 @@ public class BezierControl extends Mode {
     }
 
     private static boolean check() {
-        if (d < e) {
+        if (distance < e) {
             BIGData.requestDrive(0, 0, 0);
             return false;
         }
@@ -53,6 +56,7 @@ public class BezierControl extends Mode {
             spline = new Bezier(currentPos, control_pts.get(0), control_pts.get(1), control_pts.get(2));
             newSpline = false;
         }
+        distance = currentPos.distanceTo(targetPos);
         d = currentPos.distanceTo(spline.getNext(counter));
         // TODO: test the value
         if (d <= 1 && counter < spline.size()) {

@@ -81,6 +81,8 @@ public class Autonomous {
                 break;
             case "bez":
                 Target.setBezier(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])), new Vector(Double.parseDouble(cmd[3]), Double.parseDouble(cmd[4])), new Vector(Double.parseDouble(cmd[5]), Double.parseDouble(cmd[6])));
+                robot.setMode(2);
+                break;
             case "swerve":
                 robot.setMode(0);
                 BIGData.requestDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),

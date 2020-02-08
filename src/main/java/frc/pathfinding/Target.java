@@ -12,7 +12,7 @@ public class Target {
     private static Vector c1, c2;
 
     public Target() {
-        targets = new ArrayList<Vector>();
+        targets = new ArrayList<>();
     }
 
     public static void put(Vector v) {
@@ -67,14 +67,5 @@ public class Target {
         array.add(c2);
         array.add(target);
         return array;
-    }
-
-    public static ArrayList<double[]> convert() {
-        ArrayList<double[]> converted = new ArrayList<double[]>();
-        for (int i = 0; i < size(); i++) {
-            double[] point = {get(i).x, get(i).y};
-            converted.add(point);
-        }
-        return converted;
     }
 }

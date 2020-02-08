@@ -72,6 +72,7 @@ public class Swerve {
 	private void refreshVals() {
 		withPID = BIGData.getBoolean("PID?");
 		angle = BIGData.getDouble("requested_angle");
+		robotCentric = BIGData.getBoolean("robot_centric");
 
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();

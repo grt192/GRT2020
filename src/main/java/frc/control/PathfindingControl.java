@@ -25,11 +25,13 @@ public class PathfindingControl extends Mode {
 
     @Override
     public boolean loop() {
+        BIGData.put("robot_centric", false);
         currentPos = BIGData.getPosition("curr");
         targetPos = Target.getTarget();
 
         if (Target.size() <= 0)
             path.searchAStar(currentPos);
+        
         nextPos = Target.getNext();
 
         if (nextPos == null)
