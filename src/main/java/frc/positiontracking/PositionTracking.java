@@ -80,7 +80,9 @@ public class PositionTracking {
         Mat U = new Mat(STATES, 1, TYPE);
         U.put(0, 0, data.encoderVX, data.encoderVY);
         kf.predict(U);
-        Vector estimate = BIGData.getCameraPos();
+        //TODO: change this later
+        //Vector estimate = BIGData.getCameraPos();
+        Vector estimate = null;
         if (estimate != null) {
             Mat Z = new Mat(STATES, 1, TYPE);
             Z.put(0, 0, estimate.x, estimate.y);
@@ -89,7 +91,7 @@ public class PositionTracking {
         double tempX = getX();
         double tempY = getY();
         double FIELD_HEIGHT = 629.25;
-        double FIELD_WIDTH = 323.31;
+        double FIELD_WIDTH = 323.25;
         if (tempX < (-1 * FIELD_HEIGHT) || tempX > (2 * FIELD_HEIGHT) || tempY < (-1 * FIELD_WIDTH) || tempY > (2 * FIELD_WIDTH)) {
             System.out.println("An error occured, resetting to last position");
             set(cachedX, cachedY);
@@ -97,7 +99,9 @@ public class PositionTracking {
             cachedX = tempX;
             cachedY = tempY;
         }
-        Vector curr_pos = new Vector(tempX, tempY);
+        Vector curr_pos = new Vector(-1 * tempY, tempX);
+        //TODO: remove after debugging
+        //System.out.println("curr_x:" + curr_pos.x + " curr_y:" + curr_pos.y);
         BIGData.setPosition(curr_pos, "curr");
     }
 }

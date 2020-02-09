@@ -69,6 +69,9 @@ class DriverControl extends Mode {
         }
         BIGData.requestDrive(x, y, rotate);
 
+        //TODO: remove after debugging
+        System.out.println("curr_x" + BIGData.getPosition("curr").x + " curr_y: " + BIGData.getPosition("curr").y);
+
     }
 
     // private void driveMechs() {

@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
   private NetworkTableEntry mode;
   private Autonomous autonomous;
 
+  public static BIGData data;
   public static Brain brain;
   public static Target target;
   public static ClientCamera clientcamera;
@@ -47,6 +48,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     BIGData.start();
+    BIGData.put("gyro_ang", 0.0);
     JoystickProfile.init();
     BIGData.put("robot_width", 33.0);
     BIGData.put("robot_height", 38.5);
@@ -126,7 +128,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    autonomous.init("test2.txt");
+    autonomous.init("bezier.txt");
   }
 
   /**

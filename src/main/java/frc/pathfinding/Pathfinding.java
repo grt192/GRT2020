@@ -14,6 +14,7 @@ public class Pathfinding {
     private FieldMap field;
 
     private HashSet<Node> nodes;
+    private HashSet<Node> bezier_nodes;
     private Node targetNode;
 
     public Pathfinding() {
@@ -109,10 +110,58 @@ public class Pathfinding {
     }
 
     private void initNodes() {
+        nodes = new HashSet<>();
+
+        // blue initiation line
+        addNode(new Node(new Vector(120, 297.25)));
+        addNode(new Node(new Vector(120, 271.25)));
+        addNode(new Node(new Vector(120, 161.625)));
+        addNode(new Node(new Vector(120, 52)));
+        addNode(new Node(new Vector(120, 26)));
+
+        // red initiation line
+        addNode(new Node(new Vector(509.25, 297.25)));
+        addNode(new Node(new Vector(509.25, 271.25)));
+        addNode(new Node(new Vector(509.25, 161.625)));
+        addNode(new Node(new Vector(509.25, 52)));
+        addNode(new Node(new Vector(509.25, 26)));
+
+        //middle trench runs
+        addNode(new Node(new Vector(206.625, 25)));
+        addNode(new Node(new Vector(249.825, 25)));
+        addNode(new Node(new Vector(293.025, 25)));
+        addNode(new Node(new Vector(422.625, 25)));
+
+        addNode(new Node(new Vector(206.625, 298.25)));
+        addNode(new Node(new Vector(336.225, 298.25)));
+        addNode(new Node(new Vector(379.425, 298.25)));
+        addNode(new Node(new Vector(422.625, 298.25)));
+
+        //outer red trench run
+        addNode(new Node(new Vector(206.625, 271.25)));
+        addNode(new Node(new Vector(249.825, 271.25)));
+        addNode(new Node(new Vector(293.025, 297.25)));
+        addNode(new Node(new Vector(422.625, 271.25)));
+
+        //outer blue trench run
+        addNode(new Node(new Vector(206.625, 52)));
+        addNode(new Node(new Vector(336.225, 52)));
+        addNode(new Node(new Vector(379.425, 52)));
+        addNode(new Node(new Vector(422.625, 52)));
+
+        // target and loading zones
+        addNode(new Node(new Vector(30, 100.65)));
+        addNode(new Node(new Vector(30, 229.531)));
+        addNode(new Node(new Vector(599.25, 100.65)));
+        addNode(new Node(new Vector(599.25, 229.531)));
+
+        // middle of target and loading zones
+        addNode(new Node(new Vector(30, 161.625)));
+        addNode(new Node(new Vector(599.25, 161.625)));
     }
 
     private void initBezierNodes() {
-        nodes = new HashSet<>();
+        bezier_nodes = new HashSet<>();
 
         addNode(new Node(new Vector(120, 53.875)));
         addNode(new Node(new Vector(509.25, 53.875)));
@@ -168,7 +217,7 @@ public class Pathfinding {
 
     private void modulateX(double comparison, double n, int times) {
         HashSet<Node> newNodes = new HashSet<>();
-        for (Node node : nodes) {
+        for (Node node : bezier_nodes) {
             if (node.pos.x == comparison) {
                 for (int i = 1; i <= times; i++) {
                     newNodes.add(new Node(new Vector(comparison + n * i, node.pos.y)));
@@ -182,7 +231,7 @@ public class Pathfinding {
 
     private void modulateY(double comparison, double n, int times) {
         HashSet<Node> newNodes = new HashSet<>();
-        for (Node node : nodes) {
+        for (Node node : bezier_nodes) {
             if (node.pos.y == comparison) {
                 for (int i = 0; i < times; i++) {
                     newNodes.add(new Node(new Vector(node.pos.x, comparison + n * i)));
@@ -209,6 +258,7 @@ public class Pathfinding {
     }
 
     private void removeNode(Node n) {
+
         nodes.remove(n);
         for (Node node : nodes) {
             node.neighbors.remove(n);
