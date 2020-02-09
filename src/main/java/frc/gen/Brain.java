@@ -35,7 +35,5 @@ public class Brain implements Runnable {
         // mechs.update();
         shuffleboardCommands.update();
         //fieldGUI.update();
-
-        BIGData.put("voltage", pdp.getVoltage());
     }
 }
