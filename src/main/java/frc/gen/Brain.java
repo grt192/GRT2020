@@ -14,7 +14,7 @@ public class Brain implements Runnable {
 
     public Brain() {
         swerve = new Swerve();
-        mechs = new MechCollection();
+        // mechs = new MechCollection();
         shuffleboardCommands = new ShuffleboardCommands();
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
@@ -22,7 +22,7 @@ public class Brain implements Runnable {
 
     public void run() {
         swerve.update();
-        mechs.update();
+        // mechs.update();
         shuffleboardCommands.update();
     }
 }
