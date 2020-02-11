@@ -12,12 +12,11 @@ public class MechCollection {
         mechs.add(new ShooterMech());
         mechs.add(new StorageMech());
         mechs.add(new WinchMech());
-        mechs.add(new LidarMech());
     }
 
     public void update() {
         for (Mech m : mechs) {
             m.update();
         }
-    }
+    }    
 }

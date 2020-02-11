@@ -53,7 +53,7 @@ public class ShooterMech implements Mech {
             pid.setReference(newSpeed, ControlType.kVelocity);
         }
     }
-
+    
     public void setSpeed(double rpm) {
         pid.setReference(rpm, ControlType.kVelocity);
         // System.out.println(getSpeed());
