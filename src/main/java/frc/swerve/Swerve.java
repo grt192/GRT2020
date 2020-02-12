@@ -2,8 +2,6 @@ package frc.swerve;
 
 import static frc.gen.BIGData.FR_WHEEL;
 
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
-
 import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.BL_WHEEL;
 import static frc.gen.BIGData.FL_WHEEL;
