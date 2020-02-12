@@ -10,9 +10,9 @@ public class MechCollection {
         mechs.add(new IntakeMech());
         mechs.add(new LinkageMech());
         mechs.add(new ShooterMech());
-        mechs.add(new StorageMech());
-        mechs.add(new WinchMech());
-        mechs.add(new LidarMech());
+        // mechs.add(new StorageMech());
+        // mechs.add(new WinchMech());
+        // mechs.add(new LidarMech());
     }
 
     public void update() {

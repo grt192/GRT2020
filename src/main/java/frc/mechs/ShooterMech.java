@@ -19,6 +19,7 @@ public class ShooterMech implements Mech {
     private boolean shooterUp;
 
     public ShooterMech() {
+        System.out.println(BIGData.getInt("one_wheel_shooter"));
         this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
         this.pid = motor.getPIDController();
         // TODO: improve PID
@@ -26,21 +27,20 @@ public class ShooterMech implements Mech {
         this.encoder = motor.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
-        this.hood = new Solenoid(BIGData.getInt("one_wheel_hood"));
+        this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
     }
 
     public void update() {
-
         // Hood Toggle
         shooterUp = BIGData.getBoolean("shooter_up");
-        if (shooterUp) {
-            hood.set(shooterUp);
-        }
+        hood.set(shooterUp);
 
         boolean mode = BIGData.getShooterState();
         // mode being false means shooter is off
+        // SSystem.out.println(mode);
         if (!mode) {
-            pid.setReference(BIGData.getDouble("shooter_manual"), ControlType.kVoltage);
+            motor.set(BIGData.getDouble("shooter_manual"));
+            // motor.set(BIGData.getDouble("shooter_manual"));
             // mode being true means it's in automatic control, speed calculated based on
             // distance to vision target
         } else {
@@ -48,6 +48,8 @@ public class ShooterMech implements Mech {
             double rpm = calcSpeed(range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
+            newSpeed = -5000;
+            rpm = -5000;
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             pid.setReference(newSpeed, ControlType.kVelocity);

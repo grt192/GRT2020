@@ -12,12 +12,16 @@ public class IntakeMech implements Mech {
 
     public IntakeMech() {
         motor = new TalonSRX(BIGData.getInt("intake_talon_id"));
-        sol = new Solenoid(BIGData.getInt("intake_sol_id"));
+
+        System.out.println(BIGData.getInt("intake_sol_id"));
+
+        sol = new Solenoid(1, BIGData.getInt("intake_sol_id"));
     }
 
     @Override
     public void update() {
         boolean state = BIGData.getIntakeState();
+        System.out.println(BIGData.getDouble("intake_speed"));
         motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
         sol.set(state);
     }

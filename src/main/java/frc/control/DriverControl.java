@@ -77,11 +77,11 @@ class DriverControl extends Mode {
             BIGData.requestLinkageState(!currState);
         }
 
-        BIGData.putWinchState(Input.SWERVE_XBOX.getYButtonPressed());
-        double rTriggerSwerve = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
-        BIGData.requestWinchSpeed(rTriggerSwerve);
+        BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
+        double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
+        BIGData.requestWinchSpeed(rJoystickSwerve);
 
-        BIGData.putShooterState(Input.MECH_XBOX.getAButtonPressed());
+        BIGData.putShooterState(Input.MECH_XBOX.getAButton());
 
         if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
             int offsetChange = BIGData.getInt("shooter_offset_change");
@@ -97,11 +97,11 @@ class DriverControl extends Mode {
 
         BIGData.putStorageState(!Input.MECH_XBOX.getYButtonPressed());
 
-        double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
-        BIGData.requestStorageSpeed(lTriggerMech);
+        double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);
+        BIGData.requestStorageSpeed(lJoystickMech);
 
-        double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
-        BIGData.put("shooter_manual", rTriggerMech);
+        double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
+        BIGData.put("shooter_manual", rJoystickMech);
 
         if (Input.MECH_XBOX.getBButtonReleased()) {
             boolean shooterUp = BIGData.getBoolean("shooter_up");
