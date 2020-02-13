@@ -24,13 +24,30 @@ public class IntakeMech implements Mech {
     public void update() {
         boolean state = BIGData.getIntakeState();
         boolean disable = BIGData.getDisabled(1);
-        if (disable) {
-            disable();
+        // if (disable) {
+        //     disable();
+        // } else {
+        //     motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
+        //     sol.set(state);
+        // }
+
+        if (state) {
+            switch (BIGData.getInt("roller_mode")) {
+            case 0:
+                motor.set(ControlMode.PercentOutput, 0);
+                break;
+            case 1:
+                motor.set(ControlMode.PercentOutput, BIGData.getDouble("intake_speed"));
+                break;
+            case 2:
+                motor.set(ControlMode.PercentOutput, -BIGData.getDouble("intake_speed"));
+                break;
+            }
         } else {
-            motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
-            sol.set(state);
+            motor.set(ControlMode.PercentOutput, 0);
         }
-        System.out.println(BIGData.getDouble("intake_speed"));
+        sol.set(state);
+        //System.out.println(BIGData.getDouble("intake_speed"));
     }
 
     public void disable() {
