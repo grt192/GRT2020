@@ -89,6 +89,18 @@ public class BIGData {
 		return map.get(key);
 	}
 
+	public static boolean getDisabled(int i) {
+		switch (i) {
+		case 1:
+			return getBoolean("stage_1_disabled");
+		case 2:
+			return getBoolean("stage_2_disabled");
+		case 3:
+			return getBoolean("stage_3_disabled");
+		}
+		return false;
+	}
+
 	/**
 	 * Pass in one of four constants: FR_WHEEL, BR_WHEEL, BL_WHEEL, FL_WHEEL to get
 	 * the wheel's name "fr", "br", "bl", "fl"
