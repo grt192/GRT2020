@@ -52,7 +52,7 @@ shooter_high_angle=25
 shooter_up=false
 shooter_offset_change=100
 
-#Solenoid
+#Solenoid for one wheel shooter
 one_wheel_hood=4
 
 # lidar pwm channel
