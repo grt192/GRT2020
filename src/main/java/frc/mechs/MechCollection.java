@@ -7,7 +7,7 @@ public class MechCollection {
 
     public MechCollection() {
         mechs = new ArrayList<>();
-        // mechs.add(new IntakeMech());
+        mechs.add(new IntakeMech());
         // mechs.add(new LinkageMech());
         // mechs.add(new ShooterMech());
         mechs.add(new StorageMech());

@@ -15,6 +15,7 @@ public class ShooterMech implements Mech {
     private CANEncoder encoder;
     private CANPIDController pid;
     private double kP, kI, kFF, kMaxOutput, kMinOutput;
+    private double currentSpike;
     private Solenoid hood;
     private boolean shooterUp;
 
@@ -30,9 +31,12 @@ public class ShooterMech implements Mech {
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
+        // currentSpike = BIGData.getDouble("current_spike");
+        currentSpike = 12;
     }
 
     public void update() {
+        ballShot();
         // Hood Toggle
         shooterUp = BIGData.getBoolean("shooter_up");
         hood.set(shooterUp);
@@ -88,6 +92,16 @@ public class ShooterMech implements Mech {
 
     public double getSpeed() {
         return encoder.getVelocity();
+    }
+
+    public void ballShot() {
+        double current = motor.getOutputCurrent();
+        if (current > currentSpike) {
+            BIGData.put("ball_shot", true);
+        } else {
+            BIGData.put("ball_shot", false);
+        }
+        System.out.println("current: " + current);
     }
 
     public void disable() {
