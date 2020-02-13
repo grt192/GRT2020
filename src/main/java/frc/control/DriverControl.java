@@ -79,6 +79,7 @@ class DriverControl extends Mode {
 
         BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
         double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
+        rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
         BIGData.requestWinchSpeed(rJoystickSwerve);
 
         BIGData.putShooterState(Input.MECH_XBOX.getAButton());
@@ -95,12 +96,14 @@ class DriverControl extends Mode {
             BIGData.put("shooter_auto_offset", currOffset + offsetChange);
         }
 
-        BIGData.putStorageState(!Input.MECH_XBOX.getYButtonPressed());
+        BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
 
         double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);
+        lJoystickMech = JoystickProfile.applyProfile(lJoystickMech);
         BIGData.requestStorageSpeed(lJoystickMech);
 
         double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
+        rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
         BIGData.put("shooter_manual", rJoystickMech);
 
         if (Input.MECH_XBOX.getBButtonReleased()) {

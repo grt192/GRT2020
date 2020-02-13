@@ -57,3 +57,12 @@ one_wheel_hood=4
 
 # lidar pwm channel
 lidar_pwm=0
+
+#conveyor sensors
+intake_analog=3
+top_analog=2
+middle_analog=1
+bottom_analog=0
+
+storage_motor=8
+storage_speed_auto=0.1
