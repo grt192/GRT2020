@@ -21,6 +21,8 @@ public class ShooterMech implements Mech {
     public ShooterMech() {
         System.out.println(BIGData.getInt("one_wheel_shooter"));
         this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
+        motor.setSmartCurrentLimit(10);
+        motor.setSecondaryCurrentLimit(15);
         this.pid = motor.getPIDController();
         // TODO: improve PID
         configPID();
@@ -38,7 +40,10 @@ public class ShooterMech implements Mech {
         boolean mode = BIGData.getShooterState();
         // mode being false means shooter is off
         // SSystem.out.println(mode);
-        if (!mode) {
+        boolean disabled = BIGData.getDisabled(2);
+        if (disabled) {
+            disable();
+        } else if (!mode) {
             motor.set(BIGData.getDouble("shooter_manual"));
             // motor.set(BIGData.getDouble("shooter_manual"));
             // mode being true means it's in automatic control, speed calculated based on
@@ -83,5 +88,9 @@ public class ShooterMech implements Mech {
 
     public double getSpeed() {
         return encoder.getVelocity();
+    }
+
+    public void disable() {
+        motor.close();
     }
 }

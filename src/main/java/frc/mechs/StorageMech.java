@@ -18,7 +18,7 @@ public class StorageMech implements Mech {
     private AnalogInput intake, top, bottom, middle;
     private TalonSRX motor;
 
-    private int ultrasonicRange, revRange, IRRange, IRIntakeRange;
+    private int ultrasonicRange, revRange, IRRange, IRIntakeRange, IRBotRange;
 
     private double storageVelocity;
 
@@ -44,12 +44,17 @@ public class StorageMech implements Mech {
         bottom = new AnalogInput(BIGData.getInt("bottom_analog"));
         this.motor = new TalonSRX(BIGData.getInt("storage_motor"));
         motor.setNeutralMode(NeutralMode.Brake);
+        motor.configContinuousCurrentLimit(10, 0);
+        motor.configPeakCurrentLimit(15, 0);
+        motor.configPeakCurrentDuration(100, 0);
+        motor.enableCurrentLimit(true);
         // System.out.println("GOT PAST IR INITIAL");
         storageVelocity = BIGData.getStorageSpeedAuto();
         ultrasonicRange = BIGData.getInt("ultrasonic_range");
         // revRange = BIGData.getInt("rev_range");
         // IRRange = BIGData.getInt("ir_range");
         IRIntakeRange = 1100;
+        IRBotRange = 1300;
         IRRange = 1400;
         count = 0;
         topMedVal = 0;
@@ -69,7 +74,10 @@ public class StorageMech implements Mech {
 
     public void update() {
         boolean state = BIGData.getStorageState();
-        if (state) {
+        boolean disable = BIGData.getDisabled(1);
+        if (disable) {
+            disable();
+        } else if (state) {
             automaticControl();
         } else {
             double speed = BIGData.getStorageSpeed();
@@ -101,7 +109,7 @@ public class StorageMech implements Mech {
         // setSpeeds(BIGData.getDouble("storage_rpm"));
         lemonInTop = topMedVal > IRRange;
         lemonInMiddle = midMedVal > IRRange;
-        lemonInBottom = botMedVal > IRRange;
+        lemonInBottom = botMedVal > IRBotRange;
         intakeSeen = intakeMedVal > IRIntakeRange;
         // shooterSeen = SHOOTER.getProximity() < revRange;
 
@@ -146,18 +154,18 @@ public class StorageMech implements Mech {
 
         // if only one lemon in conveyor, try to get to middle storage spot
         if (conveyerCount == 1 && !lemonInMiddle) {
-            // motor.set(ControlMode.PercentOutput, storageVelocity);
+            motor.set(ControlMode.PercentOutput, storageVelocity);
         } else {
-            // motor.set(ControlMode.PercentOutput, 0.0);
+            motor.set(ControlMode.PercentOutput, 0.0);
         }
 
         if (conveyerCount == 1 && !lemonInMiddle && lemonInTop) {
-            // motor.set(ControlMode.PercentOutput, -storageVelocity);
+            motor.set(ControlMode.PercentOutput, -storageVelocity);
         }
 
         // if two lemons in conveyor, try to get them in top and middle spots
         if (conveyerCount == 2 && !lemonInTop) {
-            // motor.set(ControlMode.PercentOutput, storageVelocity);
+            motor.set(ControlMode.PercentOutput, storageVelocity);
         }
 
         // means that one lemon got too far, reverse to maintain consistency
@@ -181,5 +189,9 @@ public class StorageMech implements Mech {
 
         BIGData.put("lemon_count", lemonCount);
         SmartDashboard.putNumber("Lemon Count", BIGData.getInt("lemon_count"));
+    }
+
+    public void disable() {
+        motor.set(ControlMode.Current, 0);
     }
 }
