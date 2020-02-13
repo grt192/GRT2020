@@ -1,5 +1,12 @@
 package frc.mechs;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -10,6 +17,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 import frc.gen.BIGData;
 
 public class ShooterMech implements Mech {
+    // lookup table rpms for shooting in increments of 1 foot.
+    // rpmTable[i] is the rpm to shoot at, i feet away from target (horizontal distance)
+    private int[] rpmTable;
+    private static final int DEFAULT_MIN_RPM = 2000;
+    private static final int DEFAULT_MAX_RPM = 6000;
 
     private CANSparkMax motor;
     private CANEncoder encoder;
@@ -33,6 +45,67 @@ public class ShooterMech implements Mech {
         this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
         currentSpike = 12;
+        
+        initRPMTable();
+    }
+    private void initRPMTable() {
+        rpmTable = new int[50];
+        String rpmFileName = BIGData.getString("shooter_rpm_file");
+        SortedMap<Integer, Integer> rpmMap = new TreeMap<Integer, Integer>();
+        String directory = "/home/lvuser/deploy"; 
+        try {
+            Scanner in = new Scanner(new File(directory, rpmFileName));
+            while (in.hasNextLine()) {
+                String line = in.nextLine().trim();
+                if (line.length() > 0 && line.charAt(0) != '#') {
+                    String[] split = line.split(",");
+                    try {
+                        int a = Integer.parseInt(split[0]);
+                        int b = Integer.parseInt(split[1]);
+						System.out.println("loaded two ints: " + a + "," + b);
+                        rpmMap.put(a,b);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.out.println("unable to parse line: " + line);
+                    } catch (NumberFormatException e) {
+                        System.out.println("unable to parse line: " + line);
+                    }
+                }
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("UNABLE TO LOAD SHOOTER VALUES! SHOOTER WILL BE BAD!");
+        } catch (Exception e) {
+            System.out.println("something bad happened in initRPMTable!");
+        } finally {
+            if (rpmMap.size() < 2) {
+                rpmMap.put(0, DEFAULT_MIN_RPM);
+                rpmMap.put(rpmTable.length-1, DEFAULT_MAX_RPM);
+            }
+        }
+        if (!rpmMap.containsKey(0)) {
+            rpmMap.put(0, DEFAULT_MIN_RPM);
+        } if (!rpmMap.containsKey(rpmTable.length-1)) {
+            rpmMap.put(rpmTable.length-1, DEFAULT_MAX_RPM);
+        }
+        // linear interpolation
+        int prevIndex = 0;
+        int prevNum = rpmMap.get(prevIndex);
+        for (Map.Entry<Integer, Integer> e : rpmMap.entrySet()) {
+            if (e.getKey() < rpmTable.length) {
+                interpolate(rpmTable, prevIndex, e.getKey(), prevNum, e.getValue());
+                prevIndex = e.getKey();
+                prevNum = e.getValue();
+            }
+        }
+    }
+    private void interpolate(int[] output, int startIndex, int endIndex, int startNum, int endNum) {
+        if (startIndex == endIndex) {
+            output[startIndex] = startNum;
+            return;
+        }
+        for (int i = startIndex; i <= endIndex; i++) {
+            output[i] = startNum +((i - startIndex) * (endNum - startNum)) / (endIndex - startIndex);
+        }
     }
 
     public void update() {
@@ -70,9 +143,14 @@ public class ShooterMech implements Mech {
         // System.out.println(getSpeed());
     }
 
+    /**
+     * Takes a distance from the target (horizontal distance, in inches) and 
+     * returns a speed in rpm to run the shooter at.
+     * @param range the distance from the target in inches
+     * @return the rpm to run the shooter at
+     */
     public double calcSpeed(double range) {
-        // TODO: make an actual formula for this
-        return range * 10;
+        return rpmTable[(int)(range/12)];
     }
 
     public void configPID() {
