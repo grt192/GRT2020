@@ -122,6 +122,16 @@ class DriverControl extends Mode {
             BIGData.requestIntakeState(!currState);
         }
 
+        double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
+        double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
+        if (lTriggerMech > 0.8) {
+            BIGData.put("roller_mode", 1);
+        } else if (rTriggerMech > 0.8) {
+            BIGData.put("roller_mode", 2);
+        } else {
+            BIGData.put("roller_mode", 0);
+        }
+
         double wheelV = Math.sqrt(Math.pow(BIGData.getDouble("enc_vx") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2)
                 + Math.pow(BIGData.getDouble("enc_vy") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2));
         double distanceRPM = 7;

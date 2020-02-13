@@ -22,7 +22,22 @@ public class IntakeMech implements Mech {
     public void update() {
         boolean state = BIGData.getIntakeState();
         System.out.println(BIGData.getDouble("intake_speed"));
-        motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
+
+        if (state) {
+            switch (BIGData.getInt("roller_mode")) {
+            case 0:
+                motor.set(ControlMode.PercentOutput, 0);
+                break;
+            case 1:
+                motor.set(ControlMode.PercentOutput, BIGData.getDouble("intake_speed"));
+                break;
+            case 2:
+                motor.set(ControlMode.PercentOutput, -BIGData.getDouble("intake_speed"));
+                break;
+            }
+        } else {
+            motor.set(ControlMode.PercentOutput, 0);
+        }
         sol.set(state);
     }
 }
