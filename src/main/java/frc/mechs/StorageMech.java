@@ -24,6 +24,8 @@ public class StorageMech implements Mech {
 
     // private final int range = 400;
     private boolean intakingLemon, waitingLemon = false;
+    private boolean topWaiting = false;
+    private boolean ballShotCounted = false;
 
     private int lemonCount = 0;
     private int conveyerCount = 0;
@@ -55,7 +57,7 @@ public class StorageMech implements Mech {
         // IRRange = BIGData.getInt("ir_range");
         IRIntakeRange = 1100;
         IRBotRange = 1300;
-        IRRange = 1400;
+        IRRange = 1300;
         count = 0;
         topMedVal = 0;
         botMedVal = 0;
@@ -148,6 +150,24 @@ public class StorageMech implements Mech {
             conveyerCount = lemonCount;
         }
 
+        if (lemonInTop) {
+            topWaiting = true;
+        }
+
+        if (topWaiting && !lemonInTop) {
+            lemonCount--;
+            conveyerCount--;
+            topWaiting = false;
+        }
+
+        // if (BIGData.getBoolean("ball_shot") && !ballShotCounted){
+        //     lemonCount--;
+        //     conveyerCount--;
+        //     ballShotCounted = true;
+        // } else {
+        //     ballShotCounted = false;
+        // }
+
         // if (bottom.getValue() > IRRange) {
         // conveyerSeenLemon = true;
         // }
@@ -159,14 +179,20 @@ public class StorageMech implements Mech {
             motor.set(ControlMode.PercentOutput, 0.0);
         }
 
-        if (conveyerCount == 1 && !lemonInMiddle && lemonInTop) {
+        if (conveyerCount == 1 && lemonInTop) {
             motor.set(ControlMode.PercentOutput, -storageVelocity);
         }
 
         // if two lemons in conveyor, try to get them in top and middle spots
         if (conveyerCount == 2 && !lemonInTop) {
             motor.set(ControlMode.PercentOutput, storageVelocity);
+        } else if (conveyerCount == 2){
+            motor.set(ControlMode.PercentOutput, 0.0);
         }
+
+        // if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
+        //     motor.set(ControlMode.PercentOutput, -storageVelocity);
+        // }
 
         // means that one lemon got too far, reverse to maintain consistency
         // if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
@@ -175,13 +201,18 @@ public class StorageMech implements Mech {
 
         // System.out.println("count: " + count);
 
-        System.out.println("lemon count: " + lemonCount);
-        System.out.println("conveyor count: " + conveyerCount);
+        // System.out.println("lemon count: " + lemonCount);
+        // System.out.println("conveyor count: " + conveyerCount);
 
-        System.out.println("Top sensor " + topMedVal);
-        System.out.println("Bot sensor " + botMedVal);
-        System.out.println("Mid sensor " + midMedVal);
-        System.out.println("Intake sensor: " + intakeMedVal);
+        // System.out.println("Top sensor " + lemonInTop);
+        // System.out.println("Bot sensor " + lemonInBottom);
+        // System.out.println("Mid sensor " + lemonInMiddle);
+        //System.out.println("Intake sensor: " + intakeMedVal);
+
+        // System.out.println("Top sensor " + topMedVal);
+        // System.out.println("Bot sensor " + botMedVal);
+        // System.out.println("Mid sensor " + midMedVal);
+        // System.out.println("Intake sensor: " + intakeMedVal);
         // System.out.println("Top sensor " + top.getValue());
         // System.out.println("Bot sensor " + bottom.getValue());
         // System.out.println("Mid sensor " + middle.getValue());

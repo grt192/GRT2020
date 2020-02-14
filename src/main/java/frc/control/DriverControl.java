@@ -16,14 +16,6 @@ class DriverControl extends Mode {
     private int pov = -1;
     private int lastPov;
 
-    private final double WHEEL_RADIUS = 2;
-    private final double MINTUES_TO_SECONDS = 60;
-    private final double TICKS_PER_ROTATION = BIGData.getDouble("ticks_per_rotation");
-    private final double DRIVE_ENCODER_SCALE = BIGData.getDouble("drive_encoder_scale");
-    private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
-    private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
-    private double shooterAngle;
-
     @Override
     public boolean loop() {
         JoystickProfile.updateProfilingPoints();
@@ -110,11 +102,6 @@ class DriverControl extends Mode {
             boolean shooterUp = BIGData.getBoolean("shooter_up");
             shooterUp = !shooterUp;
             BIGData.put("shooter_up", shooterUp);
-            if (shooterUp) {
-                shooterAngle = SHOOTER_HIGH_ANGLE;
-            } else {
-                shooterAngle = LOW_HIGH_ANGLE;
-            }
         }
 
         if (Input.MECH_XBOX.getXButtonReleased()) {
@@ -131,21 +118,6 @@ class DriverControl extends Mode {
         } else {
             BIGData.put("roller_mode", 0);
         }
-
-        double wheelV = Math.sqrt(Math.pow(BIGData.getDouble("enc_vx") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2)
-                + Math.pow(BIGData.getDouble("enc_vy") / TICKS_PER_ROTATION * DRIVE_ENCODER_SCALE, 2));
-        double distanceRPM = 7;
-        // TODO: function to get RPM
-
-        double distanceV = distanceRPM * MINTUES_TO_SECONDS * WHEEL_RADIUS * Math.cos(shooterAngle);
-
-        double relativeAng = Math.PI / 2 - Math.abs(BIGData.getDouble("lidar_relative"));
-
-        double shooterV = Math
-                .sqrt(Math.pow(distanceV, 2) + Math.pow(wheelV, 2) - wheelV * distanceV * Math.cos(relativeAng))
-                / Math.cos(shooterAngle);
-
-        double newAzimuth = Math.signum(relativeAng) * Math.asin(Math.sin(-relativeAng) * wheelV / shooterV);
 
     }
 

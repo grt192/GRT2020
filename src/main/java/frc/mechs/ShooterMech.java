@@ -29,8 +29,15 @@ public class ShooterMech implements Mech {
     private CANEncoder encoder;
     private CANPIDController pid;
     private double kP, kI, kFF, kMaxOutput, kMinOutput;
+    private double currentSpike;
     private Solenoid hood;
     private boolean shooterUp;
+
+    private final double WHEEL_RADIUS = 2;
+    private final double MINUTES_TO_SECONDS = 60;
+    private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
+    private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
+    private double shooterAngle;
 
     public ShooterMech() {
         System.out.println(BIGData.getInt("one_wheel_shooter"));
@@ -44,9 +51,12 @@ public class ShooterMech implements Mech {
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
-        
+        // currentSpike = BIGData.getDouble("current_spike");
+        currentSpike = 12;
+
         initRPMTable();
     }
+
     private void initRPMTable() {
         upRPMTable = new int[50];
         downRPMTable = new int[50];
@@ -82,8 +92,7 @@ public class ShooterMech implements Mech {
                     }
                 }
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("UNABLE TO LOAD SHOOTER VALUES! SHOOTER WILL BE BAD!");
         } catch (Exception e) {
             System.out.println("something bad happened in initRPMTable!");
@@ -118,17 +127,19 @@ public class ShooterMech implements Mech {
             }
         }
     }
+
     private void interpolate(int[] output, int startIndex, int endIndex, int startNum, int endNum) {
         if (startIndex == endIndex) {
             output[startIndex] = startNum;
             return;
         }
         for (int i = startIndex; i <= endIndex; i++) {
-            output[i] = startNum +((i - startIndex) * (endNum - startNum)) / (endIndex - startIndex);
+            output[i] = startNum + ((i - startIndex) * (endNum - startNum)) / (endIndex - startIndex);
         }
     }
 
     public void update() {
+        ballShot();
         // Hood Toggle
         shooterUp = BIGData.getBoolean("shooter_up");
         hood.set(shooterUp);
@@ -156,16 +167,18 @@ public class ShooterMech implements Mech {
             pid.setReference(newSpeed, ControlType.kVelocity);
         }
     }
-    
+
     public void setSpeed(double rpm) {
         pid.setReference(rpm, ControlType.kVelocity);
         // System.out.println(getSpeed());
     }
 
     /**
-     * Takes a distance from the target (horizontal distance, in inches) and 
-     * returns a speed in rpm to run the shooter at.
-     * @param range the distance from the target in inches
+     * Takes a distance from the target (horizontal distance, in inches) and returns
+     * a speed in rpm to run the shooter at.
+     * 
+     * @param range
+     *                  the distance from the target in inches
      * @return the rpm to run the shooter at
      */
     public double calcSpeed(double range) {
@@ -174,6 +187,33 @@ public class ShooterMech implements Mech {
         } else {
             return downRPMTable[(int)(range/12)];
         }
+    }
+
+    public double calcSpeedWhileMoving(double range) {
+
+        if (shooterUp) {
+            shooterAngle = SHOOTER_HIGH_ANGLE;
+        } else {
+            shooterAngle = LOW_HIGH_ANGLE;
+        }
+
+        double wheelV = Math.sqrt(
+                Math.pow(BIGData.getDouble("enc_vx") * 39.37, 2) + Math.pow(BIGData.getDouble("enc_vy") * 39.37, 2));
+        double distanceRPM = calcSpeed(range);
+
+        double distanceV = distanceRPM * MINUTES_TO_SECONDS * WHEEL_RADIUS * Math.cos(shooterAngle);
+
+        double relativeAng = Math.PI / 2 - Math.abs(BIGData.getDouble("lidar_relative"));
+
+        double shooterV = Math
+                .sqrt(Math.pow(distanceV, 2) + Math.pow(wheelV, 2) - wheelV * distanceV * Math.cos(relativeAng))
+                / Math.cos(shooterAngle);
+
+        double newAzimuth = Math.signum(relativeAng) * Math.asin(Math.sin(-relativeAng) * wheelV / shooterV);
+
+        BIGData.setAngle(newAzimuth);
+
+        return shooterV;
     }
 
     public void configPID() {
@@ -193,6 +233,16 @@ public class ShooterMech implements Mech {
 
     public double getSpeed() {
         return encoder.getVelocity();
+    }
+
+    public void ballShot() {
+        double current = motor.getOutputCurrent();
+        if (current > currentSpike) {
+            BIGData.put("ball_shot", true);
+        } else {
+            BIGData.put("ball_shot", false);
+        }
+        System.out.println("current: " + current);
     }
 
     public void disable() {
