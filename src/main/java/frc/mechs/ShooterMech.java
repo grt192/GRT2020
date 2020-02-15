@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.gen.BIGData;
 
@@ -28,8 +29,8 @@ public class ShooterMech implements Mech {
     private CANSparkMax motor;
     private CANEncoder encoder;
     private CANPIDController pid;
+    private SimpleMotorFeedforward smff;
     private double kP, kI, kFF, kMaxOutput, kMinOutput;
-    private double currentSpike;
     private Solenoid hood;
     private boolean shooterUp;
 
@@ -45,14 +46,14 @@ public class ShooterMech implements Mech {
         motor.setSmartCurrentLimit(10);
         motor.setSecondaryCurrentLimit(15);
         this.pid = motor.getPIDController();
+        smff = new SimpleMotorFeedforward(0.0669, 0.133, 0.131);
         // TODO: improve PID
-        configPID();
+        // configPID();
         this.encoder = motor.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
-        currentSpike = 12;
 
         initRPMTable();
     }
@@ -141,7 +142,6 @@ public class ShooterMech implements Mech {
     }
 
     public void update() {
-        ballShot();
         // Hood Toggle
         shooterUp = BIGData.getBoolean("shooter_up");
         hood.set(shooterUp);
@@ -149,12 +149,8 @@ public class ShooterMech implements Mech {
         boolean mode = BIGData.getShooterState();
         // mode being false means shooter is off
         // SSystem.out.println(mode);
-        boolean disabled = BIGData.getDisabled(2);
-        if (disabled) {
-            disable();
-        } else if (!mode) {
+        if (!mode) {
             motor.set(BIGData.getDouble("shooter_manual"));
-            // motor.set(BIGData.getDouble("shooter_manual"));
             // mode being true means it's in automatic control, speed calculated based on
             // distance to vision target
         } else {
@@ -162,12 +158,15 @@ public class ShooterMech implements Mech {
             double rpm = calcSpeed(range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
-            newSpeed = -5000;
-            rpm = -5000;
+            newSpeed = 3000;
+            rpm = 3000;
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
-            pid.setReference(newSpeed, ControlType.kVelocity);
+            motor.setVoltage(smff.calculate(rpm / 60, 3000 / 60));
+            System.out.println("smff voltage: " + smff.calculate(rpm / 60, 3000 / 60));
+            // pid.setReference(newSpeed, ControlType.kVelocity);
         }
+        BIGData.put("shooter_current_rpm", getSpeed());
     }
 
     public void setSpeed(double rpm) {
@@ -235,16 +234,6 @@ public class ShooterMech implements Mech {
 
     public double getSpeed() {
         return encoder.getVelocity();
-    }
-
-    public void ballShot() {
-        double current = motor.getOutputCurrent();
-        if (current > currentSpike) {
-            BIGData.put("ball_shot", true);
-        } else {
-            BIGData.put("ball_shot", false);
-        }
-        System.out.println("current: " + current);
     }
 
     public void disable() {

@@ -112,9 +112,9 @@ class DriverControl extends Mode {
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
         if (lTriggerMech > 0.8) {
-            BIGData.put("roller_mode", 1);
-        } else if (rTriggerMech > 0.8) {
             BIGData.put("roller_mode", 2);
+        } else if (rTriggerMech > 0.8) {
+            BIGData.put("roller_mode", 1);
         } else {
             BIGData.put("roller_mode", 0);
         }
