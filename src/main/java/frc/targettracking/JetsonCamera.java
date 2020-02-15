@@ -22,6 +22,9 @@ public class JetsonCamera implements Runnable {
     private String jetsonAddress;
     // reader that reads from socket
     private BufferedReader stdIn;
+
+    // Victor motor controller to control LED ring
+    //TODO ADD LED RING
     
     // default port of jetson to connect to
     private final static int DEFAULT_PORT = 1337;
