@@ -107,16 +107,19 @@ public class StorageMech implements Mech {
     }
 
     public void automaticControl() {
+        System.out.println("lemon count: " + lemonCount);
+        System.out.println("conveyor count: " + conveyerCount);
+
+        System.out.println("shooter diff: "
+                + Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")));
+
+        System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
+
         findMed();
-        // setSpeeds(BIGData.getDouble("storage_rpm"));
         lemonInTop = topMedVal > IRRange;
         lemonInMiddle = midMedVal > IRRange;
         lemonInBottom = botMedVal > IRBotRange;
         intakeSeen = intakeMedVal > IRIntakeRange;
-        // shooterSeen = SHOOTER.getProximity() < revRange;
-
-        // SmartDashboard.putNumber("Proximity Storage", storageDistance);
-        // SmartDashboard.putNumber("Proximity Shooter", shooterDistance);
 
         // only count a new lemon if not intaking one currently
         if (intakeSeen && !intakingLemon) {
@@ -127,14 +130,7 @@ public class StorageMech implements Mech {
         // if no lemon is being intaked, set to false so new one can be counted
         if (!intakeSeen) {
             intakingLemon = false;
-            // seenLemon = true;
         }
-
-        // when lemon leave through shooter, must have been counted and in conveyor
-        // if (shooterSeen) {
-        // lemonCount--;
-        // conveyerCount--;
-        // }
 
         // only room for two lemons in conveyor
         if (lemonInBottom && conveyerCount < 2 && !waitingLemon) {
@@ -155,64 +151,48 @@ public class StorageMech implements Mech {
         }
 
         if (topWaiting && !lemonInTop) {
+            System.out.println("BALL LEFT SYSTEM");
+            waitingLemon = false;
             lemonCount--;
             conveyerCount--;
             topWaiting = false;
         }
 
-        // if (BIGData.getBoolean("ball_shot") && !ballShotCounted){
-        //     lemonCount--;
-        //     conveyerCount--;
-        //     ballShotCounted = true;
-        // } else {
-        //     ballShotCounted = false;
-        // }
+        System.out.println("manual should run: "
+                + (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0));
 
-        // if (bottom.getValue() > IRRange) {
-        // conveyerSeenLemon = true;
-        // }
+        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
+                && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
+                || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
+            System.out.println("SHOULD BE MOVING CONVEYOR");
+            motor.set(ControlMode.PercentOutput, storageVelocity);
+            return;
+        }
 
-        // if only one lemon in conveyor, try to get to middle storage spot
-        if (conveyerCount == 1 && !lemonInMiddle) {
+        if ((conveyerCount == 1 && !lemonInMiddle) || (conveyerCount == 2 && !lemonInTop)) {
             motor.set(ControlMode.PercentOutput, storageVelocity);
         } else {
             motor.set(ControlMode.PercentOutput, 0.0);
         }
-
-        if (conveyerCount == 1 && lemonInTop) {
-            motor.set(ControlMode.PercentOutput, -storageVelocity);
-        }
-
-        // if two lemons in conveyor, try to get them in top and middle spots
-        if (conveyerCount == 2 && !lemonInTop) {
-            motor.set(ControlMode.PercentOutput, storageVelocity);
-        } else if (conveyerCount == 2){
-            motor.set(ControlMode.PercentOutput, 0.0);
-        }
-
-        // if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
-        //     motor.set(ControlMode.PercentOutput, -storageVelocity);
-        // }
-
-        // means that one lemon got too far, reverse to maintain consistency
-        // if (conveyerCount == 2 && lemonInTop && !lemonInMiddle) {
-        // motor.set(ControlMode.PercentOutput, -storageVelocity);
-        // }
 
         // System.out.println("count: " + count);
 
         // System.out.println("lemon count: " + lemonCount);
         // System.out.println("conveyor count: " + conveyerCount);
 
+        // System.out.println("shooter diff: "
+        // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
+        // BIGData.getDouble("shooter_auto")));
+
         // System.out.println("Top sensor " + lemonInTop);
         // System.out.println("Bot sensor " + lemonInBottom);
         // System.out.println("Mid sensor " + lemonInMiddle);
-        //System.out.println("Intake sensor: " + intakeMedVal);
+        // System.out.println("Intake sensor: " + intakeMedVal);
 
         // System.out.println("Top sensor " + topMedVal);
         // System.out.println("Bot sensor " + botMedVal);
         // System.out.println("Mid sensor " + midMedVal);
-        // System.out.println("Intake sensor: " + intakeMedVal);
+        // System.out.println("In sensor: " + intakeMedVal);
         // System.out.println("Top sensor " + top.getValue());
         // System.out.println("Bot sensor " + bottom.getValue());
         // System.out.println("Mid sensor " + middle.getValue());
