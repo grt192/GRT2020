@@ -25,6 +25,11 @@ class DriverControl extends Mode {
     }
 
     private void driveSwerve() {
+        // zero swerve gyro if start button (menu button) is pressed
+        if (Input.SWERVE_XBOX.getStartButtonReleased()) {
+            BIGData.putZeroGyroRequest(true);
+        }
+
         double x = Input.SWERVE_XBOX.getX(Hand.kLeft);
         // negativize y so that up is forward
         double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);

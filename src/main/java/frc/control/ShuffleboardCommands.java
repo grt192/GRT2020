@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.gen.BIGData;
 import frc.util.GRTUtil;
 
@@ -149,8 +150,22 @@ public class ShuffleboardCommands {
             }
         };
         swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand);
+        SmartDashboard.putData("ZERO SWERVE GYRO", zeroGyroCommand);
         gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).getEntry();
         gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).getEntry();
+
+        CommandBase resetLemonCountCommand = new CommandBase() {
+            @Override
+            public void initialize() {
+                System.out.println("setting lemon count to 0");
+                BIGData.put("reset_lemon_count", true);
+            }
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+        SmartDashboard.putData("RESET LEMON COUNT", resetLemonCountCommand);
     }
 
     public void update() {

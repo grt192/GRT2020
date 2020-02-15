@@ -30,6 +30,7 @@ public class StorageMech implements Mech {
 
     private double topMedVal, midMedVal, botMedVal, intakeMedVal;
     private double[] topArr, midArr, botArr, inArr;
+    // index of the running median arrays
     private int count;
 
     public StorageMech() {
@@ -44,6 +45,9 @@ public class StorageMech implements Mech {
         motor.configPeakCurrentLimit(15, 0);
         motor.configPeakCurrentDuration(100, 0);
         motor.enableCurrentLimit(true);
+
+        lemonCount = BIGData.getInt("initial_total_lemon_count");
+        conveyerCount = BIGData.getInt("initial_conveyer_lemon_count");
 
         storageVelocity = BIGData.getStorageSpeedAuto();
         
@@ -61,10 +65,16 @@ public class StorageMech implements Mech {
         botArr = new double[5];
         inArr = new double[5];
         
-        BIGData.put("lemon_count", 0);
+
+        BIGData.put("lemon_count", lemonCount);
     }
 
     public void update() {
+        // reset count if it is requested
+        if (BIGData.getBoolean("reset_lemon_count")) {
+            resetCount();
+            BIGData.put("reset_lemon_count", false);
+        }
         boolean state = BIGData.getStorageState();
         boolean disable = BIGData.getDisabled(1);
         if (disable) {
@@ -97,13 +107,13 @@ public class StorageMech implements Mech {
     }
 
     public void automaticControl() {
-        System.out.println("lemon count: " + lemonCount);
-        System.out.println("conveyor count: " + conveyerCount);
+        // System.out.println("lemon count: " + lemonCount);
+        // System.out.println("conveyor count: " + conveyerCount);
 
-        System.out.println("shooter diff: "
-                + Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")));
+        // System.out.println("shooter diff: "
+        //         + Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")));
 
-        System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
+        // System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
 
         findMed();
         lemonInTop = topMedVal > IRRange;
@@ -189,11 +199,27 @@ public class StorageMech implements Mech {
         // System.out.println("Mid sensor " + middle.getValue());
         // System.out.println("Intake sensor " + intake.getValue());
 
-        BIGData.put("lemon_count", lemonCount);
-        SmartDashboard.putNumber("Lemon Count", BIGData.getInt("lemon_count"));
+        updateBigData();
     }
 
     public void disable() {
         motor.set(ControlMode.Current, 0);
+    }
+
+    public void resetCount() {
+        lemonCount = 0;
+        conveyerCount = 0;
+        updateBigData();
+    }
+    public void setCount(int lemonCount, int conveyerCount) {
+        this.lemonCount = lemonCount;
+        this.conveyerCount = conveyerCount;
+        updateBigData();
+    }
+
+    public void updateBigData() {
+        BIGData.put("lemon_count", lemonCount);
+        SmartDashboard.putNumber("Lemon Count", lemonCount);
+        SmartDashboard.putNumber("Conveyer Lemon Count", conveyerCount);
     }
 }
