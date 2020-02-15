@@ -109,6 +109,7 @@ class DriverControl extends Mode {
             BIGData.put("shooter_up", shooterUp);
         }
 
+        // if x button is released, toggle the intake position
         if (Input.MECH_XBOX.getXButtonReleased()) {
             boolean currState = BIGData.getIntakeState();
             BIGData.requestIntakeState(!currState);
@@ -119,15 +120,13 @@ class DriverControl extends Mode {
             BIGData.put("firstTime?", true);
         }
 
+        // if left trigger is pressed, run intake motor in reverse
+        // if right trigger is pressed, run intake motor in forwards
+        //TODO TEST IF INTAKE WORKS AS EXPECTED!
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
-        if (lTriggerMech > 0.8) {
-            BIGData.put("roller_mode", 2);
-        } else if (rTriggerMech > 0.8) {
-            BIGData.put("roller_mode", 1);
-        } else {
-            BIGData.put("roller_mode", 0);
-        }
+        double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));
+        BIGData.put("intake_speed", mechTriggerSum);
 
     }
 
