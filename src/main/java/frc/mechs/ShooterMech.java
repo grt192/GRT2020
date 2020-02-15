@@ -15,7 +15,6 @@ import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.gen.BIGData;
 
 public class ShooterMech implements Mech {
@@ -46,7 +45,7 @@ public class ShooterMech implements Mech {
         motor.setSmartCurrentLimit(10);
         motor.setSecondaryCurrentLimit(15);
         this.pid = motor.getPIDController();
-        smff = new SimpleMotorFeedforward(0.0669, 0.133, 0.131);
+        smff = new SimpleMotorFeedforward(-0.124, 0.14, 0.0798);
         // TODO: improve PID
         // configPID();
         this.encoder = motor.getEncoder();
