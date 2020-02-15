@@ -436,6 +436,14 @@ public class BIGData {
 		map.put(key, val);
 	}
 
+	public static void putJetsonCameraConnected(boolean connected) {
+		put("jetson_camera_connected", connected);
+	}
+
+	public static boolean getJetsonCameraConnected() {
+		return getBoolean("jetson_camera_connected");
+	}
+
 	public static void updateCamera(double r, double a, double t) {
 		put("camera_azimuth", a);
 		put("camera_range", r);

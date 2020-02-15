@@ -81,3 +81,7 @@ initial_conveyer_lemon_count=0
 spinner_speed = 0.5
 spinner_id = 
 spinner_sol = 
+
+#jetson variables
+jetson_camera_port=1337
+jetson_lidar_port=1030

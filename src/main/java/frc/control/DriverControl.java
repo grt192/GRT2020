@@ -87,23 +87,24 @@ class DriverControl extends Mode {
         if (centeringCamera && Math.abs(cameraAzimuth) > 1) {
             rotate = calcPID(cameraAzimuth);
         }
+        // TODO test centering robot to target using camera
 
-        if (Input.SWERVE_XBOX.getXButtonPressed()) {
-            centeringCameraLidar = true;
-        }
+        // if (Input.SWERVE_XBOX.getXButtonPressed()) {
+        //     centeringCameraLidar = true;
+        // }
 
-        if (Input.SWERVE_XBOX.getXButtonReleased()) {
-            centeringCameraLidar = false;
-            BIGData.setPIDFalse();
-        }
+        // if (Input.SWERVE_XBOX.getXButtonReleased()) {
+        //     centeringCameraLidar = false;
+        //     BIGData.setPIDFalse();
+        // }
 
-        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
-        double lidarRange = BIGData.getDouble("lidar_range");
+        // double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
+        // double lidarRange = BIGData.getDouble("lidar_range");
         // System.out.println(azimuth);
-        System.out.println(Math.toDegrees(lidarAzimuth) + "," + lidarRange);
-        if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
-            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
-        }
+        // System.out.println(Math.toDegrees(lidarAzimuth) + "," + lidarRange);
+        // if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
+        //     BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        // }
         BIGData.requestDrive(x, y, rotate);
 
     }

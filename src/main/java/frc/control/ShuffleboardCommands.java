@@ -195,6 +195,7 @@ public class ShuffleboardCommands {
             wheelRotateSpeeds[i].forceSetDouble(BIGData.getWheelRawRotateSpeed(i));
 
         }
+        SmartDashboard.putBoolean("CONNECTED TO CAMERA ON JETSON?", BIGData.getJetsonCameraConnected());
     }
 
 }
