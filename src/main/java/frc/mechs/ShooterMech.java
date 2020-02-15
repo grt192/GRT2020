@@ -71,15 +71,17 @@ public class ShooterMech implements Mech {
                 String line = in.nextLine().trim();
                 if (line.equalsIgnoreCase("down")) {
                     loadingDown = true;
+                    continue;
                 } else if (line.equalsIgnoreCase("up")) {
                     loadingDown = false;
+                    continue;
                 }
                 if (line.length() > 0 && line.charAt(0) != '#') {
                     String[] split = line.split(",");
                     try {
                         int a = Integer.parseInt(split[0]);
                         int b = Integer.parseInt(split[1]);
-                        System.out.println("loaded two ints: " + a + "," + b + ", down=" + loadingDown);
+                        System.out.println("loaded shooter point: dist(ft)=" + a + ",rpm=" + b + ", down=" + loadingDown);
                         if (loadingDown) {
                             downRPMMap.put(a, b);
                         } else {
