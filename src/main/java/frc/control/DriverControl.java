@@ -109,6 +109,11 @@ class DriverControl extends Mode {
             BIGData.requestIntakeState(!currState);
         }
 
+        if (Input.MECH_XBOX.getAButtonReleased()) {
+            BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
+            BIGData.put("firstTime?", true);
+        }
+
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
         if (lTriggerMech > 0.8) {

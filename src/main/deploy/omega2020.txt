@@ -63,6 +63,10 @@ lidar_pwm=0
 # winch
 winch_id=2
 
+# spinner
+
+spinner_id=
+
 #conveyor sensors
 intake_analog=3
 top_analog=2

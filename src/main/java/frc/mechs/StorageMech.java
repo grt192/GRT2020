@@ -5,16 +5,14 @@ import java.util.Arrays;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.I2C;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.gen.BIGData;
 
 public class StorageMech implements Mech {
-    // private final I2C.Port i2cPort = I2C.Port.kOnboard;
-    // private final ColorSensorV3 SHOOTER = new ColorSensorV3(i2cPort);
+
     private AnalogInput intake, top, bottom, middle;
     private TalonSRX motor;
 
