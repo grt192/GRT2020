@@ -108,7 +108,61 @@ class DriverControl extends Mode {
     }
 
     private void driveMechs() {
-        
+        if (Input.SWERVE_XBOX.getAButtonReleased()) {
+            boolean currState = BIGData.getLinkageState();
+            BIGData.requestLinkageState(!currState);
+        }
+
+        BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
+        double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
+        rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
+        BIGData.requestWinchSpeed(rJoystickSwerve);
+
+        BIGData.putShooterState(Input.MECH_XBOX.getAButton());
+
+        if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
+            int offsetChange = BIGData.getInt("shooter_offset_change");
+            int currOffset = BIGData.getInt("shooter_auto_offset");
+            BIGData.put("shooter_auto_offset", currOffset - offsetChange);
+        }
+
+        if (Input.MECH_XBOX.getBumperReleased(Hand.kRight)) {
+            int offsetChange = BIGData.getInt("shooter_offset_change");
+            int currOffset = BIGData.getInt("shooter_auto_offset");
+            BIGData.put("shooter_auto_offset", currOffset + offsetChange);
+        }
+
+        BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
+
+        double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);
+        lJoystickMech = JoystickProfile.applyProfile(lJoystickMech);
+        BIGData.requestStorageSpeed(lJoystickMech);
+
+        double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
+        rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
+        BIGData.put("shooter_manual", rJoystickMech);
+
+        if (Input.MECH_XBOX.getBButtonReleased()) {
+            boolean shooterUp = BIGData.getBoolean("shooter_up");
+            shooterUp = !shooterUp;
+            BIGData.put("shooter_up", shooterUp);
+        }
+
+        if (Input.MECH_XBOX.getXButtonReleased()) {
+            boolean currState = BIGData.getIntakeState();
+            BIGData.requestIntakeState(!currState);
+        }
+
+        double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
+        double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
+        if (lTriggerMech > 0.8) {
+            BIGData.put("roller_mode", 2);
+        } else if (rTriggerMech > 0.8) {
+            BIGData.put("roller_mode", 1);
+        } else {
+            BIGData.put("roller_mode", 0);
+        }
+
     }
 
 }

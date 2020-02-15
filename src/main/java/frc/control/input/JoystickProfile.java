@@ -1,7 +1,7 @@
 package frc.control.input;
 
-import frc.util.GRTUtil;
 import frc.gen.BIGData;
+import frc.util.GRTUtil;
 
 public class JoystickProfile {
 	private static final double DEFAULT_DEADBAND = 0.1;
@@ -31,7 +31,7 @@ public class JoystickProfile {
 		if (ans != 0) {
 			ans -= DEFAULT_DEADBAND;
 		}
-		ans = GRTUtil.toRange(0, 1-DEFAULT_DEADBAND, 0, 1, ans);
+		ans = GRTUtil.toRange(0, 1 - DEFAULT_DEADBAND, 0, 1, ans);
 		// apply profiling
 		if (GRTUtil.inRange(0, ans, profilingPoints[0][0])) {
 			ans = GRTUtil.toRange(0, profilingPoints[0][0], 0, profilingPoints[0][1], ans);

@@ -2,8 +2,6 @@ package frc.swerve;
 
 import static frc.gen.BIGData.FR_WHEEL;
 
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
-
 import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.BL_WHEEL;
 import static frc.gen.BIGData.FL_WHEEL;
@@ -78,7 +76,6 @@ public class Swerve {
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();
 		userW = BIGData.getRequestedW();
-		// System.out.println(Math.abs(gyro.getAngle() - angle));
 		if (userW != 0 || Math.abs(gyro.getAngle() % 360 - angle) < .5) {
 			BIGData.setPIDFalse();
 		}

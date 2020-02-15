@@ -62,7 +62,7 @@ class Wheel {
 	}
 
 	public void set(double radians, double speed) {
-		if (speed != 0) {
+		if (speed != 0.0) {
 			double targetPosition = radians / TWO_PI;
 			targetPosition = GRTUtil.positiveMod(targetPosition, 1.0);
 
@@ -84,7 +84,6 @@ class Wheel {
 			reversed = newReverse;
 			double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
 			rotateMotor.set(ControlMode.Position, encoderPos);
-
 			speed *= (reversed ? -1 : 1);
 		}
 		driveMotor.set(speed);

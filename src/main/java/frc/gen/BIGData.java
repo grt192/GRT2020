@@ -89,6 +89,18 @@ public class BIGData {
 		return map.get(key);
 	}
 
+	public static boolean getDisabled(int i) {
+		switch (i) {
+		case 1:
+			return getBoolean("stage_1_disabled");
+		case 2:
+			return getBoolean("stage_2_disabled");
+		case 3:
+			return getBoolean("stage_3_disabled");
+		}
+		return false;
+	}
+
 	/**
 	 * Pass in one of four constants: FR_WHEEL, BR_WHEEL, BL_WHEEL, FL_WHEEL to get
 	 * the wheel's name "fr", "br", "bl", "fl"
@@ -221,37 +233,64 @@ public class BIGData {
 		return getBoolean("intake_state");
 	}
 
-	/** Set the motor spin speed with percentage motor output */
-	public static void requestIntakeSpeed(double speed) {
-		put("intake_speed", GRTUtil.clamp(-1.0, speed, 1.0));
-	}
-
-	/** Get the motor spin speed, in percentage motor output */
-	public static double getIntakeSpeed() {
-		return getDouble("intake_speed");
-	}
-
-	/**
-	 * Set the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
-	 */
-	public static void putShooterState(int state) {
+	/** Set the state of shooter; false = manual, true = automatic */
+	public static void putShooterState(boolean state) {
 		put("shooter_state", state);
 	}
 
-	/**
-	 * Get the state of shooter; 0 = off, 1 = manual control, 2 = automatic control
-	 */
-	public static int getShooterState() {
-		return getInt("shooter_state");
+	/** Get the state of shooter; false = manual, true = automatic */
+	public static boolean getShooterState() {
+		return getBoolean("shooter_state");
 	}
 
-	/** set the output speed of the winch motor, from -1.0 to 1.0
-	 * TODO maybe only make it turn one way */
+	/** Set the state of storage; true = automatic, false = manual */
+	public static void putStorageState(boolean state) {
+		put("storage_state", state);
+	}
+
+	/** Get the state of storage; true = automatic, false = manual */
+	public static boolean getStorageState() {
+		return getBoolean("storage_state");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeed(double speed) {
+		put("storage_speed", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeed() {
+		return getDouble("storage_speed");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeedAuto(double speed) {
+		put("storage_speed_auto", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeedAuto() {
+		return getDouble("storage_speed_auto");
+	}
+
+	/**
+	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
+	 * make it turn one way
+	 */
 	public static void requestWinchSpeed(double output) {
 		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
 	}
+
 	public static double getWinchSpeed() {
 		return getDouble("winch_speed");
+	}
+
+	public static void putWinchState(boolean state) {
+		put("winch_state", state);
+	}
+
+	public static boolean getWinchState() {
+		return getBoolean("winch_state");
 	}
 
 	/** set the original value of the first joystick profile point */

@@ -1,6 +1,5 @@
 package frc.mechs;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -18,7 +17,8 @@ public class WinchMech implements Mech {
 
     @Override
     public void update() {
+        boolean state = BIGData.getWinchState();
         speed = BIGData.getWinchSpeed();
-        motor.set(speed);
+        motor.set(state ? speed : 0);
     }
 }

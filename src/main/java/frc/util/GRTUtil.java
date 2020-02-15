@@ -2,6 +2,8 @@ package frc.util;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 public class GRTUtil {
 
@@ -69,8 +71,12 @@ public class GRTUtil {
 		talon.configFactoryDefault();
 		talon.configForwardSoftLimitEnable(false, 0);
 		talon.configReverseSoftLimitEnable(false, 0);
-		talon.setNeutralMode(NeutralMode.Brake);
+		talon.setNeutralMode(NeutralMode.Coast);
 		talon.configOpenloopRamp(0, 0);
+	}
+
+	public static void defaultConfigSparkMax(CANSparkMax sparkMax) {
+		sparkMax.setIdleMode(IdleMode.kCoast);
 	}
 
 }
