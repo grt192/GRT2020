@@ -1,1 +1,2 @@
-pmp 550 200
+## full field test
+pmp 100 100
