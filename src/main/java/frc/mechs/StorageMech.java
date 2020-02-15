@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.gen.BIGData;
 
@@ -16,46 +15,42 @@ public class StorageMech implements Mech {
     private AnalogInput intake, top, bottom, middle;
     private TalonSRX motor;
 
-    private int ultrasonicRange, revRange, IRRange, IRIntakeRange, IRBotRange;
+    private int IRRange, IRIntakeRange, IRBotRange;
 
     private double storageVelocity;
 
     // private final int range = 400;
     private boolean intakingLemon, waitingLemon = false;
     private boolean topWaiting = false;
-    private boolean ballShotCounted = false;
-
+    
     private int lemonCount = 0;
     private int conveyerCount = 0;
 
-    private boolean lemonInTop, lemonInMiddle, lemonInBottom, intakeSeen, shooterSeen = false;
+    private boolean lemonInTop, lemonInMiddle, lemonInBottom, intakeSeen = false;
 
     private double topMedVal, midMedVal, botMedVal, intakeMedVal;
     private double[] topArr, midArr, botArr, inArr;
     private int count;
 
     public StorageMech() {
-        // System.out.println("STARTING STORAGE");
-        // System.out.println(BIGData.getInt("intake_analog"));
         intake = new AnalogInput(BIGData.getInt("intake_analog"));
         top = new AnalogInput(BIGData.getInt("top_analog"));
         middle = new AnalogInput(BIGData.getInt("middle_analog"));
-        // System.out.println(BIGData.getInt("bottom_analog"));
         bottom = new AnalogInput(BIGData.getInt("bottom_analog"));
+
         this.motor = new TalonSRX(BIGData.getInt("storage_motor"));
         motor.setNeutralMode(NeutralMode.Brake);
         motor.configContinuousCurrentLimit(10, 0);
         motor.configPeakCurrentLimit(15, 0);
         motor.configPeakCurrentDuration(100, 0);
         motor.enableCurrentLimit(true);
-        // System.out.println("GOT PAST IR INITIAL");
+
         storageVelocity = BIGData.getStorageSpeedAuto();
-        ultrasonicRange = BIGData.getInt("ultrasonic_range");
-        // revRange = BIGData.getInt("rev_range");
-        // IRRange = BIGData.getInt("ir_range");
+        
         IRIntakeRange = 1100;
         IRBotRange = 1300;
         IRRange = 1300;
+
         count = 0;
         topMedVal = 0;
         botMedVal = 0;
@@ -65,11 +60,8 @@ public class StorageMech implements Mech {
         midArr = new double[5];
         botArr = new double[5];
         inArr = new double[5];
-        System.out.println(BIGData.getInt("top_analog"));
+        
         BIGData.put("lemon_count", 0);
-
-        System.out.println(lemonCount);
-        System.out.println(conveyerCount);
     }
 
     public void update() {
@@ -185,12 +177,13 @@ public class StorageMech implements Mech {
         // System.out.println("Top sensor " + lemonInTop);
         // System.out.println("Bot sensor " + lemonInBottom);
         // System.out.println("Mid sensor " + lemonInMiddle);
-        // System.out.println("Intake sensor: " + intakeMedVal);
+        // System.out.println("In sensor " + intakeSeen);
 
         // System.out.println("Top sensor " + topMedVal);
         // System.out.println("Bot sensor " + botMedVal);
         // System.out.println("Mid sensor " + midMedVal);
         // System.out.println("In sensor: " + intakeMedVal);
+
         // System.out.println("Top sensor " + top.getValue());
         // System.out.println("Bot sensor " + bottom.getValue());
         // System.out.println("Mid sensor " + middle.getValue());

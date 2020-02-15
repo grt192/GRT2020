@@ -301,6 +301,22 @@ public class BIGData {
 		return getBoolean("spinner_state");
 	}
 
+	public static void putButtonClick(String click) {
+		put("button_click", click);
+	}
+
+	public static String getButtonClick() {
+		return getString("button_click");
+	}
+
+	public static void putCanvasClick(String click) {
+		put("canvas_click", click);
+	}
+
+	public static String getCanvasClick() {
+		return getString("canvas_click");
+	}
+
 	/** set the original value of the first joystick profile point */
 	public static void setJoystickX1(double x1) {
 		put("joystick_x1", x1);
