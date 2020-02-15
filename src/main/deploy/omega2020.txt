@@ -7,23 +7,24 @@ swerve_height=21.70
 robot_width=37.00
 robot_height=41
 
-swerve_inverted=false
+
+swerve_inverted=true
 swerve_kp=0.5
 swerve_kd=0.5
 swerve_kf=2.0
 
 # Offsets are inverted
-br_rotate=2
+br_rotate=12
 br_drive=1
 br_offset=-964
-bl_rotate=15
-bl_drive=16
+bl_rotate=11
+bl_drive=13
 bl_offset=-484
-fr_rotate=3
+fr_rotate=5
 fr_drive=4
 fr_offset=-215
-fl_rotate=14
-fl_drive=13
+fl_rotate=10
+fl_drive=14
 fl_offset=-859
 
 ticks_per_rotation=1024 
@@ -36,31 +37,31 @@ joystick_y1=0.1
 joystick_x2=0.7
 joystick_y2=0.4
 
-# two wheel shooter variables
-two_wheel_motor_a=10
-two_wheel_motor_b=9
-two_wheel_ticks_per_rotation=4096
-two_wheel_reduction=3
 # linkage solenoid id
-linkage_sol_id=
+linkage_sol_id=0
 
 # intake motor CAN id
-intake_talon_id=
-intake_sol_id=
+intake_talon_id=6
+intake_sol_id=4
 
-intake_speed=0.9
+intake_speed=0.5
 
 #Shooter Values
 shooter_high_angle=50
 shooter_high_angle=25
 shooter_up=false
 shooter_offset_change=100
+one_wheel_shooter=8                                                                                                                                           
+one_wheel_hood=6
+# file for shooter rpms to load in
+shooter_rpm_file=omega_rpms.txt
 
-#Solenoid for one wheel shooter
-one_wheel_hood=4
 
 # lidar pwm channel
 lidar_pwm=0
+
+# winch
+winch_id=2
 
 #conveyor sensors
 intake_analog=3
@@ -69,4 +70,4 @@ middle_analog=1
 bottom_analog=0
 
 storage_motor=8
-storage_speed_auto=0.1
+storage_speed_auto=-0.4

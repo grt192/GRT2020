@@ -5,6 +5,7 @@ import java.util.Map;
 
 import frc.pathfinding.fieldmap.geometry.*;
 import frc.swerve.SwerveData;
+import frc.util.GRTUtil;
 
 public class BIGData {
 
@@ -87,6 +88,18 @@ public class BIGData {
 	public static String getString(String key) {
 		existenceCheck(key, "String");
 		return map.get(key);
+	}
+
+	public static boolean getDisabled(int i) {
+		switch (i) {
+		case 1:
+			return getBoolean("stage_1_disabled");
+		case 2:
+			return getBoolean("stage_2_disabled");
+		case 3:
+			return getBoolean("stage_3_disabled");
+		}
+		return false;
 	}
 
 	/**
@@ -179,6 +192,19 @@ public class BIGData {
 		return vec;
 	}
 
+	/** manually set what the current position is */
+	public static void setManualPos(double x, double y) {
+		put("manual_x", x);
+		put("manual_y", y);
+		put("manual_change_pos", true);
+	}
+
+	/** get the manually set position */
+	public static Vector getManualPos() {
+		put("manual_change_pos", false);
+		return new Vector(getDouble("manual_x"), getDouble("manual_y"));
+	}
+
 	/** set the gyro's angle */
 	public static void putGyroAngle(double angle) {
 		put("gyro_ang", angle);
@@ -219,11 +245,85 @@ public class BIGData {
 		return getBoolean("zero_gyro");
 	}
 
-	public static void putMechs(double one, double two_a, double two_b) {
-		// TODO: add the rest of the mechs
-		put("one_wheel_shooter", one);
-		put("wheel_a_rpm", two_a);
-		put("wheel_b_rpm", two_b);
+	// TODO ADD MECH BIGDATA STUFF HERE!
+	/** Set the state of the linkage; true=on, false=off */
+	public static void requestLinkageState(boolean state) {
+		put("linkage_state", state);
+	}
+
+	/** Get the state of the linkage; true=on, false=off */
+	public static boolean getLinkageState() {
+		return getBoolean("linkage_state");
+	}
+
+	/** Set the state of intake; true=extended, false=retracted */
+	public static void requestIntakeState(boolean state) {
+		put("intake_state", state);
+	}
+
+	/** Get the state of intake; true=extended, false=retracted */
+	public static boolean getIntakeState() {
+		return getBoolean("intake_state");
+	}
+
+	/** Set the state of shooter; false = manual, true = automatic */
+	public static void putShooterState(boolean state) {
+		put("shooter_state", state);
+	}
+
+	/** Get the state of shooter; false = manual, true = automatic */
+	public static boolean getShooterState() {
+		return getBoolean("shooter_state");
+	}
+
+	/** Set the state of storage; true = automatic, false = manual */
+	public static void putStorageState(boolean state) {
+		put("storage_state", state);
+	}
+
+	/** Get the state of storage; true = automatic, false = manual */
+	public static boolean getStorageState() {
+		return getBoolean("storage_state");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeed(double speed) {
+		put("storage_speed", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeed() {
+		return getDouble("storage_speed");
+	}
+
+	/** Set the motor spin speed with percentage motor output */
+	public static void requestStorageSpeedAuto(double speed) {
+		put("storage_speed_auto", GRTUtil.clamp(-1.0, speed, 1.0));
+	}
+
+	/** Get the motor spin speed with percentage motor output */
+	public static double getStorageSpeedAuto() {
+		return getDouble("storage_speed_auto");
+	}
+
+	/**
+	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
+	 * make it turn one way
+	 */
+	public static void requestWinchSpeed(double output) {
+		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
+	}
+
+	public static double getWinchSpeed() {
+		return getDouble("winch_speed");
+	}
+
+	public static void putWinchState(boolean state) {
+		put("winch_state", state);
+	}
+
+	public static boolean getWinchState() {
+		return getBoolean("winch_state");
 	}
 
 	/** set the original value of the first joystick profile point */

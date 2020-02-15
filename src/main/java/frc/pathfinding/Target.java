@@ -31,6 +31,13 @@ public class Target {
         targets.remove(0);
     }
 
+    public static void clear() {
+        int i = targets.size();
+        for (int n = 0; n < i; i++) {
+            remove(0);
+        }
+    }
+
     public static ArrayList<Vector> getTargets() {
         return targets;
     }

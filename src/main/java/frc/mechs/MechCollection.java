@@ -1,17 +1,23 @@
 package frc.mechs;
 
-public class MechCollection {
+import java.util.ArrayList;
 
-    private OneWheelShooter one;
-    private TwoWheelShooter two;
+public class MechCollection {
+    private ArrayList<Mech> mechs;
 
     public MechCollection() {
-        this.one = new OneWheelShooter();
-        this.two = new TwoWheelShooter();
+        mechs = new ArrayList<>();
+        mechs.add(new IntakeMech());
+        //mechs.add(new LinkageMech());
+        mechs.add(new ShooterMech());
+        mechs.add(new StorageMech());
+        // mechs.add(new WinchMech());
+        // mechs.add(new LidarMech());
     }
 
     public void update() {
-        one.update();
-        two.updateSpeeds();
+        for (Mech m : mechs) {
+            m.update();
+        }
     }
 }

@@ -1,0 +1,8 @@
+# format: distance (in ft), rpm
+# example:
+# 10,3000
+down
+13,3400
+up
+
+

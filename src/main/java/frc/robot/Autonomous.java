@@ -75,6 +75,9 @@ public class Autonomous {
             case "wait":
                 finishedFlag = false;
                 break;
+            case "pos":
+                BIGData.setManualPos(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]));
+                break;
             case "pmp":
                 Target.setTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
                 robot.setMode(1);

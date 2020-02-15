@@ -6,7 +6,7 @@ import frc.pathfinding.*;
 
 public class PathfindingControl extends Mode {
 
-    private static final double SPEED = 0.2;
+    private static final double SPEED = 0.1;
     private static final double e = 4;
 
     private static Vector velocity;
@@ -15,6 +15,7 @@ public class PathfindingControl extends Mode {
     private static Vector targetPos;
 
     private static double d;
+    private static double dtoNext;
 
     public static Pathfinding path;
     public static Bezier spline;
@@ -30,35 +31,40 @@ public class PathfindingControl extends Mode {
         targetPos = Target.getTarget();
 
         if (Target.size() <= 0)
-            path.searchAStar(currentPos);
+            path.searchAStar(new Vector(120, 161.625));
         
         nextPos = Target.getNext();
+        d = currentPos.distanceTo(targetPos);
 
         if (nextPos == null)
             runPFP();
         else
             runAStar();
-
         return check();
     }
 
     private static boolean check() {
+        d = currentPos.distanceTo(targetPos);
         if (d < e) {
             BIGData.requestDrive(0, 0, 0);
-            Target.remove(0);
+            Target.clear();
             return false;
+        } else if (dtoNext < e) {
+            BIGData.requestDrive(0, 0, 0);
+            Target.remove(0);
+            return true;
+        } else {
+            BIGData.requestDrive(velocity.x, velocity.y, 0);
+            return true;
         }
-        BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
-        return true;
     }
 
     private static void runPFP() {
-        d = currentPos.distanceTo(targetPos);
         velocity = path.searchPFP(currentPos).multiply(SPEED);
     }
 
     private static void runAStar() {
-        d = currentPos.distanceTo(nextPos);
+        dtoNext = currentPos.distanceTo(nextPos);
         velocity = nextPos.subtract(currentPos).multiply(1 / d).multiply(SPEED);
     }
 }

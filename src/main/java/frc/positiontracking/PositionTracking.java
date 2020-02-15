@@ -22,6 +22,7 @@ public class PositionTracking {
     private long lastUpdate;
     private KalmanFilter kf;
     private double cachedX, cachedY;
+    private double startingX, startingY;
 
     public PositionTracking() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -67,6 +68,12 @@ public class PositionTracking {
     }
 
     public void update() {
+        if (BIGData.getBoolean("manual_change_pos")) {
+            Vector manualPos = BIGData.getManualPos();
+            startingX = manualPos.x;
+            startingY = manualPos.y;
+            set(startingX, startingY);
+        }
         SwerveData data = BIGData.getSwerveData();
         long temp = System.currentTimeMillis();
         long ticks = (temp - lastUpdate);
@@ -99,7 +106,7 @@ public class PositionTracking {
             cachedX = tempX;
             cachedY = tempY;
         }
-        Vector curr_pos = new Vector(-1 * tempY, tempX);
+        Vector curr_pos = new Vector(tempX, tempY);
         //TODO: remove after debugging
         //System.out.println("curr_x:" + curr_pos.x + " curr_y:" + curr_pos.y);
         BIGData.setPosition(curr_pos, "curr");
