@@ -63,11 +63,7 @@ lidar_pwm=0
 # winch
 winch_id=2
 
-# spinner
-
-spinner_id=
-
-#conveyor sensors
+# conveyor sensors
 intake_analog=3
 top_analog=2
 middle_analog=1
@@ -75,3 +71,9 @@ bottom_analog=0
 
 storage_motor=8
 storage_speed_auto=-0.4
+
+# spinner
+
+spinner_speed = 0.5
+spinner_id = 
+spinner_sol = 

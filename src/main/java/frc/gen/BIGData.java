@@ -293,6 +293,14 @@ public class BIGData {
 		return getBoolean("winch_state");
 	}
 
+	public static void putSpinnerState(boolean state) {
+		put("spinner_state", state);
+	}
+
+	public static boolean getSpinnerState() {
+		return getBoolean("spinner_state");
+	}
+
 	/** set the original value of the first joystick profile point */
 	public static void setJoystickX1(double x1) {
 		put("joystick_x1", x1);

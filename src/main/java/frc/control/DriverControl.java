@@ -69,6 +69,11 @@ class DriverControl extends Mode {
             BIGData.requestLinkageState(!currState);
         }
 
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            boolean currState = BIGData.getSpinnerState();
+            BIGData.putSpinnerState(!currState);
+        }
+
         BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
         double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
         rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
