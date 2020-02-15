@@ -107,13 +107,13 @@ public class StorageMech implements Mech {
     }
 
     public void automaticControl() {
-        System.out.println("lemon count: " + lemonCount);
-        System.out.println("conveyor count: " + conveyerCount);
+        // System.out.println("lemon count: " + lemonCount);
+        // System.out.println("conveyor count: " + conveyerCount);
 
-        System.out.println("shooter diff: "
-                + Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")));
+        // System.out.println("shooter diff: "
+        //         + Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")));
 
-        System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
+        // System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
 
         findMed();
         lemonInTop = topMedVal > IRRange;
