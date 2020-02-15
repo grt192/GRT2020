@@ -14,6 +14,7 @@ public class MechCollection {
         // mechs.add(new WinchMech());
         // mechs.add(new LidarMech());
         // mechs.add(new SpinnerMech());
+        mechs.add(new LightRingMech());
     }
 
     public void update() {
