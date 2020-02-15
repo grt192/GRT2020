@@ -12,10 +12,10 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.gen.BIGData;
 
 public class ShooterMech implements Mech {
@@ -45,8 +45,9 @@ public class ShooterMech implements Mech {
         this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
         motor.setSmartCurrentLimit(10);
         motor.setSecondaryCurrentLimit(15);
+        motor.setIdleMode(IdleMode.kCoast);
         this.pid = motor.getPIDController();
-        smff = new SimpleMotorFeedforward(0.0669, 0.133, 0.131);
+        smff = new SimpleMotorFeedforward(-0.124, 0.14, 0.0798);
         // TODO: improve PID
         // configPID();
         this.encoder = motor.getEncoder();
@@ -72,15 +73,17 @@ public class ShooterMech implements Mech {
                 String line = in.nextLine().trim();
                 if (line.equalsIgnoreCase("down")) {
                     loadingDown = true;
+                    continue;
                 } else if (line.equalsIgnoreCase("up")) {
                     loadingDown = false;
+                    continue;
                 }
                 if (line.length() > 0 && line.charAt(0) != '#') {
                     String[] split = line.split(",");
                     try {
                         int a = Integer.parseInt(split[0]);
                         int b = Integer.parseInt(split[1]);
-                        System.out.println("loaded two ints: " + a + "," + b + ", down=" + loadingDown);
+                        System.out.println("loaded shooter point: dist(ft)=" + a + ",rpm=" + b + ", down=" + loadingDown);
                         if (loadingDown) {
                             downRPMMap.put(a, b);
                         } else {
