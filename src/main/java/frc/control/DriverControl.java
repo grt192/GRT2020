@@ -114,6 +114,9 @@ class DriverControl extends Mode {
     }
 
     private void driveMechs() {
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.put("reset_lemon_count", true);
+        }
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
             boolean currState = BIGData.getLinkageState();
             BIGData.requestLinkageState(!currState);
