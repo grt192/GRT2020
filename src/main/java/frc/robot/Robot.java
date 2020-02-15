@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // System.out.println(BIGData.getDouble("camera_azimuth"));
+    BIGData.put("auton_started", true);
   }
 
   /**

@@ -94,7 +94,6 @@ class Wheel {
 	}
 
 	public double getDriveSpeed() {
-		// TODO possible wrong calculation because getVelocity() is in RPM
 		return driveEncoder.getVelocity() * DRIVE_TICKS_TO_METERS * (reversed ? -1 : 1) / 60.0;
 	}
 

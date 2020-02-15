@@ -12,6 +12,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -44,6 +45,7 @@ public class ShooterMech implements Mech {
         this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
         motor.setSmartCurrentLimit(10);
         motor.setSecondaryCurrentLimit(15);
+        motor.setIdleMode(IdleMode.kCoast);
         this.pid = motor.getPIDController();
         smff = new SimpleMotorFeedforward(-0.124, 0.14, 0.0798);
         // TODO: improve PID
