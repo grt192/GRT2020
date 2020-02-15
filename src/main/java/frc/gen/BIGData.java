@@ -333,8 +333,16 @@ public class BIGData {
 		put("spinner_state", state);
 	}
 
+	public static void setSpinnerState(boolean state) {
+		put("spinner_state", state);
+	}
+
 	public static boolean getSpinnerState() {
 		return getBoolean("spinner_state");
+	}
+
+	public static double getSpinnerSpeed() {
+		return getDouble("spinner_manual_speed");
 	}
 
 	/** set the original value of the first joystick profile point */

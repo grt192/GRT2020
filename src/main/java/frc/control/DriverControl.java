@@ -123,6 +123,12 @@ class DriverControl extends Mode {
             BIGData.put("firstTime?", true);
         }
 
+        if (Input.MECH_XBOX.getBButtonReleased()) {
+            BIGData.put("spinner_manual_control", true);
+            BIGData.put("spinner_manual_speed", JoystickProfile.applyDeadband(Input.SWERVE_XBOX.getY(Hand.kRight)));
+        }
+        //TODO: make this not bad later
+
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards
         //TODO TEST IF INTAKE WORKS AS EXPECTED!

@@ -79,10 +79,10 @@ initial_conveyer_lemon_count=0
 
 # spinner
 
-spinner_speed = 0.5
-spinner_id = 
-spinner_sol = 
+spinner_speed=0.5
+spinner_id=15
+spinner_sol=5 
 
 # Light Ring
 
-ring_id =
+ring_id=7

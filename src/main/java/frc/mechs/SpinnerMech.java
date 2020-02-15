@@ -56,6 +56,18 @@ public class SpinnerMech implements Mech {
 
     @Override
     public void update() {
+        boolean state = BIGData.getSpinnerState();
+        boolean manual = BIGData.getBoolean("spinner_manual_control");
+        if (state) {
+            automaticControl();
+        } else if (manual){
+            sol.set(true);
+            double speed = BIGData.getSpinnerSpeed();
+            motor.set(ControlMode.PercentOutput, speed);
+        }
+    }
+
+    private void automaticControl() {
         String gameData = DriverStation.getInstance().getGameSpecificMessage();
 
         if (gameData.length() > 0) {
@@ -99,8 +111,6 @@ public class SpinnerMech implements Mech {
                 }
                 break;
             }
-
         }
-
     }
 }

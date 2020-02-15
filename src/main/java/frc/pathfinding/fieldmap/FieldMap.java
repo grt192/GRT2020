@@ -65,9 +65,7 @@ public class FieldMap {
 		safeZones[2] = SafeTrench;
 
 		VisionTarget farGoal = new VisionTarget(new Vector(FIELD_LONG, 228.655), Math.PI, true);
-
 		visionTargets[0] = farGoal;
-
 	}
 
 	public Vector closestWallPoint(Vector p) {
