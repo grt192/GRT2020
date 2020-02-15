@@ -19,6 +19,9 @@ public class BIGData {
 	public static void start() {
 		map = new HashMap<String, String>();
 		Config.start(map);
+		put("stage_1_disabled", false);
+		put("stage_2_disabled", false);
+		put("stage_3_disabled", false);
 	}
 
 	private static void existenceCheck(String key, String type) {
@@ -307,8 +310,8 @@ public class BIGData {
 	}
 
 	/**
-	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
-	 * make it turn one way
+	 * set the output speed of the winch motor, from -1.0 to 1.0 
+	 * TODO maybe only make winch turn one way
 	 */
 	public static void requestWinchSpeed(double output) {
 		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
@@ -324,6 +327,14 @@ public class BIGData {
 
 	public static boolean getWinchState() {
 		return getBoolean("winch_state");
+	}
+
+	public static void putSpinnerState(boolean state) {
+		put("spinner_state", state);
+	}
+
+	public static boolean getSpinnerState() {
+		return getBoolean("spinner_state");
 	}
 
 	/** set the original value of the first joystick profile point */

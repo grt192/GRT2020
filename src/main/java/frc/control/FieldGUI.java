@@ -16,6 +16,7 @@ import frc.gen.BIGData;
 
 public class FieldGUI {
     private String address;
+    private boolean startedTimer = false;
 
     public FieldGUI(String ip, int port) {
         this.address = String.format("http://%1$s:%2$d/", ip, port);
@@ -28,13 +29,13 @@ public class FieldGUI {
         String canvasClick = goGet("canvasdata");
         BIGData.putCanvasClick(canvasClick);
 
-        // System.out.println("Button clicked: " + BIGData.getButtonClick());
-        // System.out.println("Canvas spot clicked: " + BIGData.getCanvasClick());
-        System.out.println(buttonClick);
-        System.out.println(canvasClick);
-
-        // TODO: connect to FMS
-        goPost("starttimer", "true");
+        System.out.println("Button clicked: " + BIGData.getButtonClick());
+        System.out.println("Canvas spot clicked: " + BIGData.getCanvasClick());
+        
+        if (!startedTimer && BIGData.getBoolean("auton_started")) {
+            goPost("starttimer", "true");
+            startedTimer = true;
+        }
 
         HashMap<String, Integer> working = new HashMap<>();
         working.put("fl", (int) Math.round(Math.random()));
@@ -43,7 +44,8 @@ public class FieldGUI {
         working.put("br", (int) Math.round(Math.random()));
         goPost("swervedata", new Gson().toJson(working));
 
-        goPost("lemondata", Integer.toString((int) (Math.random() * 6)));
+        goPost("angledata", Double.toString(BIGData.getGyroAngle()));
+        goPost("lemondata", Integer.toString(BIGData.getInt("lemon_count")));
         //goPost("getlidar", new Gson().toJson(Target.convert()));
     }
 

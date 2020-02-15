@@ -44,7 +44,8 @@ linkage_sol_id=0
 intake_talon_id=6
 intake_sol_id=4
 
-intake_speed=0.5
+# this is the inital intake speed
+intake_speed=0
 
 #Shooter Values
 shooter_high_angle=50
@@ -63,7 +64,7 @@ lidar_pwm=0
 # winch
 winch_id=2
 
-#conveyor sensors
+# conveyor sensors
 intake_analog=3
 top_analog=2
 middle_analog=1
@@ -71,3 +72,17 @@ bottom_analog=0
 
 storage_motor=8
 storage_speed_auto=-0.4
+
+#initial ball count
+initial_total_lemon_count=3
+initial_conveyer_lemon_count=0
+
+# spinner
+
+spinner_speed = 0.5
+spinner_id = 
+spinner_sol = 
+
+# Light Ring
+
+ring_id =

@@ -6,7 +6,7 @@ bumpers =
 pov buttons = ?
 a = linkage
 b = line up to target
-x = //TODO DONT add//stop everything (shooter, lining up, intake, linkage) button? - dunno if this is good idea
+x = spinner enable
 y = enable winch -- dead mans since winch when rope not up breaks it
 -------------------------
 mech xbox controller

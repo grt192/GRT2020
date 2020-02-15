@@ -128,6 +128,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    BIGData.put("auton_started", true);
     autonomous.init("test2.txt");
   }
 

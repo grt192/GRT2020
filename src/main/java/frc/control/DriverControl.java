@@ -20,6 +20,11 @@ class DriverControl extends Mode {
     }
 
     private void driveSwerve() {
+        // zero swerve gyro if start button (menu button) is pressed
+        if (Input.SWERVE_XBOX.getStartButtonReleased()) {
+            BIGData.putZeroGyroRequest(true);
+        }
+
         double x = Input.SWERVE_XBOX.getX(Hand.kLeft);
         // negativize y so that up is forward
         double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);
@@ -59,9 +64,17 @@ class DriverControl extends Mode {
     }
 
     private void driveMechs() {
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.put("reset_lemon_count", true);
+        }
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
             boolean currState = BIGData.getLinkageState();
             BIGData.requestLinkageState(!currState);
+        }
+
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            boolean currState = BIGData.getSpinnerState();
+            BIGData.putSpinnerState(!currState);
         }
 
         BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
@@ -99,20 +112,24 @@ class DriverControl extends Mode {
             BIGData.put("shooter_up", shooterUp);
         }
 
+        // if x button is released, toggle the intake position
         if (Input.MECH_XBOX.getXButtonReleased()) {
             boolean currState = BIGData.getIntakeState();
             BIGData.requestIntakeState(!currState);
         }
 
+        if (Input.MECH_XBOX.getAButtonReleased()) {
+            BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
+            BIGData.put("firstTime?", true);
+        }
+
+        // if left trigger is pressed, run intake motor in reverse
+        // if right trigger is pressed, run intake motor in forwards
+        //TODO TEST IF INTAKE WORKS AS EXPECTED!
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
-        if (lTriggerMech > 0.8) {
-            BIGData.put("roller_mode", 2);
-        } else if (rTriggerMech > 0.8) {
-            BIGData.put("roller_mode", 1);
-        } else {
-            BIGData.put("roller_mode", 0);
-        }
+        double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));
+        BIGData.put("intake_speed", mechTriggerSum);
 
     }
 

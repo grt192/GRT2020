@@ -5,59 +5,56 @@ import java.util.Arrays;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.gen.BIGData;
 
 public class StorageMech implements Mech {
-    // private final I2C.Port i2cPort = I2C.Port.kOnboard;
-    // private final ColorSensorV3 SHOOTER = new ColorSensorV3(i2cPort);
+
     private AnalogInput intake, top, bottom, middle;
     private TalonSRX motor;
 
-    private int ultrasonicRange, revRange, IRRange, IRIntakeRange, IRBotRange;
+    private int IRRange, IRIntakeRange, IRBotRange;
 
     private double storageVelocity;
 
     // private final int range = 400;
     private boolean intakingLemon, waitingLemon = false;
     private boolean topWaiting = false;
-    private boolean ballShotCounted = false;
-
+    
     private int lemonCount = 0;
     private int conveyerCount = 0;
 
-    private boolean lemonInTop, lemonInMiddle, lemonInBottom, intakeSeen, shooterSeen = false;
+    private boolean lemonInTop, lemonInMiddle, lemonInBottom, intakeSeen = false;
 
     private double topMedVal, midMedVal, botMedVal, intakeMedVal;
     private double[] topArr, midArr, botArr, inArr;
+    // index of the running median arrays
     private int count;
 
     public StorageMech() {
-        // System.out.println("STARTING STORAGE");
-        // System.out.println(BIGData.getInt("intake_analog"));
         intake = new AnalogInput(BIGData.getInt("intake_analog"));
         top = new AnalogInput(BIGData.getInt("top_analog"));
         middle = new AnalogInput(BIGData.getInt("middle_analog"));
-        // System.out.println(BIGData.getInt("bottom_analog"));
         bottom = new AnalogInput(BIGData.getInt("bottom_analog"));
+
         this.motor = new TalonSRX(BIGData.getInt("storage_motor"));
         motor.setNeutralMode(NeutralMode.Brake);
         motor.configContinuousCurrentLimit(10, 0);
         motor.configPeakCurrentLimit(15, 0);
         motor.configPeakCurrentDuration(100, 0);
         motor.enableCurrentLimit(true);
-        // System.out.println("GOT PAST IR INITIAL");
+
+        lemonCount = BIGData.getInt("initial_total_lemon_count");
+        conveyerCount = BIGData.getInt("initial_conveyer_lemon_count");
+
         storageVelocity = BIGData.getStorageSpeedAuto();
-        ultrasonicRange = BIGData.getInt("ultrasonic_range");
-        // revRange = BIGData.getInt("rev_range");
-        // IRRange = BIGData.getInt("ir_range");
+        
         IRIntakeRange = 1100;
         IRBotRange = 1300;
         IRRange = 1300;
+
         count = 0;
         topMedVal = 0;
         botMedVal = 0;
@@ -67,14 +64,17 @@ public class StorageMech implements Mech {
         midArr = new double[5];
         botArr = new double[5];
         inArr = new double[5];
-        System.out.println(BIGData.getInt("top_analog"));
-        BIGData.put("lemon_count", 0);
+        
 
-        System.out.println(lemonCount);
-        System.out.println(conveyerCount);
+        BIGData.put("lemon_count", lemonCount);
     }
 
     public void update() {
+        // reset count if it is requested
+        if (BIGData.getBoolean("reset_lemon_count")) {
+            resetCount();
+            BIGData.put("reset_lemon_count", false);
+        }
         boolean state = BIGData.getStorageState();
         boolean disable = BIGData.getDisabled(1);
         if (disable) {
@@ -187,22 +187,39 @@ public class StorageMech implements Mech {
         // System.out.println("Top sensor " + lemonInTop);
         // System.out.println("Bot sensor " + lemonInBottom);
         // System.out.println("Mid sensor " + lemonInMiddle);
-        // System.out.println("Intake sensor: " + intakeMedVal);
+        // System.out.println("In sensor " + intakeSeen);
 
         // System.out.println("Top sensor " + topMedVal);
         // System.out.println("Bot sensor " + botMedVal);
         // System.out.println("Mid sensor " + midMedVal);
         // System.out.println("In sensor: " + intakeMedVal);
+
         // System.out.println("Top sensor " + top.getValue());
         // System.out.println("Bot sensor " + bottom.getValue());
         // System.out.println("Mid sensor " + middle.getValue());
         // System.out.println("Intake sensor " + intake.getValue());
 
-        BIGData.put("lemon_count", lemonCount);
-        SmartDashboard.putNumber("Lemon Count", BIGData.getInt("lemon_count"));
+        updateBigData();
     }
 
     public void disable() {
         motor.set(ControlMode.Current, 0);
+    }
+
+    public void resetCount() {
+        lemonCount = 0;
+        conveyerCount = 0;
+        updateBigData();
+    }
+    public void setCount(int lemonCount, int conveyerCount) {
+        this.lemonCount = lemonCount;
+        this.conveyerCount = conveyerCount;
+        updateBigData();
+    }
+
+    public void updateBigData() {
+        BIGData.put("lemon_count", lemonCount);
+        SmartDashboard.putNumber("Lemon Count", lemonCount);
+        SmartDashboard.putNumber("Conveyer Lemon Count", conveyerCount);
     }
 }

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.gen.BIGData;
 import frc.util.GRTUtil;
 
@@ -35,10 +36,6 @@ public class ShuffleboardCommands {
     // config
     private NetworkTableEntry configMessage;
 
-    private ShuffleboardTab shooterTab;
-    private NetworkTableEntry wheelARPM;
-    private NetworkTableEntry wheelBRPM;
-
     public ShuffleboardCommands() {
         wheelZeros = new NetworkTableEntry[4];
         wheelDriveSpeeds = new NetworkTableEntry[4];
@@ -49,7 +46,6 @@ public class ShuffleboardCommands {
     public void init() {
         settingsTab = Shuffleboard.getTab("Settings");
         swerveTab = Shuffleboard.getTab("Swerve");
-        shooterTab = Shuffleboard.getTab("2 wheel shooter");
         configLayout = settingsTab.getLayout("Config File", "List Layout").withSize(2, 2).withPosition(0, 0);
         joystickLayout = settingsTab.getLayout("Joysticks", "List Layout").withSize(1,3).withPosition(2, 0);
         wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2,2).withPosition(0, 2);
@@ -154,25 +150,22 @@ public class ShuffleboardCommands {
             }
         };
         swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand);
+        SmartDashboard.putData("ZERO SWERVE GYRO", zeroGyroCommand);
         gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).getEntry();
         gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).getEntry();
 
-        //TODO ONLY FOR TESTING PURPOSES, DELETE LATER
-        wheelARPM = shooterTab.add("wheel a rpm", 0).getEntry();
-        wheelBRPM = shooterTab.add("wheel b rpm", 0).getEntry();
-        CommandBase updateTwoWheelShooter = new CommandBase() {
+        CommandBase resetLemonCountCommand = new CommandBase() {
             @Override
             public void initialize() {
-                System.out.println("updating two wheel shooter speeds");
-                BIGData.put("wheel_a_rpm", wheelARPM.getDouble(0));
-                BIGData.put("wheel_b_rpm", wheelBRPM.getDouble(0));
+                System.out.println("setting lemon count to 0");
+                BIGData.put("reset_lemon_count", true);
             }
             @Override
             public boolean isFinished() {
                 return true;
             }
         };
-        shooterTab.add("update two wheel shooter", updateTwoWheelShooter);
+        SmartDashboard.putData("RESET LEMON COUNT", resetLemonCountCommand);
     }
 
     public void update() {
