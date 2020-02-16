@@ -79,8 +79,8 @@ public class SpinnerMech implements Mech {
                     counter = 0;
                     firstSeen = detectedColor;
                 } else {
-                    if (colorMatcher.matchClosestColor(detectedColor).color.equals(colorMatcher
-                        .matchClosestColor(firstSeen).color)) {
+                    if (colorMatcher.matchClosestColor(detectedColor).color
+                            .equals(colorMatcher.matchClosestColor(firstSeen).color)) {
                         counter++;
                     }
                 }
@@ -99,37 +99,8 @@ public class SpinnerMech implements Mech {
                 }
                 break;
             }
- 
+
         }
-
-
-
-        // if (BIGData.getBoolean("Spinner?")) {
-
-        //     if (BIGData.getBoolean("firstTime?")) {
-        //         firstSeen = sensor.getColor();
-        //         counter = 0;
-        //     }
-        //     Color detectedColor = sensor.getColor();
-
-        //     switch (stage) {
-        //     case 1:
-
-        //         if (colorMatcher.matchClosestColor(detectedColor).color == colorMatcher
-        //                 .matchClosestColor(firstSeen).color) {
-        //             counter++;
-        //         }
-        //         if (counter >= 7) {
-        //             stage++;
-        //         }
-        //         break;
-        //     case 2:
-        //         break;
-        //     case 3:
-        //         break;
-        //     }
-
-        // }
 
     }
 }
