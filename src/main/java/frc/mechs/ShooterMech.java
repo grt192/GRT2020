@@ -26,7 +26,8 @@ public class ShooterMech implements Mech {
     private static final int DEFAULT_MIN_RPM = 2000;
     private static final int DEFAULT_MAX_RPM = 6000;
 
-    private CANSparkMax motor;
+    private CANSparkMax motor_lead;
+    private CANSparkMax motor_follow;
     private CANEncoder encoder;
     private CANPIDController pid;
     private SimpleMotorFeedforward smff;
@@ -41,17 +42,17 @@ public class ShooterMech implements Mech {
     private double shooterAngle;
 
     public ShooterMech() {
-        System.out.println(BIGData.getInt("one_wheel_shooter"));
-        this.motor = new CANSparkMax(BIGData.getInt("one_wheel_shooter"), MotorType.kBrushless);
-        motor.setSmartCurrentLimit(10);
-        motor.setSecondaryCurrentLimit(15);
-        motor.setIdleMode(IdleMode.kCoast);
-        this.pid = motor.getPIDController();
-        // smff = new SimpleMotorFeedforward(-0.124, 0.14, 0.0798);
+        this.motor_lead = new CANSparkMax(BIGData.getInt("one_wheel_shooter_lead"), MotorType.kBrushless);
+        motor_lead.setSmartCurrentLimit(10);
+        motor_lead.setSecondaryCurrentLimit(15);
+        motor_lead.setIdleMode(IdleMode.kCoast);
+        this.motor_follow = new CANSparkMax(BIGData.getInt("one_wheel_shooter_follow"), MotorType.kBrushless);
+        motor_follow.follow(motor_lead);
+        motor_follow.setSmartCurrentLimit(10);
+        motor_follow.setSecondaryCurrentLimit(15);
+        motor_follow.setIdleMode(IdleMode.kCoast);
         smff = new SimpleMotorFeedforward(-0.101, 0.138, 0.149);
-        // TODO: improve PID
-        // configPID();
-        this.encoder = motor.getEncoder();
+        this.encoder = motor_lead.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
@@ -152,7 +153,7 @@ public class ShooterMech implements Mech {
         // mode being false means shooter is off
         // SSystem.out.println(mode);
         if (!mode) {
-            motor.set(BIGData.getDouble("shooter_manual"));
+            motor_lead.set(BIGData.getDouble("shooter_manual"));
             // mode being true means it's in automatic control, speed calculated based on
             // distance to vision target
         } else {
@@ -164,9 +165,8 @@ public class ShooterMech implements Mech {
             rpm = -3200;
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
-            motor.setVoltage(smff.calculate(rpm / 60));
+            motor_lead.setVoltage(smff.calculate(rpm / 60));
             //System.out.println("smff voltage: " + smff.calculate(rpm / 60));
-            // pid.setReference(newSpeed, ControlType.kVelocity);
         }
         BIGData.put("shooter_current_rpm", getSpeed());
     }
@@ -219,26 +219,7 @@ public class ShooterMech implements Mech {
         return shooterV;
     }
 
-    public void configPID() {
-        kP = 5e-5;
-        kI = 1e-7;
-        kFF = 3e-6;
-        kMaxOutput = 1;
-        kMinOutput = -1;
-
-        pid.setP(kP);
-        pid.setI(kI);
-        pid.setD(0);
-        pid.setIZone(0);
-        pid.setFF(kFF);
-        pid.setOutputRange(kMinOutput, kMaxOutput);
-    }
-
     public double getSpeed() {
         return encoder.getVelocity();
-    }
-
-    public void disable() {
-        motor.close();
     }
 }
