@@ -84,4 +84,5 @@ spinner_sol =
 
 # Light Ring
 
-ring_id =
+ring_id=7
+

@@ -130,10 +130,11 @@ class DriverControl extends Mode {
 
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards
-        //TODO TEST IF INTAKE WORKS AS EXPECTED!
+        // TODO TEST IF INTAKE WORKS AS EXPECTED!
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
         double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));
+
         BIGData.put("intake_speed", mechTriggerSum);
 
     }
