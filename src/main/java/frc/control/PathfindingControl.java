@@ -6,7 +6,7 @@ import frc.pathfinding.*;
 
 public class PathfindingControl extends Mode {
 
-    private static final double SPEED = 0.1;
+    private static final double SPEED = 0.3;
     private static final double e = 4;
 
     private static Vector velocity;
@@ -33,6 +33,9 @@ public class PathfindingControl extends Mode {
         if (Target.size() <= 0)
             path.searchAStar(new Vector(120, 161.625));
         
+        if (Target.size() < 1) 
+            return false;
+
         nextPos = Target.getNext();
         d = currentPos.distanceTo(targetPos);
 
@@ -51,10 +54,11 @@ public class PathfindingControl extends Mode {
             return false;
         } else if (dtoNext < e) {
             BIGData.requestDrive(0, 0, 0);
-            Target.remove(0);
+            Target.remove();
             return true;
         } else {
-            BIGData.requestDrive(velocity.x, velocity.y, 0);
+            System.out.println("vx: " + velocity.x + " vy: " + velocity.y);
+            BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
             return true;
         }
     }

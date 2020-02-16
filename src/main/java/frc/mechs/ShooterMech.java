@@ -160,12 +160,12 @@ public class ShooterMech implements Mech {
             double rpm = calcSpeed(range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
-            newSpeed = 3200;
-            rpm = 3200;
+            newSpeed = -3200;
+            rpm = -3200;
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             motor.setVoltage(smff.calculate(rpm / 60));
-            System.out.println("smff voltage: " + smff.calculate(rpm / 60));
+            //System.out.println("smff voltage: " + smff.calculate(rpm / 60));
             // pid.setReference(newSpeed, ControlType.kVelocity);
         }
         BIGData.put("shooter_current_rpm", getSpeed());

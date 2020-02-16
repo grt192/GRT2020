@@ -27,14 +27,14 @@ public class Target {
         return targets.get(i);
     }
 
-    public static void remove(int i) {
+    public static void remove() {
         targets.remove(0);
     }
 
     public static void clear() {
         int i = targets.size();
-        for (int n = 0; n < i; i++) {
-            remove(0);
+        for (int n = 0; n < i; n++) {
+            remove();
         }
     }
 
