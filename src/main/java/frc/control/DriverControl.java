@@ -77,9 +77,10 @@ class DriverControl extends Mode {
             BIGData.requestLinkageState(!currState);
         }
 
-        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+        if (Input.SWERVE_XBOX.getXButtonPressed()) {
             boolean currState = BIGData.getSpinnerState();
             BIGData.putSpinnerState(!currState);
+            BIGData.put("firstTime?", true);
         }
 
         BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
@@ -122,12 +123,6 @@ class DriverControl extends Mode {
             boolean currState = BIGData.getIntakeState();
             BIGData.requestIntakeState(!currState);
         }
-
-        if (Input.MECH_XBOX.getAButtonReleased()) {
-            BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
-            BIGData.put("firstTime?", true);
-        }
-
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards
         // TODO TEST IF INTAKE WORKS AS EXPECTED!
