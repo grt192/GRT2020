@@ -45,6 +45,9 @@ public class JetsonCamera implements Runnable {
     public void run() {
         while (true) {
             try {
+                if (Thread.interrupted()) {
+                    return;
+                }
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
                     System.out.println("camera code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
@@ -56,7 +59,11 @@ public class JetsonCamera implements Runnable {
                     BIGData.putJetsonCameraConnected(true);
                     cameraData();
                 }
-            } catch (Exception e) {
+            } 
+            catch (InterruptedException e) {
+                return;
+            }
+            catch (Exception e) {
                 System.out.println("Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
             }
         }

@@ -42,6 +42,9 @@ public class Lidar implements Runnable {
     public void run() {
         while (true) {
             try {
+                if (Thread.interrupted()) {
+                    return;
+                }
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
                     System.out.println("lidar code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
@@ -51,7 +54,11 @@ public class Lidar implements Runnable {
                 } else {
                     lidarData();
                 }
-            } catch (Exception e) {
+            }
+            catch (InterruptedException e) {
+                return;
+            }
+            catch (Exception e) {
                 System.out.println("Outer exception caught in LIDAR code. unknown error");
             }
         }
