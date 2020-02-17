@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
+import java.util.Arrays;
 
 public class JetsonCamera implements Runnable {
     // thread that contains code to connect to and read from socket
@@ -24,8 +25,8 @@ public class JetsonCamera implements Runnable {
     private BufferedReader stdIn;
 
     // Victor motor controller to control LED ring
-    //TODO ADD LED RING
-    
+    // TODO ADD LED RING
+
     // default port of jetson to connect to
     private final static int DEFAULT_PORT = 1337;
 
@@ -33,20 +34,22 @@ public class JetsonCamera implements Runnable {
         port = BIGData.getInt("jetson_camera_port");
         if (port == -1) {
             System.out.println("unable to read valid config file value for port number for camera on jetson"
-                + ", using default port " + DEFAULT_PORT);
+                    + ", using default port " + DEFAULT_PORT);
             port = DEFAULT_PORT;
         }
         jetsonAddress = BIGData.getString("jetson_address");
         thread = new Thread(this);
         thread.start();
     }
-    
+
     @Override
     public void run() {
         while (true) {
             try {
-                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
-                    //System.out.println("camera code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
+                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected()
+                        || !socket.isBound()) {
+                    // System.out.println("camera code is attempting to connect to jetson at address
+                    // " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
                         // if we don't connect, wait before trying to connect again
@@ -57,11 +60,11 @@ public class JetsonCamera implements Runnable {
                     cameraData();
                 }
             } catch (Exception e) {
-                System.out.println("Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
+                System.out.println(
+                        "Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
             }
         }
     }
-
 
     public boolean connect() {
         boolean connected = false;
@@ -89,7 +92,9 @@ public class JetsonCamera implements Runnable {
             String in = stdIn.readLine();
             if (in != null) {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
-                BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]));
+                BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
+                        Double.parseDouble(data[2]));
+                System.out.println(Arrays.toString(data));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,10 +102,7 @@ public class JetsonCamera implements Runnable {
             System.out.println("unable to parse lidar data, NullPointerException");
         } catch (NumberFormatException e) {
             System.out.println("unable to parse lidar data, NumberFormatException");
-        } catch (Exception e) {
-            System.out.println("UNKNOWN ERROR: Attempted to read lidar data but something bad happened.");
         }
-
     }
 
 }

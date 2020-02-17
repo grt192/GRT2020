@@ -110,11 +110,11 @@ public class StorageMech implements Mech {
         // System.out.println("lemon count: " + lemonCount);
         // System.out.println("conveyor count: " + conveyerCount);
 
-        System.out.println("shooter rmp: "
-                + BIGData.getDouble("shooter_current_rpm"));
+        System.out.println("shooter rpm: " + BIGData.getDouble("shooter_current_rpm"));
 
         // System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
-
+        // System.out.println("shooter speed: " + BIGData.getDouble("shooter_speed"));
+        
         findMed();
         lemonInTop = topMedVal > IRRange;
         lemonInMiddle = midMedVal > IRRange;
@@ -161,7 +161,7 @@ public class StorageMech implements Mech {
         // System.out.println("manual should run: "
         //         + (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0));
 
-        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
+        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 100)
                 && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
                 || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
             //System.out.println("SHOULD BE MOVING CONVEYOR");

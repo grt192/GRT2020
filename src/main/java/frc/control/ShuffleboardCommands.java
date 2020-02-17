@@ -33,6 +33,9 @@ public class ShuffleboardCommands {
     private NetworkTableEntry wheelRotateSpeeds[];
     private NetworkTableEntry gyroAngle;
     private NetworkTableEntry gyroRate;
+    // shooter
+    private ShuffleboardTab shooterTab;
+    private NetworkTableEntry oneWheel;
     // config
     private NetworkTableEntry configMessage;
 
@@ -46,6 +49,7 @@ public class ShuffleboardCommands {
     public void init() {
         settingsTab = Shuffleboard.getTab("Settings");
         swerveTab = Shuffleboard.getTab("Swerve");
+        shooterTab = Shuffleboard.getTab("Shooter");
         configLayout = settingsTab.getLayout("Config File", "List Layout").withSize(2, 2).withPosition(0, 0);
         joystickLayout = settingsTab.getLayout("Joysticks", "List Layout").withSize(1, 3).withPosition(2, 0);
         wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2, 2).withPosition(0, 2);
@@ -178,6 +182,20 @@ public class ShuffleboardCommands {
             }
         };
         SmartDashboard.putData("RESET LEMON COUNT", resetLemonCountCommand);
+
+        oneWheel = shooterTab.add("one wheel rpm", 0).getEntry();
+        CommandBase updateOneWheelShooter = new CommandBase() {
+            @Override
+            public void initialize() {
+                System.out.println("updating one wheel shooter speeds");
+                BIGData.put("shooter_speed", oneWheel.getDouble(0));
+            }
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+        shooterTab.add("update one wheel", updateOneWheelShooter);
     }
 
     public void update() {

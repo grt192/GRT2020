@@ -162,7 +162,7 @@ public class ShooterMech implements Mech {
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
             newSpeed = 5500;
-            rpm = 5500;
+            rpm = BIGData.getDouble("shooter_speed");
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             motor_lead.setVoltage(smff.calculate(rpm / 60));
