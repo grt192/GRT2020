@@ -3,12 +3,8 @@ package frc.targettracking;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
-import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
 
 public class JetsonCamera implements Runnable {
@@ -22,9 +18,6 @@ public class JetsonCamera implements Runnable {
     private String jetsonAddress;
     // reader that reads from socket
     private BufferedReader stdIn;
-
-    // Victor motor controller to control LED ring
-    //TODO ADD LED RING
     
     // default port of jetson to connect to
     private final static int DEFAULT_PORT = 1337;
@@ -91,7 +84,7 @@ public class JetsonCamera implements Runnable {
         return connected;
     }
 
-    public void cameraData() {
+    public void cameraData() throws InterruptedException {
         try {
             String in = stdIn.readLine();
             if (in != null) {

@@ -59,7 +59,7 @@ public class Swerve {
 
 		refreshVals();
 		double w = userW;
-		if (BIGData.getBoolean("PID?")) {
+		if (withPID) {
 			w = calcPID();
 		}
 
@@ -105,12 +105,6 @@ public class Swerve {
 	private double calcPID() {
 		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
 				Math.toRadians(kF));
-		// System.out.println("kP: " + kP);
-		// System.out.println("kD: " + kD);
-		// System.out.println("kF: " + kF);
-		// System.out.println("Error: " + Math.toDegrees(error));
-		// System.out.println();
-
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
 		// System.out.print("W: " + w);%
 		return -w;

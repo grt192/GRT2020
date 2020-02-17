@@ -7,14 +7,10 @@
 
 package frc.control;
 
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
-
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.gen.BIGData;
-import frc.swerve.SwerveData;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
-import frc.gen.BIGData;
 
 class DriverControl extends Mode {
     private int pov = -1;
@@ -61,7 +57,6 @@ class DriverControl extends Mode {
             if (pov == -1) {
             } else {
                 BIGData.setAngle(pov);
-                // System.out.println("pov: " + pov);
                 lastPov = pov;
             }
         }
@@ -100,8 +95,6 @@ class DriverControl extends Mode {
 
         // double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
         // double lidarRange = BIGData.getDouble("lidar_range");
-        // System.out.println(azimuth);
-        // System.out.println(Math.toDegrees(lidarAzimuth) + "," + lidarRange);
         // if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
         //     BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
         // }
@@ -170,7 +163,6 @@ class DriverControl extends Mode {
         }
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards
-        // TODO TEST IF INTAKE WORKS AS EXPECTED!
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
         double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));

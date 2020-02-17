@@ -98,6 +98,7 @@ public class ShooterMech implements Mech {
                     }
                 }
             }
+            in.close();
         } catch (FileNotFoundException e) {
             System.out.println("UNABLE TO LOAD SHOOTER VALUES! SHOOTER WILL BE BAD!");
         } catch (Exception e) {

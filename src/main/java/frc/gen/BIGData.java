@@ -215,7 +215,6 @@ public class BIGData {
 		return getBoolean("zero_gyro");
 	}
 
-	// TODO ADD MECH BIGDATA STUFF HERE!
 	/** Set the state of the linkage; true=on, false=off */
 	public static void requestLinkageState(boolean state) {
 		put("linkage_state", state);
