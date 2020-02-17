@@ -42,7 +42,7 @@ public class SpinnerMech implements Mech {
 
     public SpinnerMech() {
         motor = new TalonSRX(BIGData.getInt("spinner_id"));
-        sol = new Solenoid(1, BIGData.getInt("spinner_sol"));
+        sol = new Solenoid(9, BIGData.getInt("spinner_sol"));
         // BIGData.put("Spinner?", false);
         // BIGData.put("firstTime?", true);
 

@@ -47,8 +47,8 @@ public class BezierControl extends Mode {
             BIGData.requestDrive(0, 0, 0);
             return false;
         }
-        vx = velocity.x * -1;
-        vy = velocity.y * -1;
+        vx = velocity.y * -1;
+        vy = velocity.x;
         BIGData.requestDrive(vx, vy, 0);
         return true;
     }

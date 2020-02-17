@@ -52,8 +52,8 @@ shooter_high_angle=50
 shooter_high_angle=25
 shooter_up=false
 shooter_offset_change=100
-one_wheel_shooter_lead=8   
-one_wheel_shooter_follow=                                                                                                                                        
+one_wheel_shooter_lead=3
+one_wheel_shooter_follow=16
 one_wheel_hood=6
 # file for shooter rpms to load in
 shooter_rpm_file=omega_rpms.txt

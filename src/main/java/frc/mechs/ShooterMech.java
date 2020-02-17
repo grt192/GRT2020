@@ -51,11 +51,11 @@ public class ShooterMech implements Mech {
         motor_follow.setSmartCurrentLimit(10);
         motor_follow.setSecondaryCurrentLimit(15);
         motor_follow.setIdleMode(IdleMode.kCoast);
-        smff = new SimpleMotorFeedforward(-0.101, 0.138, 0.149);
+        smff = new SimpleMotorFeedforward(0.223, 0.13, 0.0256);
         this.encoder = motor_lead.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
-        this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
+        this.hood = new Solenoid(9, BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
 
         initRPMTable();
@@ -161,8 +161,8 @@ public class ShooterMech implements Mech {
             double rpm = calcSpeed(range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
-            newSpeed = -3200;
-            rpm = -3200;
+            newSpeed = 3000;
+            rpm = 3000;
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             motor_lead.setVoltage(smff.calculate(rpm / 60));

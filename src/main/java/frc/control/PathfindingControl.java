@@ -57,7 +57,7 @@ public class PathfindingControl extends Mode {
             Target.remove();
             return true;
         } else {
-            System.out.println("vx: " + velocity.x + " vy: " + velocity.y);
+            // don't change this, the swerve field coordinates are different from the actual field coordinates
             BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
             return true;
         }

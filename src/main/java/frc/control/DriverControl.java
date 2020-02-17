@@ -67,10 +67,10 @@ class DriverControl extends Mode {
         if (Input.MECH_XBOX.getStartButtonReleased()) {
             BIGData.put("reset_lemon_count", true);
         }
-        if (Input.SWERVE_XBOX.getAButtonReleased()) {
-            boolean currState = BIGData.getLinkageState();
-            BIGData.requestLinkageState(!currState);
-        }
+        // if (Input.SWERVE_XBOX.getAButtonReleased()) {
+        //     boolean currState = BIGData.getLinkageState();
+        //     BIGData.requestLinkageState(!currState);
+        // }
 
         if (Input.SWERVE_XBOX.getXButtonReleased()) {
             boolean currState = BIGData.getSpinnerState();
