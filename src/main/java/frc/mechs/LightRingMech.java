@@ -1,21 +1,21 @@
 package frc.mechs;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import edu.wpi.first.wpilibj.VictorSP;
 import frc.gen.BIGData;
 
 public class LightRingMech implements Mech {
-    private VictorSP ring;
+    private VictorSPX ring;
 
     public LightRingMech() {
-        ring = new VictorSP(7);
-        ring.setVoltage(12);
+        ring = new VictorSPX(BIGData.getInt("ring_id"));
+        ring.set(ControlMode.PercentOutput, 1);
     }
 
     @Override
     public void update() {
         System.out.println("setting voltage");
-        ring.set(1);
+        ring.set(ControlMode.PercentOutput, 1);
     }
 }
