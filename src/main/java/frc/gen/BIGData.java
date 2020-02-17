@@ -123,6 +123,17 @@ public class BIGData {
 		}
 	}
 
+	public static int getWheelNum(String wheelName) {
+		wheelName = wheelName.toLowerCase();
+		switch (wheelName) {
+			case "fr": return FR_WHEEL;
+			case "br": return BR_WHEEL;
+			case "bl": return BL_WHEEL;
+			case "fl": return FL_WHEEL;
+			default: return -1;
+		}
+	}
+
 	/**
 	 * Request translational and angular velocity of the robot
 	 * 
@@ -203,6 +214,15 @@ public class BIGData {
 	/** Get whether swerve has been requested to be zeroed. */
 	public static boolean getZeroSwerveRequest() {
 		return getBoolean("zero_swerve");
+	}
+
+	/** request to zero a single swerve module */
+	public static void putZeroIndivSwerveRequest(int wheelNum, boolean setTo) {
+		put("zero_module_" + wheelNum, setTo);
+	}
+	/** get whether a single swerve module has been requested to be zeroed */
+	public static boolean getZeroIndivSwerveRequest(int wheelNum) {
+		return getBoolean("zero_module_" + wheelNum);
 	}
 
 	/** Request that the gyro be zeroed. */

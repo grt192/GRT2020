@@ -139,7 +139,7 @@ public class ShuffleboardCommands {
             }
         };
 
-        swerveTab.add("zero swerve WHEELS", zeroRotateCommand).withWidget(BuiltInWidgets.kCommand);
+        swerveTab.add("zero ALL WHEELS", zeroRotateCommand).withPosition(3, 0).withWidget(BuiltInWidgets.kCommand);
         for (int i = 0; i < 4; i++) {
             wheelZeros[i] = wheelZerosLayout.add(BIGData.getWheelName(i) + " zero:", BIGData.getWheelZero(i))
                     .getEntry();
@@ -148,6 +148,17 @@ public class ShuffleboardCommands {
             wheelRotateSpeeds[i] = wheelRotateSpeedsLayout
                     .add(BIGData.getWheelName(i) + " rotate speed", BIGData.getWheelRawRotateSpeed(i)).getEntry();
         }
+
+        // commands for zeroing individual swerve modules:
+        CommandBase zeroModuleFR = new ZeroIndivSwerveCommand(BIGData.FR_WHEEL);
+        CommandBase zeroModuleBR = new ZeroIndivSwerveCommand(BIGData.BR_WHEEL);
+        CommandBase zeroModuleBL = new ZeroIndivSwerveCommand(BIGData.BL_WHEEL);
+        CommandBase zeroModuleFL = new ZeroIndivSwerveCommand(BIGData.FL_WHEEL);
+        swerveTab.add("zero FR", zeroModuleFR).withPosition(0, 1);
+        swerveTab.add("zero BR", zeroModuleBR).withPosition(0, 2);
+        swerveTab.add("zero BL", zeroModuleBL).withPosition(0, 3);
+        swerveTab.add("zero FL", zeroModuleFL).withPosition(0, 4);
+
 
         CommandBase zeroGyroCommand = new CommandBase() {
             @Override
@@ -161,10 +172,10 @@ public class ShuffleboardCommands {
                 return true;
             }
         };
-        swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand);
+        swerveTab.add("zero swerve GYRO", zeroGyroCommand).withWidget(BuiltInWidgets.kCommand).withPosition(1, 0);
         SmartDashboard.putData("ZERO SWERVE GYRO", zeroGyroCommand);
-        gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).getEntry();
-        gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).getEntry();
+        gyroAngle = swerveTab.add("Gyro Angle", BIGData.getGyroAngle()).withPosition(0, 0).getEntry();
+        gyroRate = swerveTab.add("Gyro Rate of Rotation", BIGData.getGyroW()).withPosition(2, 0).getEntry();
 
         CommandBase resetLemonCountCommand = new CommandBase() {
             @Override
@@ -198,4 +209,20 @@ public class ShuffleboardCommands {
         SmartDashboard.putBoolean("CONNECTED TO CAMERA ON JETSON?", BIGData.getJetsonCameraConnected());
     }
 
+    class ZeroIndivSwerveCommand extends CommandBase {
+        int wheelNum;
+        public ZeroIndivSwerveCommand(int wheelNum) {
+            this.wheelNum = wheelNum;
+        }
+        @Override 
+        public void initialize() {
+            System.out.println("ZEROING INDIVIDUAL MODULE: " + BIGData.getWheelName(wheelNum));
+            BIGData.putZeroIndivSwerveRequest(wheelNum, true);
+        }
+        @Override
+        public boolean isFinished() {
+            return true;
+        }
+
+    }
 }
