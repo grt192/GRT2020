@@ -80,7 +80,7 @@ public class Swerve {
 			BIGData.setPIDFalse();
 		}
 		if (BIGData.getZeroSwerveRequest()) {
-			System.out.println("zeroing wheels");
+			System.out.println("zeroing ALL wheels");
 			zeroRotate();
 			BIGData.putZeroSwerveRequest(false);
 			BIGData.updateConfigFile();
@@ -92,9 +92,13 @@ public class Swerve {
 		}
 		BIGData.putGyroAngle(gyro.getAngle());
 
-		for (Wheel wheel : wheels) {
-			BIGData.putWheelRawDriveSpeed(wheel.getName(), wheel.getRawDriveSpeed());
-			BIGData.putWheelRawRotateSpeed(wheel.getName(), wheel.getRawRotateSpeed());
+		for (int i = 0; i < wheels.length; i++) {
+			BIGData.putWheelRawDriveSpeed(wheels[i].getName(), wheels[i].getRawDriveSpeed());
+			BIGData.putWheelRawRotateSpeed(wheels[i].getName(), wheels[i].getRawRotateSpeed());
+			if (BIGData.getZeroIndivSwerveRequest(i)) {
+				zeroRotateIndiv(i);
+				BIGData.putZeroIndivSwerveRequest(i, false);
+			}
 		}
 	}
 
@@ -212,6 +216,12 @@ public class Swerve {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.putWheelZero(wheels[i].getName(), wheels[i].getOffset());
+		}
+	}
+
+	private void zeroRotateIndiv(int wheelNum) {
+		if (wheelNum < wheels.length) {
+			wheels[wheelNum].zero();
 		}
 	}
 
