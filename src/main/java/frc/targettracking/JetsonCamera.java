@@ -89,7 +89,7 @@ public class JetsonCamera implements Runnable {
             String in = stdIn.readLine();
             if (in != null) {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
-                BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]));
+                BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]));//, Double.parseDouble(data[2]));
             }
         } catch (IOException e) {
             e.printStackTrace();

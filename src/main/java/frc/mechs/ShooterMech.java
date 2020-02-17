@@ -20,7 +20,8 @@ import frc.gen.BIGData;
 
 public class ShooterMech implements Mech {
     // lookup table rpms for shooting in increments of 1 foot.
-    // rpmTable[i] is the rpm to shoot at, i feet away from target (horizontal distance)
+    // rpmTable[i] is the rpm to shoot at, i feet away from target (horizontal
+    // distance)
     private int[] upRPMTable;
     private int[] downRPMTable;
     private static final int DEFAULT_MIN_RPM = 2000;
@@ -53,7 +54,7 @@ public class ShooterMech implements Mech {
         this.encoder = motor.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
-        this.hood = new Solenoid(1, BIGData.getInt("one_wheel_hood"));
+        this.hood = new Solenoid(9, BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
 
         initRPMTable();
@@ -66,7 +67,7 @@ public class ShooterMech implements Mech {
         String rpmFileName = BIGData.getString("shooter_rpm_file");
         SortedMap<Integer, Integer> upRPMMap = new TreeMap<Integer, Integer>();
         SortedMap<Integer, Integer> downRPMMap = new TreeMap<Integer, Integer>();
-        String directory = "/home/lvuser/deploy"; 
+        String directory = "/home/lvuser/deploy";
         try {
             Scanner in = new Scanner(new File(directory, rpmFileName));
             while (in.hasNextLine()) {
@@ -83,7 +84,8 @@ public class ShooterMech implements Mech {
                     try {
                         int a = Integer.parseInt(split[0]);
                         int b = Integer.parseInt(split[1]);
-                        System.out.println("loaded shooter point: dist(ft)=" + a + ",rpm=" + b + ", down=" + loadingDown);
+                        System.out
+                                .println("loaded shooter point: dist(ft)=" + a + ",rpm=" + b + ", down=" + loadingDown);
                         if (loadingDown) {
                             downRPMMap.put(a, b);
                         } else {
@@ -103,12 +105,12 @@ public class ShooterMech implements Mech {
         } finally {
             // put edge rpms into map if absent
             upRPMMap.putIfAbsent(0, DEFAULT_MIN_RPM);
-            upRPMMap.putIfAbsent(upRPMTable.length-1, DEFAULT_MAX_RPM);
-            
+            upRPMMap.putIfAbsent(upRPMTable.length - 1, DEFAULT_MAX_RPM);
+
             downRPMMap.putIfAbsent(0, DEFAULT_MIN_RPM);
-            downRPMMap.putIfAbsent(downRPMTable.length-1, DEFAULT_MAX_RPM);
+            downRPMMap.putIfAbsent(downRPMTable.length - 1, DEFAULT_MAX_RPM);
         }
-        
+
         // linear interpolation
         int prevIndex = 0;
         int prevNum = downRPMMap.get(prevIndex);
@@ -119,7 +121,7 @@ public class ShooterMech implements Mech {
                 prevNum = e.getValue();
             }
         }
-        
+
         // linear interpolation, pt 2
         prevIndex = 0;
         prevNum = upRPMMap.get(prevIndex);
@@ -185,9 +187,9 @@ public class ShooterMech implements Mech {
      */
     public double calcSpeed(double range) {
         if (shooterUp) {
-            return upRPMTable[(int)(range/12)];
+            return upRPMTable[(int) (range / 12)];
         } else {
-            return downRPMTable[(int)(range/12)];
+            return downRPMTable[(int) (range / 12)];
         }
     }
 

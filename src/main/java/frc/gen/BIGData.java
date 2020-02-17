@@ -444,10 +444,10 @@ public class BIGData {
 		return getBoolean("jetson_camera_connected");
 	}
 
-	public static void updateCamera(double r, double a, double t) {
+	public static void updateCamera(double r, double a) {//, double t) {
 		put("camera_azimuth", a);
 		put("camera_range", r);
-		put("relative_angle", t);
+		//put("relative_angle", t);
 	}
 
 	/** put (or update) a key/value mapping into the map */

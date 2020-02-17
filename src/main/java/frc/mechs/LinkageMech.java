@@ -7,7 +7,7 @@ public class LinkageMech implements Mech {
     private Solenoid sol;
 
     public LinkageMech() {
-        sol = new Solenoid(1, BIGData.getInt("linkage_sol_id"));
+        sol = new Solenoid(9, BIGData.getInt("linkage_sol_id"));
         BIGData.requestLinkageState(false);
     }
 
