@@ -218,7 +218,7 @@ public class BIGData {
 		put("gyro_w", w);
 	}
 
-	/** get the gyro's current angle */
+	/** get the gyro's current angle in degrees */
 	public static double getGyroAngle() {
 		return getDouble("gyro_ang");
 	}
@@ -457,10 +457,31 @@ public class BIGData {
 	public static String getCanvasClick() {
 		return getString("canvas_click");
 	}
+	/** update lidar values
+	 * @param azimuth angle in radians between the 0 rad line of lidar and the line 
+	 * from lidar to center of target. the plane of this angle is parallel to the floor
+	 * @param range distance from lidar to center of the target in the plane parallel to the floor
+	 * @param relAngle angle of the robot relative to target, where 0 rad is right 
+	 * in front of target, and right of target are positive angles, and left of target 
+	 * are negative angles.
+	 */
+	public static void updateLidar(double azimuth, double range, double relAngle) {
+		put("lidar_range", range);
+		put("lidar_azimuth", azimuth);
+		put("lidar_rel_angle", relAngle);
+	}
 
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, String val) {
 		map.put(key, val);
+	}
+
+	public static void putJetsonCameraConnected(boolean connected) {
+		put("jetson_camera_connected", connected);
+	}
+
+	public static boolean getJetsonCameraConnected() {
+		return getBoolean("jetson_camera_connected");
 	}
 
 	public static void updateCamera(double r, double a, double t) {

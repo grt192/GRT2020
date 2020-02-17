@@ -23,13 +23,13 @@ public class IntakeMech implements Mech {
     @Override
     public void update() {
         boolean state = BIGData.getIntakeState();
-        boolean disable = BIGData.getDisabled(1);
-        if (disable) {
-             disable();
-        } else {
-             motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
-             sol.set(state);
-        }
+        // boolean disable = BIGData.getDisabled(1);
+        // if (disable) {
+        //      disable();
+        // } else {
+        motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
+        sol.set(state);
+        // }
     }
 
     public void disable() {

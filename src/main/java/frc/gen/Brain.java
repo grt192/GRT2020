@@ -8,12 +8,16 @@ import frc.control.ShuffleboardCommands;
 import frc.mechs.MechCollection;
 import frc.positiontracking.PositionTracking;
 import frc.swerve.Swerve;
+import frc.targettracking.JetsonCamera;
+import frc.targettracking.Lidar;
 
 public class Brain implements Runnable {
     public static Swerve swerve;
     public static MechCollection mechs;
     public static PositionTracking tracking;
     public static ShuffleboardCommands shuffleboardCommands;
+    public static Lidar lidar;
+    public static JetsonCamera camera;
     public static FieldGUI fieldGUI;
     public static PowerDistributionPanel pdp;
 
@@ -26,6 +30,8 @@ public class Brain implements Runnable {
         mechs = new MechCollection();
         // pdp = new PowerDistributionPanel(0);
         shuffleboardCommands = new ShuffleboardCommands();
+        lidar = new Lidar();
+        camera = new JetsonCamera();
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
         CameraServer.getInstance().startAutomaticCapture(0);

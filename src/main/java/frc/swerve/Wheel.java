@@ -84,7 +84,6 @@ class Wheel {
 			reversed = newReverse;
 			double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
 			rotateMotor.set(ControlMode.Position, encoderPos);
-			
 			speed *= (reversed ? -1 : 1);
 		}
 		driveMotor.set(speed);
@@ -121,7 +120,7 @@ class Wheel {
 
 	/** get the rotate motor speed in rotations/sec */
 	public double getRawRotateSpeed() {
-		// (ticks/100ms) / (ticks/rotation) * (10 (100ms)/1s) 
+		// (ticks/100ms) / (ticks/rotation) * (10 (100ms)/1s)
 		return (rotateMotor.getSelectedSensorVelocity() / TICKS_PER_ROTATION) * 10;
 	}
 

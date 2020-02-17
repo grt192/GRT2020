@@ -65,6 +65,8 @@ public class Swerve {
 			w = calcPID();
 		}
 
+		System.out.println("calling changeMotors with w=" + w);
+
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 	}
@@ -103,15 +105,16 @@ public class Swerve {
 	 * angle, kP, and kD
 	 */
 	private double calcPID() {
-		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), angle, kF);
-		System.out.println("kP: " + kP);
-		System.out.println("kD: " + kD);
-		System.out.println("kF: " + kF);
-		System.out.println("Error: " + Math.toDegrees(error));
-		System.out.println();
+		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
+				Math.toRadians(kF));
+		// System.out.println("kP: " + kP);
+		// System.out.println("kD: " + kD);
+		// System.out.println("kF: " + kF);
+		// System.out.println("Error: " + Math.toDegrees(error));
+		// System.out.println();
 
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
-		// System.out.print("W: " + w);
+		// System.out.print("W: " + w);%
 		return -w;
 	}
 

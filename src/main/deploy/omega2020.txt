@@ -84,6 +84,8 @@ spinner_speed=0.5
 spinner_id=15
 spinner_sol=5 
 
-# Light Ring
+#jetson variables
+jetson_camera_port=1337
+jetson_lidar_port=1030
 
 ring_id=7

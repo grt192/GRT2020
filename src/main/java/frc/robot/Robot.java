@@ -20,6 +20,9 @@ import frc.gen.Brain;
 import frc.pathfinding.*;
 import frc.sockets.ClientCamera;
 
+import frc.targettracking.JetsonCamera;
+import frc.targettracking.Lidar;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -49,6 +52,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     BIGData.start();
     BIGData.put("gyro_ang", 0.0);
+    BIGData.changeStartupConfigFile(true);
     JoystickProfile.init();
     BIGData.put("robot_width", 33.0);
     BIGData.put("robot_height", 38.5);
