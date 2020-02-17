@@ -65,7 +65,7 @@ public class Swerve {
 			w = calcPID();
 		}
 
-		System.out.println("calling changeMotors with w=" + w);
+		//System.out.println("calling changeMotors with w=" + w);
 
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();

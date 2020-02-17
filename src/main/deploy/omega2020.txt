@@ -76,7 +76,7 @@ storage_speed_auto=-0.4
 
 #initial ball count
 initial_total_lemon_count=3
-initial_conveyer_lemon_count=0
+initial_conveyer_lemon_count=2
 
 # spinner
 

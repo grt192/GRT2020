@@ -43,15 +43,15 @@ public class ShooterMech implements Mech {
 
     public ShooterMech() {
         this.motor_lead = new CANSparkMax(BIGData.getInt("one_wheel_shooter_lead"), MotorType.kBrushless);
-        motor_lead.setSmartCurrentLimit(10);
-        motor_lead.setSecondaryCurrentLimit(15);
+        // motor_lead.setSmartCurrentLimit(10);
+        // motor_lead.setSecondaryCurrentLimit(15);
         motor_lead.setIdleMode(IdleMode.kCoast);
         this.motor_follow = new CANSparkMax(BIGData.getInt("one_wheel_shooter_follow"), MotorType.kBrushless);
         motor_follow.follow(motor_lead);
-        motor_follow.setSmartCurrentLimit(10);
-        motor_follow.setSecondaryCurrentLimit(15);
+        // motor_follow.setSmartCurrentLimit(10);
+        // motor_follow.setSecondaryCurrentLimit(15);
         motor_follow.setIdleMode(IdleMode.kCoast);
-        smff = new SimpleMotorFeedforward(0.223, 0.13, 0.0256);
+        smff = new SimpleMotorFeedforward(0.205, 0.129, 0.0249);
         this.encoder = motor_lead.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
@@ -161,12 +161,13 @@ public class ShooterMech implements Mech {
             double rpm = calcSpeed(range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
-            newSpeed = 3000;
-            rpm = 3000;
+            newSpeed = 5500;
+            rpm = 5500;
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             motor_lead.setVoltage(smff.calculate(rpm / 60));
-            //System.out.println("smff voltage: " + smff.calculate(rpm / 60));
+            // System.out.println("smff voltage: " + smff.calculate(rpm / 60));
+            // System.out.println("speed: " + getSpeed());
         }
         BIGData.put("shooter_current_rpm", getSpeed());
     }

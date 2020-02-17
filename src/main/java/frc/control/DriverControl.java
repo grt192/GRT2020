@@ -159,10 +159,10 @@ class DriverControl extends Mode {
             BIGData.requestIntakeState(!currState);
         }
 
-        if (Input.MECH_XBOX.getAButtonReleased()) {
-            BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
-            BIGData.put("firstTime?", true);
-        }
+        // if (Input.MECH_XBOX.getAButtonReleased()) {
+        //     BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
+        //     BIGData.put("firstTime?", true);
+        // }
 
         if (Input.MECH_XBOX.getBButtonReleased()) {
             BIGData.put("spinner_manual_control", true);

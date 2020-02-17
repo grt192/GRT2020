@@ -110,8 +110,8 @@ public class StorageMech implements Mech {
         // System.out.println("lemon count: " + lemonCount);
         // System.out.println("conveyor count: " + conveyerCount);
 
-        // System.out.println("shooter diff: "
-        //         + Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")));
+        System.out.println("shooter rmp: "
+                + BIGData.getDouble("shooter_current_rpm"));
 
         // System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
 
@@ -161,10 +161,10 @@ public class StorageMech implements Mech {
         // System.out.println("manual should run: "
         //         + (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0));
 
-        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 1000)
+        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
                 && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
                 || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
-            System.out.println("SHOULD BE MOVING CONVEYOR");
+            //System.out.println("SHOULD BE MOVING CONVEYOR");
             motor.set(ControlMode.PercentOutput, storageVelocity);
             return;
         }
