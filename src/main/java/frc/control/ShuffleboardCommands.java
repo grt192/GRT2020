@@ -29,7 +29,8 @@ public class ShuffleboardCommands {
     private NetworkTableEntry gyroRate;
     // shooter
     private ShuffleboardTab shooterTab;
-    private NetworkTableEntry oneWheel;
+    private NetworkTableEntry oneWheelRange;
+    private NetworkTableEntry oneWheelRPM;
     // config
     private NetworkTableEntry configMessage;
 
@@ -108,7 +109,7 @@ public class ShuffleboardCommands {
         configLayout.add("reset CONFIG file", resetLocalConfigFileCommand).withWidget(BuiltInWidgets.kCommand);
 
         configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).withPosition(3, 0).withSize(2, 1)
-            .getEntry();
+                .getEntry();
 
         CommandBase zeroRotateCommand = new CommandBase() {
             @Override
@@ -142,7 +143,6 @@ public class ShuffleboardCommands {
         swerveTab.add("zero BL", zeroModuleBL).withPosition(2, 1);
         swerveTab.add("zero FL", zeroModuleFL).withPosition(3, 1);
 
-
         CommandBase zeroGyroCommand = new CommandBase() {
             @Override
             public void initialize() {
@@ -166,6 +166,7 @@ public class ShuffleboardCommands {
                 System.out.println("setting lemon count to 0");
                 BIGData.put("reset_lemon_count", true);
             }
+
             @Override
             public boolean isFinished() {
                 return true;
@@ -173,19 +174,24 @@ public class ShuffleboardCommands {
         };
         SmartDashboard.putData("RESET LEMON COUNT", resetLemonCountCommand);
 
-        oneWheel = shooterTab.add("one wheel rpm", 0).getEntry();
+        oneWheelRange = shooterTab.add("one wheel range", 0).getEntry();
+        oneWheelRPM = shooterTab.add("shooter rpm", 0).getEntry();
         CommandBase updateOneWheelShooter = new CommandBase() {
             @Override
             public void initialize() {
-                System.out.println("updating one wheel shooter speeds");
-                BIGData.put("shooter_speed", oneWheel.getDouble(0));
+                System.out.println("updating one wheel range and rpm");
+                BIGData.put("range_testing", oneWheelRange.getDouble(0));
+
+                BIGData.put("shooter_rpm", oneWheelRPM.getDouble(0));
             }
+
             @Override
             public boolean isFinished() {
                 return true;
             }
         };
         shooterTab.add("update one wheel", updateOneWheelShooter);
+
     }
 
     public void update() {
@@ -208,14 +214,17 @@ public class ShuffleboardCommands {
 
     class ZeroIndivSwerveCommand extends CommandBase {
         int wheelNum;
+
         public ZeroIndivSwerveCommand(int wheelNum) {
             this.wheelNum = wheelNum;
         }
-        @Override 
+
+        @Override
         public void initialize() {
             System.out.println("ZEROING INDIVIDUAL MODULE: " + BIGData.getWheelName(wheelNum));
             BIGData.putZeroIndivSwerveRequest(wheelNum, true);
         }
+
         @Override
         public boolean isFinished() {
             return true;
