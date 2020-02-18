@@ -78,6 +78,11 @@ public class Autonomous {
             case "pos":
                 BIGData.setManualPos(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]));
                 break;
+            case "swerve":
+                robot.setMode(0);
+                BIGData.requestDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),
+                        cmd.length > 3 ? Double.parseDouble(cmd[3]) : 0);
+                break;
             case "pmp":
                 Target.setTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
                 robot.setMode(1);
@@ -86,10 +91,8 @@ public class Autonomous {
                 Target.setBezier(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])), new Vector(Double.parseDouble(cmd[3]), Double.parseDouble(cmd[4])), new Vector(Double.parseDouble(cmd[5]), Double.parseDouble(cmd[6])));
                 robot.setMode(2);
                 break;
-            case "swerve":
-                robot.setMode(0);
-                BIGData.requestDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),
-                        cmd.length > 3 ? Double.parseDouble(cmd[3]) : 0);
+            case "score":
+                robot.setMode(3);
                 break;
             }
         }
