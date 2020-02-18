@@ -21,7 +21,7 @@ import static frc.gen.BIGData.downRPMMap;
 import static frc.gen.BIGData.upRPMMap;
 
 public class ShooterMech implements Mech {
-    
+
     private static final int DEFAULT_RPM = 3500;
 
     private CANSparkMax motor_lead;
@@ -49,6 +49,7 @@ public class ShooterMech implements Mech {
         // motor_follow.setSmartCurrentLimit(10);
         // motor_follow.setSecondaryCurrentLimit(15);
         motor_follow.setIdleMode(IdleMode.kCoast);
+        // KA was 0.0225
         smff = new SimpleMotorFeedforward(0.162, 0.13, 0.0225);
         this.encoder = motor_lead.getEncoder();
         BIGData.putShooterState(false);
@@ -71,7 +72,7 @@ public class ShooterMech implements Mech {
             // distance to vision target
         } else {
             double range = BIGData.getDouble("camera_range");
-            double rpm = calcSpeed((int)range);
+            double rpm = calcSpeed((int) range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
             newSpeed = 5500;
@@ -94,12 +95,14 @@ public class ShooterMech implements Mech {
      * Takes a distance from the target (horizontal distance, in inches) and returns
      * a speed in rpm to run the shooter at.
      * 
-     * @param range the distance from the target in inches
+     * @param range
+     *                  the distance from the target in inches
      * @return the rpm to run the shooter at
      */
     public double calcSpeed(int range) {
         Map.Entry<Integer, Integer> floorEntry = shooterUp ? upRPMMap.floorEntry(range) : downRPMMap.floorEntry(range);
-        Map.Entry<Integer, Integer> ceilEntry = shooterUp ? upRPMMap.ceilingEntry(range) : downRPMMap.ceilingEntry(range);
+        Map.Entry<Integer, Integer> ceilEntry = shooterUp ? upRPMMap.ceilingEntry(range)
+                : downRPMMap.ceilingEntry(range);
         if (floorEntry == null && ceilEntry == null) {
             return DEFAULT_RPM;
         } else if (floorEntry == null) {
@@ -108,7 +111,9 @@ public class ShooterMech implements Mech {
             return floorEntry.getValue();
         } else {
             // linear interpolation
-            return floorEntry.getValue() + ((ceilEntry.getValue() - floorEntry.getValue()) / (ceilEntry.getKey() - floorEntry.getKey())) * (range - floorEntry.getKey());
+            return floorEntry.getValue()
+                    + ((ceilEntry.getValue() - floorEntry.getValue()) / (ceilEntry.getKey() - floorEntry.getKey()))
+                            * (range - floorEntry.getKey());
         }
     }
 
@@ -122,7 +127,7 @@ public class ShooterMech implements Mech {
 
         double wheelV = Math.sqrt(
                 Math.pow(BIGData.getDouble("enc_vx") * 39.37, 2) + Math.pow(BIGData.getDouble("enc_vy") * 39.37, 2));
-        double distanceRPM = calcSpeed((int)range);
+        double distanceRPM = calcSpeed((int) range);
 
         double distanceV = distanceRPM * MINUTES_TO_SECONDS * WHEEL_RADIUS * Math.cos(shooterAngle);
 
