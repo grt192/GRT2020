@@ -161,7 +161,7 @@ public class StorageMech implements Mech {
         // System.out.println("manual should run: "
         //         + (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0));
 
-        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 100)
+        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
                 && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
                 || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
             //System.out.println("SHOULD BE MOVING CONVEYOR");

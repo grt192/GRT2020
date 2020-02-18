@@ -31,6 +31,7 @@ public class PathfindingControl extends Mode {
         targetPos = Target.getTarget();
 
         if (Target.size() <= 0)
+            // TODO: change this later
             path.searchAStar(new Vector(120, 161.625));
         
         if (Target.size() < 1) 
@@ -58,7 +59,7 @@ public class PathfindingControl extends Mode {
             return true;
         } else {
             // don't change this, the swerve field coordinates are different from the actual field coordinates
-            BIGData.requestDrive(-1 * velocity.y, velocity.x, 0);
+            BIGData.requestDrive(velocity.x, velocity.y, 0);
             return true;
         }
     }

@@ -87,5 +87,6 @@ spinner_sol=5
 #jetson variables
 jetson_camera_port=1337
 jetson_lidar_port=1030
+jetson_address=10.1.92.14
 
 ring_id=7

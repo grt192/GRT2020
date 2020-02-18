@@ -51,7 +51,7 @@ public class ShooterMech implements Mech {
         // motor_follow.setSmartCurrentLimit(10);
         // motor_follow.setSecondaryCurrentLimit(15);
         motor_follow.setIdleMode(IdleMode.kCoast);
-        smff = new SimpleMotorFeedforward(0.205, 0.129, 0.0249);
+        smff = new SimpleMotorFeedforward(0.162, 0.13, 0.0225);
         this.encoder = motor_lead.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");

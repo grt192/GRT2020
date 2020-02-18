@@ -18,7 +18,6 @@ import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
 import frc.pathfinding.*;
-import frc.sockets.ClientCamera;
 
 import frc.targettracking.JetsonCamera;
 import frc.targettracking.Lidar;
@@ -37,7 +36,6 @@ public class Robot extends TimedRobot {
   public static BIGData data;
   public static Brain brain;
   public static Target target;
-  public static ClientCamera clientcamera;
 
   public static double ROBOT_WIDTH;
   public static double ROBOT_HEIGHT;
@@ -52,7 +50,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     BIGData.start();
     BIGData.put("gyro_ang", 0.0);
-    BIGData.changeStartupConfigFile(true);
+    BIGData.changeStartupConfigFile(false);
     JoystickProfile.init();
     BIGData.put("robot_width", 33.0);
     BIGData.put("robot_height", 38.5);
@@ -67,7 +65,6 @@ public class Robot extends TimedRobot {
     mode = NetworkTableInstance.getDefault().getTable("Robot").getEntry("mode");
     mode.setNumber(0);
     CommandScheduler.getInstance().enable();
-    // clientcamera = new ClientCamera();
 
     brain = new Brain();
     target = new Target();
@@ -133,7 +130,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     BIGData.put("auton_started", true);
-    //autonomous.init("paly.txt");
+    autonomous.init("bezier2.txt");
   }
 
   /**

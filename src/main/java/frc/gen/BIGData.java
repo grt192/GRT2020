@@ -484,17 +484,16 @@ public class BIGData {
 		return getBoolean("jetson_camera_connected");
 	}
 
-	public static void updateCamera(double r, double a, double t) {
+	public static void updateCamera(double r, double a, double x, double y) {
 		put("camera_azimuth", a);
 		put("camera_range", r);
-		put("relative_angle", t);
+		put("relative_x", x);
+		put("relative_y", y);
 	}
 
 	public static Vector getCameraPos() {
 		if (getDouble("camera_range") != 0) {
-			double x = getDouble("camera_range") * Math.cos(getDouble("relative_angle") * Math.PI / 180);
-			double y = getDouble("camera_range") * Math.sin(getDouble("relative_angle") * Math.PI / 180);
-			Vector v = new Vector(x, y);
+			Vector v = new Vector(getDouble("relative_x"), getDouble("relative_y"));
 			return v;
 		}
 		return null;

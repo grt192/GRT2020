@@ -76,7 +76,7 @@ class DriverControl extends Mode {
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
         // System.out.println(azimuth);
         if (centeringCamera && Math.abs(cameraAzimuth) > 1) {
-            rotate = calcPID(cameraAzimuth);
+            BIGData.setAngle(cameraAzimuth);
         }
         // TODO test centering robot to target using camera
 
@@ -101,7 +101,7 @@ class DriverControl extends Mode {
     }
 
     public double calcPID(double azimuthDeg) {
-        return azimuthDeg * .005;
+        return azimuthDeg * .01;
     }
 
     private void driveMechs() {

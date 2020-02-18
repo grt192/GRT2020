@@ -106,7 +106,7 @@ public class PositionTracking {
             cachedX = tempX;
             cachedY = tempY;
         }
-        Vector curr_pos = new Vector(tempX, tempY);
+        Vector curr_pos = new Vector(-tempY, tempX);
         //TODO: remove after debugging
         //System.out.println("curr_x:" + curr_pos.x + " curr_y:" + curr_pos.y);
         BIGData.setPosition(curr_pos, "curr");

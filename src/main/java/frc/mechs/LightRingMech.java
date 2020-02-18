@@ -14,6 +14,6 @@ public class LightRingMech implements Mech {
 
     @Override
     public void update() {
-        ring.set(ControlMode.PercentOutput, 1.0);
+        ring.set(ControlMode.PercentOutput, 0.75);
     }
 }

@@ -48,8 +48,7 @@ public class JetsonCamera implements Runnable {
             try {
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected()
                         || !socket.isBound()) {
-                    // System.out.println("camera code is attempting to connect to jetson at address
-                    // " + jetsonAddress + ",port=" + port);
+                    System.out.println("camera code is attempting to connect to jetson at address" + jetsonAddress + ",port=" + port);
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
                         // if we don't connect, wait before trying to connect again
@@ -93,8 +92,8 @@ public class JetsonCamera implements Runnable {
             if (in != null) {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
                 BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
-                        Double.parseDouble(data[2]));
-                System.out.println(Arrays.toString(data));
+                        Double.parseDouble(data[2]), Double.parseDouble(data[3]));
+                // System.out.println(Arrays.toString(data));
             }
         } catch (IOException e) {
             e.printStackTrace();
