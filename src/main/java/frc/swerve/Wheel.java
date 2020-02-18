@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.util.GRTUtil;
 import frc.gen.BIGData;
-import frc.gen.Config;
 
 class Wheel {
 
@@ -85,10 +84,8 @@ class Wheel {
 			reversed = newReverse;
 			double encoderPos = targetPosition * TICKS_PER_ROTATION + OFFSET;
 			rotateMotor.set(ControlMode.Position, encoderPos);
+			speed *= (reversed ? -1 : 1);
 		}
-		speed *= (reversed ? -1 : 1);// / (DRIVE_TICKS_TO_METERS * 10);
-		// driveMotor.set(ControlMode.PercentOutput, speed);
-		// TODO also add maximum acceleration check here
 		driveMotor.set(speed);
 	}
 
@@ -105,16 +102,30 @@ class Wheel {
 				+ (reversed ? Math.PI : 0)), TWO_PI);
 	}
 
+	/** return the name of this wheel "fr", "br", "bl", "fl" */
 	public String getName() {
 		return name;
 	}
 
+	/** Return the rotationally zero position of the module in encoder ticks */
 	public int getOffset() {
 		return OFFSET;
 	}
 
+	/** get the drive motor speed in rotations/second */
+	public double getRawDriveSpeed() {
+		// (rotations/minute) * (1 min/60 sec)
+		return driveEncoder.getVelocity() / 60;
+	}
+
+	/** get the rotate motor speed in rotations/sec */
+	public double getRawRotateSpeed() {
+		// (ticks/100ms) / (ticks/rotation) * (10 (100ms)/1s)
+		return (rotateMotor.getSelectedSensorVelocity() / TICKS_PER_ROTATION) * 10;
+	}
+
 	private void configRotateMotor() {
-		Config.defaultConfigTalon(rotateMotor);
+		GRTUtil.defaultConfigTalon(rotateMotor);
 
 		boolean inverted = BIGData.getBoolean("swerve_inverted");
 		rotateMotor.setInverted(inverted);
@@ -131,6 +142,7 @@ class Wheel {
 	}
 
 	private void configDriveMotor() {
+		driveMotor.restoreFactoryDefaults();
 		driveMotor.setIdleMode(IdleMode.kBrake);
 		driveMotor.setOpenLoopRampRate(0.1);
 	}

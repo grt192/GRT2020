@@ -1,0 +1,96 @@
+# Config file for 2020 preseason
+# Domain: roborio-192-frc.local
+
+# local file for config values like swerve zeroes
+local_config_file=omega_local.txt
+# local file for shooter rpms to load in, from the directory "/home/lvuser"
+shooter_rpm_file=omega_rpms.txt
+
+
+swerve_width=22.25
+swerve_height=21.70
+
+robot_width=37.00
+robot_height=41
+
+
+swerve_inverted=true
+swerve_kp=0.5
+swerve_kd=0.5
+swerve_kf=2.0
+
+# Offsets are inverted
+br_rotate=12
+br_drive=1
+br_offset=-964
+bl_rotate=11
+bl_drive=13
+bl_offset=-484
+fr_rotate=5
+fr_drive=4
+fr_offset=-215
+fl_rotate=10
+fl_drive=14
+fl_offset=-859
+
+ticks_per_rotation=1024 
+drive_encoder_scale=1.83259571
+
+# joystick profile variables
+# see https://www.desmos.com/calculator/bmcalwjje2
+joystick_x1=0.35
+joystick_y1=0.1
+joystick_x2=0.7
+joystick_y2=0.4
+
+# linkage solenoid id
+linkage_sol_id=0
+
+# intake motor CAN id
+intake_talon_id=6
+intake_sol_id=4
+
+# this is the inital intake speed
+intake_speed=0
+
+#Shooter Values
+shooter_high_angle=50
+shooter_high_angle=25
+shooter_up=false
+shooter_offset_change=100
+one_wheel_shooter_lead=3
+one_wheel_shooter_follow=16
+one_wheel_hood=6
+
+
+# lidar pwm channel
+lidar_pwm=0
+
+# winch
+winch_id=2
+
+# conveyor sensors
+intake_analog=3
+top_analog=2
+middle_analog=1
+bottom_analog=0
+
+storage_motor=8
+storage_speed_auto=-0.4
+
+#initial ball count
+initial_total_lemon_count=3
+initial_conveyer_lemon_count=2
+
+# spinner
+
+spinner_speed=0.5
+spinner_id=15
+spinner_sol=5 
+
+#jetson variables
+jetson_camera_port=1337
+jetson_lidar_port=1030
+jetson_address=10.1.92.14
+
+ring_id=7

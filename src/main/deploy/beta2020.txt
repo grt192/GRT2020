@@ -1,0 +1,76 @@
+# Config file for 2020 preseason
+# Domain: roborio-192-frc.local
+
+swerve_width=22.25
+swerve_height=21.70
+
+robot_width=37.00
+robot_height=41
+
+swerve_inverted=false
+swerve_kp=0.3
+swerve_kd=0.3
+swerve_kf=2
+
+# Offsets are inverted
+br_rotate=2
+br_drive=1
+br_offset=-420
+bl_rotate=15
+bl_drive=16
+bl_offset=-509
+fr_rotate=3
+fr_drive=4
+fr_offset=-280
+fl_rotate=14
+fl_drive=13
+fl_offset=-758
+
+ticks_per_rotation=1024 
+drive_encoder_scale=1.83259571
+
+# joystick profile variables
+# see https://www.desmos.com/calculator/bmcalwjje2
+joystick_x1=0.35
+joystick_y1=0.1
+joystick_x2=0.7
+joystick_y2=0.4
+
+# two wheel shooter variables
+two_wheel_motor_a=10
+two_wheel_motor_b=9
+two_wheel_ticks_per_rotation=4096
+two_wheel_reduction=3
+# linkage solenoid id
+linkage_sol_id=
+
+# intake motor CAN id
+intake_talon_id=
+intake_sol_id=
+
+# jetson addresses and ports to connect to
+jetson_address=10.1.92.14
+jetson_lidar_port=1030
+jetson_camera_port=1337
+intake_speed=0.9
+
+#Shooter Values
+shooter_high_angle=50
+shooter_high_angle=25
+shooter_up=false
+shooter_offset_change=100
+
+#Solenoid for one wheel shooter
+one_wheel_hood=4
+
+# lidar pwm channel
+lidar_pwm=0
+
+#conveyor sensors
+intake_analog=3
+top_analog=2
+middle_analog=1
+bottom_analog=0
+
+storage_motor=8
+storage_speed_auto=0.1
