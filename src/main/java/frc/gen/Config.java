@@ -6,12 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
-import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * This class stores its configuration information in 3 files:
@@ -33,221 +33,254 @@ import java.util.Set;
 class Config {
 	private static Map<String, String> map;
 
-	/** The name of the deploy time config file in home/lvuser/deploy */
+	/** The name of the deploy time main config file in home/lvuser/deploy (e.g. "omega2020.txt") */
 	private static String deployConfigFileName;
-	/**
-	 * The name of the temporary config file in home/lvuser. Should include ".txt"
-	 */
-	private static String tempConfigFileName = "temporaryconfig.txt";
-	/** The name of the config state file in home/lvuser. Should include ".txt" */
-	private static String configStateFileName = "configstate.txt";
+	/** The name of the local config file in home/lvuser. (e.g. "omega_local.txt")
+	 * This file contains configuration values like swerve zeroes */
+	private static String localConfigFileName;
+	/** The name of the local config file for shooter RPMs in home/lvuser (e.g. "omega_rpms.txt")
+	 * This file contains shooter RPMs formatted in a way that ShooterMech knows how to read */
+	private static String RPMConfigFileName;
 
-	/**
-	 * Get the string config value corresponding to the key passed in.
-	 * 
-	 * @return The corresponding string value, or the empty string if the key was
-	 *         invalid
-	 */
-	public static String getString(String key) {
-		String result = map.get(key);
-		if (result == null) {
-			return "";
-		}
-		return result;
-	}
+	/** config values that must be contained in the local config file */
+	private static String[] VALUES_REQUIRED_FOR_LOCAL = {
+		"fr_offset", "br_offset", "bl_offset", "fl_offset"
+	};
 
 	public static Map<String, String> getMap() {
 		return map;
 	}
 
-	public static void start(Map<String, String> givenMap) {
+	/** initialize the main map and shooter rpm maps from the configuration files */
+	public static void start(Map<String, String> givenMap, TreeMap<Integer, Integer> upRPMMap, TreeMap<Integer, Integer> downRPMMap) {
+		Arrays.sort(VALUES_REQUIRED_FOR_LOCAL);
 		map = givenMap;
-		// check whether to use the deploy configuration or the temporary configuration
-		boolean useDeployConfig;
-		try {
-			File useDeployFile = new File("/home/lvuser/", configStateFileName);
-			Scanner useDeployScan = new Scanner(useDeployFile);
-			String line = useDeployScan.nextLine();
-			if (line.equalsIgnoreCase("temp") || line.equalsIgnoreCase("temporary")) {
-				useDeployConfig = false;
-			} else {
-				useDeployConfig = true;
-			}
-			useDeployScan.close();
-		} catch (Exception e) {
-			useDeployConfig = true;
-		}
-
 		try {
 			// get deploy config file name
 			Scanner nameScanner = new Scanner(new File("/home/lvuser/name.192"));
 			deployConfigFileName = nameScanner.nextLine() + ".txt";
 			nameScanner.close();
-			// load config file
-			String directory = "/home/lvuser";
-			String fileName = tempConfigFileName;
-			if (useDeployConfig) {
-				fileName = deployConfigFileName;
-				directory = "/home/lvuser/deploy";
-			}
-			System.out.println("reading from file " + fileName);
-			File f = new File(directory, fileName);
-			Scanner scanner = new Scanner(f);
+			// load deploy config file
+			String directory = "/home/lvuser/deploy";
+			System.out.println("reading from deploy config file " + deployConfigFileName);
+			loadFromFile(new File(directory, deployConfigFileName));
 
-			// add configs to map
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine().trim();
-
-				if (line.length() > 0 && line.charAt(0) != '#') {
-					String[] splitted = line.split("=");
-					if (splitted.length == 2)
-						map.put(splitted[0].trim(), splitted[1].trim());
-				}
+			// load local config file from "home/lvuser"
+			localConfigFileName = map.getOrDefault("local_config_file", "local_config.txt");
+			directory = "/home/lvuser";
+			File f = new File(directory, localConfigFileName);
+			if (!f.exists()) {
+				resetLocalConfigFile();
 			}
-			scanner.close();
+			loadFromFile(new File(directory, localConfigFileName));
+
+			// initialize RPMConfigFileName
+			RPMConfigFileName = map.getOrDefault("shooter_rpm_file", "shooter_rpms.txt");
+			initRPMTable(upRPMMap, downRPMMap);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("UNABLE TO FIND FILE - either name.192 or deploy config file is missing!");
 		}
-
-		for (String s : map.keySet()) {
-			System.out.println(s + ": " + getString(s));
-		}
-
-		if (useDeployConfig) {
-			BIGData.putConfigFileMsg("using deploy time config file");
-		} else {
-			BIGData.putConfigFileMsg("using temporary config file");
-		}
-
 	}
 
-	/**
-	 * Removes the mapping for a key from the map of config values if it is present
-	 * @param key the key whose mapping is to be removed
-	 * @return the previous value associated with the key
-	 */
-	public static String remove(String key) {
-		System.out.println("removed mapping from config map: " + key + "=" + map.get(key));
-		return map.remove(key);
-	}
+	/** load config values from the given file into the map */
+	public static void loadFromFile(File f) throws FileNotFoundException {
+		Scanner in = new Scanner(f);
+		
+		// add configs to map
+		while (in.hasNextLine()) {
+			String line = in.nextLine().trim();
 
-	/**
-	 * Change whether we use the deploy time config file or the temporary config
-	 * file ON STARTUP. This function does not modify current program state.
-	 */
-	public static void changeStartupConfigFile(boolean useDeploy) {
-		File useDeployFile = new File("/home/lvuser/", configStateFileName);
-		try {
-			FileWriter writer = new FileWriter(useDeployFile);
-			writer.write(useDeploy ? "deploy" : "temp");
-			writer.close();
-		} catch (IOException e) {
-			System.out.println("Unable to write to config state file at /home/lvuser/" + configStateFileName);
-			e.printStackTrace();
+			if (line.length() > 0 && line.charAt(0) != '#') {
+				String[] splitted = line.split("=", 2);
+				if (splitted.length == 2)
+					map.put(splitted[0].trim(), splitted[1].trim());
+			}
 		}
-		BIGData.putConfigFileMsg((useDeploy ? "deploy" : "temp") + " file will be used on startup");
+		in.close();
 	}
 
-	/** Writes the current mappings to the temporary config file in home/lvuser */
-	public static void updateConfigFile() {
-		File f = new File("/home/lvuser", tempConfigFileName);
-		// read config file, store the formatting, and identify new keys to add
-		Queue<String> commands = new LinkedList<String>();
-		Set<String> existingKeys = new HashSet<String>();
+	/** reads the rpms from the file specified by the "shooter_rpm_file" key in the map */
+	private static void initRPMTable(TreeMap<Integer, Integer> upRPMMap, TreeMap<Integer, Integer> downRPMMap) {
+		boolean loadingDown = true;
+        upRPMMap = new TreeMap<Integer, Integer>();
+        downRPMMap = new TreeMap<Integer, Integer>();
+        String directory = "/home/lvuser";
+        try {
+			File f = new File(directory, RPMConfigFileName);
+			if (!f.exists()) {
+				resetLocalRPMConfigFile();
+			}
+            Scanner in = new Scanner(new File(directory, RPMConfigFileName));
+            while (in.hasNextLine()) {
+                String line = in.nextLine().trim();
+                if (line.equalsIgnoreCase("down")) {
+                    loadingDown = true;
+                    continue;
+                } else if (line.equalsIgnoreCase("up")) {
+                    loadingDown = false;
+                    continue;
+                }
+                if (line.length() > 0 && line.charAt(0) != '#') {
+                    String[] split = line.split(",");
+                    try {
+                        int a = Integer.parseInt(split[0].trim());
+                        int b = Integer.parseInt(split[1].trim());
+                        System.out.println("loaded shooter point: dist(in)=" + a + 
+                                            ",rpm=" + b + ", down=" + loadingDown);
+                        if (loadingDown) {
+                            downRPMMap.put(a, b);
+                        } else {
+                            upRPMMap.put(a, b);
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.out.println("unable to parse line: " + line);
+                    } catch (NumberFormatException e) {
+                        System.out.println("unable to parse line: " + line);
+                    }
+                }
+            }
+            in.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("UNABLE TO LOAD SHOOTER VALUES! SHOOTER WILL BE BAD!");
+        } catch (Exception e) {
+            System.out.println("something bad happened in initRPMTable!");
+		}
+		BIGData.putConfigFileMsg(deployConfigFileName + "," + localConfigFileName + "," + RPMConfigFileName);
+	}
+
+	/** Writes the current local mappings to the local config file in home/lvuser.
+	 * (updates swerve zeroes in local file) */
+	public static void updateLocalConfigFile() {
+		File f = new File("/home/lvuser", localConfigFileName);
+		if (!f.exists()) {
+			System.out.println("creating the local config file...");
+			resetLocalConfigFile();
+		}
+		// read local config file, store the formatting
+		// queue of all the lines in the file
+		Queue<String> configLines = new LinkedList<String>();
 		try {
 			Scanner scanner = new Scanner(f);
 			String input;
 			while (scanner.hasNext()) {
 				input = scanner.nextLine().trim();
-				commands.add(input);
-				if (!input.isEmpty() && input.charAt(0) != '#') {
-					existingKeys.add(input.split("=")[0].trim().toLowerCase());
-				}
+				configLines.add(input);
 			}
 			scanner.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			System.out.println("recovering...");
-			// recover by writing the current key/value pairs to a new config file
-			writeRawToConfigFile(f);
+			System.out.println("unable to update the config file, could not find file");
 			return;
 		}
 
-		// put new config file at "configtemptemp.txt", then atomically rename it to
-		// replace old config file
-		File tempFile = new File("/home/lvuser", "configtemptemp.txt");
+		// put new config file at "configlocaltemp.txt", then atomically rename 
+		// it later to replace old config file
+		File tempFile = new File("/home/lvuser", "configlocaltemp.txt");
 		FileWriter writer;
+
+		// boolean array parallel to VALUES_REQUIRED_FOR_LOCAL so all the required values make it into local config
+		// by default, all values are initialized to false.
+		boolean[] requiredValsExist = new boolean[VALUES_REQUIRED_FOR_LOCAL.length];
+
 		try {
 			writer = new FileWriter(tempFile);
-			String cmd, key;
-			while (!commands.isEmpty()) {
-				cmd = commands.remove();
-				if (cmd.isEmpty()) {
+			String line, key;
+			while (!configLines.isEmpty()) {
+				// get the next line from the queue
+				line = configLines.remove();
+				if (line.isEmpty()) {
 					writer.write("\n");
-				} else if (cmd.charAt(0) != '#') {
-					key = cmd.split("=")[0].trim();
+				} 
+				else if (line.charAt(0) != '#') {
+					// if this line is not a comment, it is a command
+					key = line.split("=", 2)[0].trim();
+					// if it is one of the required values, note that it has been put into the updated config file
+					int index = Arrays.binarySearch(VALUES_REQUIRED_FOR_LOCAL, key);
+					if (index >= 0) {
+						requiredValsExist[index] = true;
+					}
 					if (map.containsKey(key)) {
 						writer.write(key + "=" + map.get(key) + "\n");
+					} else {
+						System.out.println("could not find corresponding value for " + key + ", writing '" + line + "' to file");
+						writer.write(line);
 					}
-				} else if (cmd.charAt(0) == '#') {
-					writer.write(cmd + "\n");
+				} 
+				else if (line.charAt(0) == '#') {
+					// write comments to the file (# denotes a comment)
+					writer.write(line + "\n");
 				}
 			}
-			// write new key/value pairs to bottom of file
-			writer.write("\n");
-			for (Map.Entry<String, String> entry : map.entrySet()) {
-				if (!existingKeys.contains(entry.getKey().toLowerCase())) {
-					writer.write(entry.getKey() + "=" + entry.getValue() + "\n");
+
+			// write the required values to the file
+			for (int i = 0; i < VALUES_REQUIRED_FOR_LOCAL.length; i++) {
+				if (!requiredValsExist[i]) {
+					writer.write(VALUES_REQUIRED_FOR_LOCAL[i] + "=" + map.getOrDefault(VALUES_REQUIRED_FOR_LOCAL[i], ""));
 				}
 			}
 			writer.close();
 			// rename file to replace old file
 			Files.move(tempFile.toPath(), f.toPath(), StandardCopyOption.ATOMIC_MOVE);
+			BIGData.putConfigFileMsg("updated the local config file");
 		} catch (IOException e) {
-			System.out.println("could not update config file");
+			BIGData.putConfigFileMsg("could not update config file");
 			e.printStackTrace();
 			return;
 		}
-		changeStartupConfigFile(false);
-
 	}
 
-	/** Writes the current key/value pairs to the file in an unordered way */
-	private static void writeRawToConfigFile(File f) {
-		System.out.println("Writing raw key/value pairs to config file: " + f.getName());
-		FileWriter writer;
+	/** update the local RPM config file with the current values in the rpm maps */
+	public static void updateLocalRPMConfigFile() {
+		File f = new File("/home/lvuser", RPMConfigFileName);
 		try {
-			writer = new FileWriter(f);
-			for (Map.Entry<String, String> entry : map.entrySet()) {
-				writer.write(entry.getKey() + "=" + entry.getValue() + "\n");
+			FileWriter writer = new FileWriter(f);
+			// load down rpms
+			writer.write("down\n");
+			for (Map.Entry<Integer, Integer> entry : BIGData.downRPMMap.entrySet()) {
+				// write in format "distance,RPM"
+				writer.write(entry.getKey() + "," + entry.getValue() + "\n");
+			}
+			// load up rpms
+			writer.write("up\n");
+			for (Map.Entry<Integer, Integer> entry : BIGData.upRPMMap.entrySet()) {
+				// write in format "distance,RPM"
+				writer.write(entry.getKey() + "," + entry.getValue() + "\n");
 			}
 			writer.close();
+			BIGData.putConfigFileMsg("updated the local RPM config file");
 		} catch (IOException e) {
-			System.out.println("could not write to config file");
-			e.printStackTrace();
+			BIGData.putConfigFileMsg("unable to update local rpm config file");
 		}
-		changeStartupConfigFile(false);
 	}
 
-	/**
-	 * copies the contents of the deploy time config file to the temp config file
-	 */
-	public static void resetTempConfigFile() {
-		System.out.println("copying config file from home/lvuser/deploy to temp config file in home/lvuser");
-		File tempConfigFile = new File("/home/lvuser/", tempConfigFileName);
-		File deployConfigFile = new File("/home/lvuser/deploy/", deployConfigFileName);
+	/** resets the local config file that contains the swerve zeros */
+	public static void resetLocalConfigFile() {
+		File localConfigFile = new File("/home/lvuser", localConfigFileName);
 		try {
-			Files.copy(deployConfigFile.toPath(), tempConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			BIGData.putConfigFileMsg("reset temp config file");
+			FileWriter writer = new FileWriter(localConfigFile);
+			for (String key : VALUES_REQUIRED_FOR_LOCAL) {
+				writer.write(key + "=\n");
+			}
+			writer.close();
+			BIGData.putConfigFileMsg("reset the local config file (swerve zeros)");
 		} catch (IOException e) {
-			BIGData.putConfigFileMsg("unable to reset temp config file");
-			e.printStackTrace();
+			BIGData.putConfigFileMsg("unable to reset local config file");
 		}
 	}
-
-	public static void printConfigMappings() {
-		for (Map.Entry<String, String> e : map.entrySet()) {
-			System.out.println(e.getKey() + "=" + e.getValue());
+	
+	/** resets the local RPM config file with the corresponding deploy-time config file */
+	public static void resetLocalRPMConfigFile() {
+		System.out.println("resetting local RPM config file to deploy time config file");
+		File localRPMConfigFile = new File("/home/lvuser", RPMConfigFileName);
+		File deployRPMConfigFile = new File("home/lvuser/deploy", RPMConfigFileName);
+		try {
+			if (!deployRPMConfigFile.exists()) {
+				System.out.println("Deploy time RPM file does not exist, aborting reset");
+				return;
+			}
+			Files.copy(deployRPMConfigFile.toPath(), localRPMConfigFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			BIGData.putConfigFileMsg("reset the RPM local config file");
+		} catch (IOException e) {
+			BIGData.putConfigFileMsg("unable to reset RPM local config file");
 		}
 	}
 }

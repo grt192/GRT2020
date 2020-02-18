@@ -1,6 +1,12 @@
 # Config file for 2020 preseason
 # Domain: roborio-192-frc.local
 
+# local file for config values like swerve zeroes
+local_config_file=omega_local.txt
+# local file for shooter rpms to load in, from the directory "/home/lvuser"
+shooter_rpm_file=omega_rpms.txt
+
+
 swerve_width=22.25
 swerve_height=21.70
 
@@ -55,8 +61,6 @@ shooter_offset_change=100
 one_wheel_shooter_lead=3
 one_wheel_shooter_follow=16
 one_wheel_hood=6
-# file for shooter rpms to load in
-shooter_rpm_file=omega_rpms.txt
 
 
 # lidar pwm channel

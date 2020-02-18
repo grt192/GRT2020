@@ -3,12 +3,8 @@ package frc.targettracking;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
-import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
 
 public class Lidar implements Runnable {
@@ -42,8 +38,10 @@ public class Lidar implements Runnable {
     public void run() {
         while (true) {
             try {
+                if (Thread.interrupted()) {
+                    return;
+                }
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
-                    System.out.println("lidar code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);
@@ -51,7 +49,11 @@ public class Lidar implements Runnable {
                 } else {
                     lidarData();
                 }
-            } catch (Exception e) {
+            }
+            catch (InterruptedException e) {
+                return;
+            }
+            catch (Exception e) {
                 System.out.println("Outer exception caught in LIDAR code. unknown error");
             }
         }

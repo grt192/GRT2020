@@ -2,6 +2,7 @@ package frc.gen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import frc.pathfinding.fieldmap.geometry.*;
 import frc.swerve.SwerveData;
@@ -11,6 +12,11 @@ public class BIGData {
 
 	private static Map<String, String> map;
 
+    // RPM map of <distance (inches), RPM> for when the hood is up
+    public static TreeMap<Integer, Integer> upRPMMap;
+    // RPM map of <distance (inches), RPM> for when the hood is down
+    public static TreeMap<Integer, Integer> downRPMMap;
+
 	public static final int FR_WHEEL = 0;
 	public static final int BR_WHEEL = 1;
 	public static final int BL_WHEEL = 2;
@@ -18,7 +24,9 @@ public class BIGData {
 
 	public static void start() {
 		map = new HashMap<String, String>();
-		Config.start(map);
+		upRPMMap = new TreeMap<Integer, Integer>();
+		downRPMMap = new TreeMap<Integer, Integer>();
+		Config.start(map, upRPMMap, downRPMMap);
 		put("stage_1_disabled", false);
 		put("stage_2_disabled", false);
 		put("stage_3_disabled", false);
@@ -121,6 +129,17 @@ public class BIGData {
 			return "fl";
 		default:
 			return "unknown_wheel";
+		}
+	}
+
+	public static int getWheelNum(String wheelName) {
+		wheelName = wheelName.toLowerCase();
+		switch (wheelName) {
+			case "fr": return FR_WHEEL;
+			case "br": return BR_WHEEL;
+			case "bl": return BL_WHEEL;
+			case "fl": return FL_WHEEL;
+			default: return -1;
 		}
 	}
 
@@ -238,6 +257,15 @@ public class BIGData {
 		return getBoolean("zero_swerve");
 	}
 
+	/** request to zero a single swerve module */
+	public static void putZeroIndivSwerveRequest(int wheelNum, boolean setTo) {
+		put("zero_module_" + wheelNum, setTo);
+	}
+	/** get whether a single swerve module has been requested to be zeroed */
+	public static boolean getZeroIndivSwerveRequest(int wheelNum) {
+		return getBoolean("zero_module_" + wheelNum);
+	}
+
 	/** Request that the gyro be zeroed. */
 	public static void putZeroGyroRequest(boolean request) {
 		put("zero_gyro", request);
@@ -248,7 +276,6 @@ public class BIGData {
 		return getBoolean("zero_gyro");
 	}
 
-	// TODO ADD MECH BIGDATA STUFF HERE!
 	/** Set the state of the linkage; true=on, false=off */
 	public static void requestLinkageState(boolean state) {
 		put("linkage_state", state);
@@ -484,6 +511,12 @@ public class BIGData {
 		return getBoolean("jetson_camera_connected");
 	}
 
+	/**
+	 * @param r the range (distance from the target horizontally, in inches)
+	 * @param a the azimuth (in degrees, where positive means camera is pointed to the left)
+	 * @param x TODO TELL ME WHAT THIS IS!
+	 * @param y TODO TELL ME WHAT THIS IS!!!!!!!!!!!!!!
+	 */
 	public static void updateCamera(double r, double a, double x, double y) {
 		put("camera_azimuth", a);
 		put("camera_range", r);
@@ -491,6 +524,7 @@ public class BIGData {
 		put("relative_y", y);
 	}
 
+	/** TODO COMMENT CODE PLS! */
 	public static Vector getCameraPos() {
 		if (getDouble("camera_range") != 0) {
 			Vector v = new Vector(getDouble("relative_x"), getDouble("relative_y"));
@@ -499,6 +533,9 @@ public class BIGData {
 		return null;
 	}
 
+	/**
+	 * @param r distance in inches
+	 */
 	public static void updateLidar(double r) {
 		put("lidar_range", r);
 	}
@@ -518,26 +555,23 @@ public class BIGData {
 		map.put(key, "" + val);
 	}
 
-	/** calls Config.updateConfigFile */
-	public static void updateConfigFile() {
-		Config.updateConfigFile();
+	/** resets the local RPM config file with the corresponding deploy-file RPM config file */
+	public static void resetLocalRPMConfigFile() {
+		Config.resetLocalRPMConfigFile();
 	}
 
-	/** calls Config.resetTempConfigFile() */
-	public static void resetTempConfigFile() {
-		Config.resetTempConfigFile();
+	/** resets the local config file (that contains the swerve zeros) */
+	public static void resetLocalConfigFile() {
+		Config.resetLocalConfigFile();
 	}
 
-	/**
-	 * Change whether we use the deploy time config file or the temporary config
-	 * file ON STARTUP. This function does not modify current program state.
-	 */
-	public static void changeStartupConfigFile(boolean useDeploy) {
-		Config.changeStartupConfigFile(useDeploy);
+	/** Writes the current local mappings to the local config file in home/lvuser.
+	 * (updates swerve zeroes in local file) */
+	public static void updateLocalConfigFile() {
+		Config.updateLocalConfigFile();
 	}
 
-	/** print the current config mappings to the console */
-	public static void printConfigMappings() {
-		Config.printConfigMappings();
+	public static void updateLocalRPMConfigFile() {
+		Config.updateLocalRPMConfigFile();
 	}
 }

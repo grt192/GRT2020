@@ -3,12 +3,8 @@ package frc.targettracking;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
-import edu.wpi.first.wpilibj.Notifier;
 import frc.gen.BIGData;
 import java.util.Arrays;
 
@@ -23,10 +19,7 @@ public class JetsonCamera implements Runnable {
     private String jetsonAddress;
     // reader that reads from socket
     private BufferedReader stdIn;
-
-    // Victor motor controller to control LED ring
-    // TODO ADD LED RING
-
+    
     // default port of jetson to connect to
     private final static int DEFAULT_PORT = 1337;
 
@@ -46,9 +39,10 @@ public class JetsonCamera implements Runnable {
     public void run() {
         while (true) {
             try {
-                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected()
-                        || !socket.isBound()) {
-                    System.out.println("camera code is attempting to connect to jetson at address" + jetsonAddress + ",port=" + port);
+                if (Thread.interrupted()) {
+                    return;
+                }
+                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
                         // if we don't connect, wait before trying to connect again
@@ -58,9 +52,12 @@ public class JetsonCamera implements Runnable {
                     BIGData.putJetsonCameraConnected(true);
                     cameraData();
                 }
-            } catch (Exception e) {
-                System.out.println(
-                        "Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
+            } 
+            catch (InterruptedException e) {
+                return;
+            }
+            catch (Exception e) {
+                System.out.println("Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
             }
         }
     }
@@ -86,7 +83,7 @@ public class JetsonCamera implements Runnable {
         return connected;
     }
 
-    public void cameraData() {
+    public void cameraData() throws InterruptedException {
         try {
             String in = stdIn.readLine();
             if (in != null) {

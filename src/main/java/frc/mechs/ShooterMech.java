@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.revrobotics.CANEncoder;
@@ -18,13 +17,12 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.gen.BIGData;
 
+import static frc.gen.BIGData.downRPMMap;
+import static frc.gen.BIGData.upRPMMap;
+
 public class ShooterMech implements Mech {
-    // lookup table rpms for shooting in increments of 1 foot.
-    // rpmTable[i] is the rpm to shoot at, i feet away from target (horizontal distance)
-    private int[] upRPMTable;
-    private int[] downRPMTable;
-    private static final int DEFAULT_MIN_RPM = 2000;
-    private static final int DEFAULT_MAX_RPM = 6000;
+    
+    private static final int DEFAULT_RPM = 3500;
 
     private CANSparkMax motor_lead;
     private CANSparkMax motor_follow;
@@ -57,91 +55,6 @@ public class ShooterMech implements Mech {
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(9, BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
-
-        initRPMTable();
-    }
-
-    private void initRPMTable() {
-        upRPMTable = new int[50];
-        downRPMTable = new int[50];
-        boolean loadingDown = true;
-        String rpmFileName = BIGData.getString("shooter_rpm_file");
-        SortedMap<Integer, Integer> upRPMMap = new TreeMap<Integer, Integer>();
-        SortedMap<Integer, Integer> downRPMMap = new TreeMap<Integer, Integer>();
-        String directory = "/home/lvuser/deploy"; 
-        try {
-            Scanner in = new Scanner(new File(directory, rpmFileName));
-            while (in.hasNextLine()) {
-                String line = in.nextLine().trim();
-                if (line.equalsIgnoreCase("down")) {
-                    loadingDown = true;
-                    continue;
-                } else if (line.equalsIgnoreCase("up")) {
-                    loadingDown = false;
-                    continue;
-                }
-                if (line.length() > 0 && line.charAt(0) != '#') {
-                    String[] split = line.split(",");
-                    try {
-                        int a = Integer.parseInt(split[0]);
-                        int b = Integer.parseInt(split[1]);
-                        System.out.println("loaded shooter point: dist(ft)=" + a + ",rpm=" + b + ", down=" + loadingDown);
-                        if (loadingDown) {
-                            downRPMMap.put(a, b);
-                        } else {
-                            upRPMMap.put(a, b);
-                        }
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.out.println("unable to parse line: " + line);
-                    } catch (NumberFormatException e) {
-                        System.out.println("unable to parse line: " + line);
-                    }
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("UNABLE TO LOAD SHOOTER VALUES! SHOOTER WILL BE BAD!");
-        } catch (Exception e) {
-            System.out.println("something bad happened in initRPMTable!");
-        } finally {
-            // put edge rpms into map if absent
-            upRPMMap.putIfAbsent(0, DEFAULT_MIN_RPM);
-            upRPMMap.putIfAbsent(upRPMTable.length-1, DEFAULT_MAX_RPM);
-            
-            downRPMMap.putIfAbsent(0, DEFAULT_MIN_RPM);
-            downRPMMap.putIfAbsent(downRPMTable.length-1, DEFAULT_MAX_RPM);
-        }
-        
-        // linear interpolation
-        int prevIndex = 0;
-        int prevNum = downRPMMap.get(prevIndex);
-        for (Map.Entry<Integer, Integer> e : downRPMMap.entrySet()) {
-            if (e.getKey() < downRPMTable.length) {
-                interpolate(downRPMTable, prevIndex, e.getKey(), prevNum, e.getValue());
-                prevIndex = e.getKey();
-                prevNum = e.getValue();
-            }
-        }
-        
-        // linear interpolation, pt 2
-        prevIndex = 0;
-        prevNum = upRPMMap.get(prevIndex);
-        for (Map.Entry<Integer, Integer> e : upRPMMap.entrySet()) {
-            if (e.getKey() < upRPMTable.length) {
-                interpolate(upRPMTable, prevIndex, e.getKey(), prevNum, e.getValue());
-                prevIndex = e.getKey();
-                prevNum = e.getValue();
-            }
-        }
-    }
-
-    private void interpolate(int[] output, int startIndex, int endIndex, int startNum, int endNum) {
-        if (startIndex == endIndex) {
-            output[startIndex] = startNum;
-            return;
-        }
-        for (int i = startIndex; i <= endIndex; i++) {
-            output[i] = startNum + ((i - startIndex) * (endNum - startNum)) / (endIndex - startIndex);
-        }
     }
 
     public void update() {
@@ -158,7 +71,7 @@ public class ShooterMech implements Mech {
             // distance to vision target
         } else {
             double range = BIGData.getDouble("camera_range");
-            double rpm = calcSpeed(range);
+            double rpm = calcSpeed((int)range);
             int offset = BIGData.getInt("shooter_offset_change");
             double newSpeed = rpm + offset;
             newSpeed = 5500;
@@ -181,15 +94,21 @@ public class ShooterMech implements Mech {
      * Takes a distance from the target (horizontal distance, in inches) and returns
      * a speed in rpm to run the shooter at.
      * 
-     * @param range
-     *                  the distance from the target in inches
+     * @param range the distance from the target in inches
      * @return the rpm to run the shooter at
      */
-    public double calcSpeed(double range) {
-        if (shooterUp) {
-            return upRPMTable[(int)(range/12)];
+    public double calcSpeed(int range) {
+        Map.Entry<Integer, Integer> floorEntry = shooterUp ? upRPMMap.floorEntry(range) : downRPMMap.floorEntry(range);
+        Map.Entry<Integer, Integer> ceilEntry = shooterUp ? upRPMMap.ceilingEntry(range) : downRPMMap.ceilingEntry(range);
+        if (floorEntry == null && ceilEntry == null) {
+            return DEFAULT_RPM;
+        } else if (floorEntry == null) {
+            return ceilEntry.getValue();
+        } else if (ceilEntry == null) {
+            return floorEntry.getValue();
         } else {
-            return downRPMTable[(int)(range/12)];
+            // linear interpolation
+            return floorEntry.getValue() + ((ceilEntry.getValue() - floorEntry.getValue()) / (ceilEntry.getKey() - floorEntry.getKey())) * (range - floorEntry.getKey());
         }
     }
 
@@ -203,7 +122,7 @@ public class ShooterMech implements Mech {
 
         double wheelV = Math.sqrt(
                 Math.pow(BIGData.getDouble("enc_vx") * 39.37, 2) + Math.pow(BIGData.getDouble("enc_vy") * 39.37, 2));
-        double distanceRPM = calcSpeed(range);
+        double distanceRPM = calcSpeed((int)range);
 
         double distanceV = distanceRPM * MINUTES_TO_SECONDS * WHEEL_RADIUS * Math.cos(shooterAngle);
 

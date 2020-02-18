@@ -61,12 +61,9 @@ public class Swerve {
 
 		refreshVals();
 		double w = userW;
-		if (BIGData.getBoolean("PID?")) {
+		if (withPID) {
 			w = calcPID();
 		}
-
-		//System.out.println("calling changeMotors with w=" + w);
-
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 	}
@@ -82,10 +79,10 @@ public class Swerve {
 			BIGData.setPIDFalse();
 		}
 		if (BIGData.getZeroSwerveRequest()) {
-			System.out.println("zeroing wheels");
+			System.out.println("zeroing ALL wheels");
 			zeroRotate();
 			BIGData.putZeroSwerveRequest(false);
-			BIGData.updateConfigFile();
+			BIGData.updateLocalConfigFile();
 		}
 		if (BIGData.getZeroGyroRequest()) {
 			System.out.println("zeroing gyro");
@@ -94,9 +91,19 @@ public class Swerve {
 		}
 		BIGData.putGyroAngle(gyro.getAngle());
 
-		for (Wheel wheel : wheels) {
-			BIGData.putWheelRawDriveSpeed(wheel.getName(), wheel.getRawDriveSpeed());
-			BIGData.putWheelRawRotateSpeed(wheel.getName(), wheel.getRawRotateSpeed());
+		boolean zeroesUpdated = false;
+
+		for (int i = 0; i < wheels.length; i++) {
+			BIGData.putWheelRawDriveSpeed(wheels[i].getName(), wheels[i].getRawDriveSpeed());
+			BIGData.putWheelRawRotateSpeed(wheels[i].getName(), wheels[i].getRawRotateSpeed());
+			if (BIGData.getZeroIndivSwerveRequest(i)) {
+				zeroRotateIndiv(i);
+				zeroesUpdated = true;
+				BIGData.putZeroIndivSwerveRequest(i, false);
+			}
+		}
+		if (zeroesUpdated) {
+			BIGData.updateLocalConfigFile();
 		}
 	}
 
@@ -107,12 +114,6 @@ public class Swerve {
 	private double calcPID() {
 		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
 				Math.toRadians(kF));
-		// System.out.println("kP: " + kP);
-		// System.out.println("kD: " + kD);
-		// System.out.println("kF: " + kF);
-		// System.out.println("Error: " + Math.toDegrees(error));
-		// System.out.println();
-
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
 		// System.out.print("W: " + w);%
 		return -w;
@@ -212,6 +213,13 @@ public class Swerve {
 		for (int i = 0; i < wheels.length; i++) {
 			wheels[i].zero();
 			BIGData.putWheelZero(wheels[i].getName(), wheels[i].getOffset());
+		}
+	}
+
+	private void zeroRotateIndiv(int wheelNum) {
+		if (wheelNum < wheels.length) {
+			wheels[wheelNum].zero();
+			BIGData.putWheelZero(wheels[wheelNum].getName(), wheels[wheelNum].getOffset());
 		}
 	}
 
