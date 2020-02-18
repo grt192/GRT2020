@@ -2,6 +2,7 @@ package frc.gen;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import frc.swerve.SwerveData;
 import frc.util.GRTUtil;
@@ -10,6 +11,11 @@ public class BIGData {
 
 	private static Map<String, String> map;
 
+    // RPM map of <distance (inches), RPM> for when the hood is up
+    public static TreeMap<Integer, Integer> upRPMMap;
+    // RPM map of <distance (inches), RPM> for when the hood is down
+    public static TreeMap<Integer, Integer> downRPMMap;
+
 	public static final int FR_WHEEL = 0;
 	public static final int BR_WHEEL = 1;
 	public static final int BL_WHEEL = 2;
@@ -17,7 +23,9 @@ public class BIGData {
 
 	public static void start() {
 		map = new HashMap<String, String>();
-		Config.start(map);
+		upRPMMap = new TreeMap<Integer, Integer>();
+		downRPMMap = new TreeMap<Integer, Integer>();
+		Config.start(map, upRPMMap, downRPMMap);
 		put("stage_1_disabled", false);
 		put("stage_2_disabled", false);
 		put("stage_3_disabled", false);
@@ -484,26 +492,23 @@ public class BIGData {
 		map.put(key, "" + val);
 	}
 
-	/** calls Config.updateConfigFile */
-	public static void updateConfigFile() {
-		Config.updateConfigFile();
+	/** resets the local RPM config file with the corresponding deploy-file RPM config file */
+	public static void resetLocalRPMConfigFile() {
+		Config.resetLocalRPMConfigFile();
 	}
 
-	/** calls Config.resetTempConfigFile() */
-	public static void resetTempConfigFile() {
-		Config.resetTempConfigFile();
+	/** resets the local config file (that contains the swerve zeros) */
+	public static void resetLocalConfigFile() {
+		Config.resetLocalConfigFile();
 	}
 
-	/**
-	 * Change whether we use the deploy time config file or the temporary config
-	 * file ON STARTUP. This function does not modify current program state.
-	 */
-	public static void changeStartupConfigFile(boolean useDeploy) {
-		Config.changeStartupConfigFile(useDeploy);
+	/** Writes the current local mappings to the local config file in home/lvuser.
+	 * (updates swerve zeroes in local file) */
+	public static void updateLocalConfigFile() {
+		Config.updateLocalConfigFile();
 	}
 
-	/** print the current config mappings to the console */
-	public static void printConfigMappings() {
-		Config.printConfigMappings();
+	public static void updateLocalRPMConfigFile() {
+		Config.updateLocalRPMConfigFile();
 	}
 }

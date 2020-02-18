@@ -17,12 +17,6 @@ public class ShuffleboardCommands {
 
     private ShuffleboardTab settingsTab;
     private ShuffleboardLayout configLayout;
-    // joysticks
-    private ShuffleboardLayout joystickLayout;
-    private NetworkTableEntry joystickX1;
-    private NetworkTableEntry joystickY1;
-    private NetworkTableEntry joystickX2;
-    private NetworkTableEntry joystickY2;
     // swerve
     private ShuffleboardTab swerveTab;
     private ShuffleboardLayout wheelZerosLayout;
@@ -47,18 +41,17 @@ public class ShuffleboardCommands {
         settingsTab = Shuffleboard.getTab("Settings");
         swerveTab = Shuffleboard.getTab("Swerve");
         configLayout = settingsTab.getLayout("Config File", "List Layout").withSize(2, 2).withPosition(0, 0);
-        joystickLayout = settingsTab.getLayout("Joysticks", "List Layout").withSize(1, 3).withPosition(2, 0);
         wheelZerosLayout = swerveTab.getLayout("Wheel Zeros", "Grid Layout").withSize(2, 2).withPosition(0, 2);
         wheelDriveSpeedsLayout = swerveTab.getLayout("Wheel Drive Speeds", "Grid Layout").withSize(2, 2).withPosition(2,
                 2);
         wheelRotateSpeedsLayout = swerveTab.getLayout("Wheel Rotate Speeds", "Grid Layout").withSize(2, 2)
                 .withPosition(4, 2);
 
-        CommandBase resetTempConfigCommand = new CommandBase() {
+        CommandBase updateLocalConfigFileCommand = new CommandBase() {
             @Override
             public void initialize() {
-                System.out.println("resetting temp config file...");
-                BIGData.resetTempConfigFile();
+                System.out.println("updating the local config file (that contains swerve zeroes, etc.)");
+                BIGData.updateLocalConfigFile();
             }
 
             @Override
@@ -66,13 +59,13 @@ public class ShuffleboardCommands {
                 return true;
             }
         };
-        configLayout.add("reset temp config file", resetTempConfigCommand).withWidget(BuiltInWidgets.kCommand);
+        configLayout.add("update CONFIG file", updateLocalConfigFileCommand).withWidget(BuiltInWidgets.kCommand);
 
-        CommandBase useDeployCommand = new CommandBase() {
+        CommandBase updateLocalRPMConfigFileCommand = new CommandBase() {
             @Override
             public void initialize() {
-                System.out.println("next restart, deploy time file will be used");
-                BIGData.changeStartupConfigFile(true);
+                System.out.println("updating the RPM file with the current RPM mappings");
+                BIGData.updateLocalRPMConfigFile();
             }
 
             @Override
@@ -80,13 +73,13 @@ public class ShuffleboardCommands {
                 return true;
             }
         };
-        configLayout.add("use deploy time config file", useDeployCommand).withWidget(BuiltInWidgets.kCommand);
+        configLayout.add("update RPM file", updateLocalRPMConfigFileCommand).withWidget(BuiltInWidgets.kCommand);
 
-        CommandBase useTempCommand = new CommandBase() {
+        CommandBase resetLocalRPMConfigFileCommand = new CommandBase() {
             @Override
             public void initialize() {
-                System.out.println("next restart, temp config file will be used");
-                BIGData.changeStartupConfigFile(false);
+                System.out.println("resetting the RPM file with the deploy time mappings");
+                BIGData.resetLocalRPMConfigFile();
             }
 
             @Override
@@ -94,38 +87,24 @@ public class ShuffleboardCommands {
                 return true;
             }
         };
-        configLayout.add("use temporary config file", useTempCommand).withWidget(BuiltInWidgets.kCommand);
+        configLayout.add("reset RPM file", resetLocalRPMConfigFileCommand).withWidget(BuiltInWidgets.kCommand);
+
+        CommandBase resetLocalConfigFileCommand = new CommandBase() {
+            @Override
+            public void initialize() {
+                System.out.println("resetting the LOCAL CONFIG file");
+                BIGData.resetLocalConfigFile();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        };
+        configLayout.add("reset CONFIG file", resetLocalConfigFileCommand).withWidget(BuiltInWidgets.kCommand);
+
         configMessage = settingsTab.add("config file msg", BIGData.getConfigFileMsg()).withPosition(3, 0).withSize(2, 1)
-                .getEntry();
-
-        joystickX1 = joystickLayout.add("original pt1", BIGData.getDouble("joystick_x1")).getEntry();
-        joystickY1 = joystickLayout.add("new pt1", BIGData.getDouble("joystick_y1")).getEntry();
-        joystickX2 = joystickLayout.add("original pt2", BIGData.getDouble("joystick_x2")).getEntry();
-        joystickY2 = joystickLayout.add("new pt2", BIGData.getDouble("joystick_y2")).getEntry();
-        CommandBase setJoystickCommand = new CommandBase() {
-            @Override
-            public void initialize() {
-                double x1 = joystickX1.getDouble(42);
-                double y1 = joystickY1.getDouble(42);
-                double x2 = joystickX2.getDouble(42);
-                double y2 = joystickY2.getDouble(42);
-                if (GRTUtil.inRange(-1.0, x1, 1.0) && GRTUtil.inRange(-1.0, y1, 1.0) && GRTUtil.inRange(-1.0, x2, 1.0)
-                        && GRTUtil.inRange(-1.0, y2, 1.0)) {
-                    BIGData.setJoystickX1(x1);
-                    BIGData.setJoystickY1(y1);
-                    BIGData.setJoystickX2(x2);
-                    BIGData.setJoystickY2(y2);
-                    BIGData.updateConfigFile();
-                    System.out.println("set new joystick profiles...");
-                }
-            }
-
-            @Override
-            public boolean isFinished() {
-                return true;
-            }
-        };
-        joystickLayout.add("set joystick profile", setJoystickCommand).withWidget(BuiltInWidgets.kCommand);
+            .getEntry();
 
         CommandBase zeroRotateCommand = new CommandBase() {
             @Override
@@ -155,9 +134,9 @@ public class ShuffleboardCommands {
         CommandBase zeroModuleBL = new ZeroIndivSwerveCommand(BIGData.BL_WHEEL);
         CommandBase zeroModuleFL = new ZeroIndivSwerveCommand(BIGData.FL_WHEEL);
         swerveTab.add("zero FR", zeroModuleFR).withPosition(0, 1);
-        swerveTab.add("zero BR", zeroModuleBR).withPosition(0, 2);
-        swerveTab.add("zero BL", zeroModuleBL).withPosition(0, 3);
-        swerveTab.add("zero FL", zeroModuleFL).withPosition(0, 4);
+        swerveTab.add("zero BR", zeroModuleBR).withPosition(1, 1);
+        swerveTab.add("zero BL", zeroModuleBL).withPosition(2, 1);
+        swerveTab.add("zero FL", zeroModuleFL).withPosition(3, 1);
 
 
         CommandBase zeroGyroCommand = new CommandBase() {

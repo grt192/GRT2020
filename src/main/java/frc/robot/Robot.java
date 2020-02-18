@@ -43,7 +43,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         BIGData.start();
-        BIGData.changeStartupConfigFile(true);
         JoystickProfile.init();
         ROBOT_WIDTH = BIGData.getDouble("robot_width");
         ROBOT_HEIGHT = BIGData.getDouble("robot_height");

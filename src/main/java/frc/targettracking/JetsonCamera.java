@@ -42,7 +42,6 @@ public class JetsonCamera implements Runnable {
                     return;
                 }
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
-                    System.out.println("camera code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
                         // if we don't connect, wait before trying to connect again

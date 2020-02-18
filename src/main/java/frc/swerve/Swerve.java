@@ -62,9 +62,6 @@ public class Swerve {
 		if (withPID) {
 			w = calcPID();
 		}
-
-		System.out.println("calling changeMotors with w=" + w);
-
 		changeMotors(userVX, userVY, w);
 		calcSwerveData();
 	}
@@ -83,7 +80,7 @@ public class Swerve {
 			System.out.println("zeroing ALL wheels");
 			zeroRotate();
 			BIGData.putZeroSwerveRequest(false);
-			BIGData.updateConfigFile();
+			BIGData.updateLocalConfigFile();
 		}
 		if (BIGData.getZeroGyroRequest()) {
 			System.out.println("zeroing gyro");
@@ -92,13 +89,19 @@ public class Swerve {
 		}
 		BIGData.putGyroAngle(gyro.getAngle());
 
+		boolean zeroesUpdated = false;
+
 		for (int i = 0; i < wheels.length; i++) {
 			BIGData.putWheelRawDriveSpeed(wheels[i].getName(), wheels[i].getRawDriveSpeed());
 			BIGData.putWheelRawRotateSpeed(wheels[i].getName(), wheels[i].getRawRotateSpeed());
 			if (BIGData.getZeroIndivSwerveRequest(i)) {
 				zeroRotateIndiv(i);
+				zeroesUpdated = true;
 				BIGData.putZeroIndivSwerveRequest(i, false);
 			}
+		}
+		if (zeroesUpdated) {
+			BIGData.updateLocalConfigFile();
 		}
 	}
 
@@ -155,7 +158,6 @@ public class Swerve {
 			double wheelVY = vy + wy;
 			double wheelPos = Math.atan2(wheelVY, wheelVX) + gyroAngle - Math.PI / 2;
 			double power = Math.sqrt(wheelVX * wheelVX + wheelVY * wheelVY);
-			System.out.println("power for wheel " + i + ":" + power);
 			wheels[i].set(wheelPos, power);
 		}
 	}
@@ -216,6 +218,7 @@ public class Swerve {
 	private void zeroRotateIndiv(int wheelNum) {
 		if (wheelNum < wheels.length) {
 			wheels[wheelNum].zero();
+			BIGData.putWheelZero(wheels[wheelNum].getName(), wheels[wheelNum].getOffset());
 		}
 	}
 

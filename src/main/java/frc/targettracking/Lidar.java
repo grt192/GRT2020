@@ -42,7 +42,6 @@ public class Lidar implements Runnable {
                     return;
                 }
                 if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
-                    System.out.println("lidar code is attempting to connect to jetson at address " + jetsonAddress + ",port=" + port);
                     if (!connect()) {
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);

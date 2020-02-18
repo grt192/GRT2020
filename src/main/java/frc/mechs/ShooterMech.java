@@ -17,11 +17,10 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.gen.BIGData;
 
+import static frc.gen.BIGData.downRPMMap;
+import static frc.gen.BIGData.upRPMMap;
+
 public class ShooterMech implements Mech {
-    // RPM map of <distance (inches), RPM> for when the hood is up
-    private TreeMap<Integer, Integer> upRPMMap;
-    // RPM map of <distance (inches), RPM> for when the hood is down
-    private TreeMap<Integer, Integer> downRPMMap;
     
     private static final int DEFAULT_RPM = 3500;
 
@@ -54,52 +53,6 @@ public class ShooterMech implements Mech {
         this.shooterUp = BIGData.getBoolean("shooter_up");
         this.hood = new Solenoid(9, BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
-
-        initRPMTable();
-    }
-
-    private void initRPMTable() {
-        boolean loadingDown = true;
-        String rpmFileName = BIGData.getString("shooter_rpm_file");
-        upRPMMap = new TreeMap<Integer, Integer>();
-        downRPMMap = new TreeMap<Integer, Integer>();
-        String directory = "/home/lvuser/deploy";
-        try {
-            Scanner in = new Scanner(new File(directory, rpmFileName));
-            while (in.hasNextLine()) {
-                String line = in.nextLine().trim();
-                if (line.equalsIgnoreCase("down")) {
-                    loadingDown = true;
-                    continue;
-                } else if (line.equalsIgnoreCase("up")) {
-                    loadingDown = false;
-                    continue;
-                }
-                if (line.length() > 0 && line.charAt(0) != '#') {
-                    String[] split = line.split(",");
-                    try {
-                        int a = Integer.parseInt(split[0]);
-                        int b = Integer.parseInt(split[1]);
-                        System.out.println("loaded shooter point: dist(in)=" + a + 
-                                            ",rpm=" + b + ", down=" + loadingDown);
-                        if (loadingDown) {
-                            downRPMMap.put(a, b);
-                        } else {
-                            upRPMMap.put(a, b);
-                        }
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.out.println("unable to parse line: " + line);
-                    } catch (NumberFormatException e) {
-                        System.out.println("unable to parse line: " + line);
-                    }
-                }
-            }
-            in.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("UNABLE TO LOAD SHOOTER VALUES! SHOOTER WILL BE BAD!");
-        } catch (Exception e) {
-            System.out.println("something bad happened in initRPMTable!");
-        }
     }
 
     public void update() {
