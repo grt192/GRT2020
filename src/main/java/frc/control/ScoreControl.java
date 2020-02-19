@@ -24,9 +24,9 @@ public class ScoreControl extends Mode {
             BIGData.requestDrive(0, 0, 0);
             if (lemonCount < 1)
                 return false;
-            if (Math.abs(cameraAzimuth) > 1)
+            if (Math.abs(cameraAzimuth) > 2)
                 BIGData.setAngle(cameraAzimuth);
-            if (Math.abs(cameraAzimuth) <= 1)
+            if (Math.abs(cameraAzimuth) <= 2)
                 BIGData.putShooterState(true);
         }
         return true;
