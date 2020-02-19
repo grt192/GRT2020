@@ -112,7 +112,7 @@ public class Swerve {
 	 * angle, kP, and kD
 	 */
 	private double calcPID() {
-		System.out.println("kF: " + kF);
+		// System.out.println("kF: " + kF);
 		double error = GRTUtil.angularDifference(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
 				Math.toRadians(kF));
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
