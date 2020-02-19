@@ -18,7 +18,8 @@ import java.util.Map;
 
 public class ShooterMech implements Mech {
 
-    private static final int DEFAULT_RPM = 3500;
+    private static final int DEFAULT_HIGH_RPM = 4400;
+    private static final int DEFAULT_LOW_RPM = 5300;
 
     private CANSparkMax motor_lead;
     private CANSparkMax motor_follow;
@@ -120,7 +121,7 @@ public class ShooterMech implements Mech {
 
             if (floorEntry == null && ceilEntry == null) {
                 System.out.println("Used Default");
-                return DEFAULT_RPM;
+                return shooterUp ? DEFAULT_HIGH_RPM : DEFAULT_LOW_RPM;
             } else if (floorEntry == null) {
                 return ceilEntry.getValue();
             } else if (ceilEntry == null) {

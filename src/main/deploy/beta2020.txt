@@ -73,4 +73,4 @@ middle_analog=1
 bottom_analog=0
 
 storage_motor=8
-storage_speed_auto=0.1
+storage_speed_load=0.1

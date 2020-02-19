@@ -76,7 +76,8 @@ middle_analog=1
 bottom_analog=0
 
 storage_motor=8
-storage_speed_auto=-0.4
+storage_speed_load=-0.4
+storage_speed_shoot=-0.9
 
 #initial ball count
 initial_total_lemon_count=3

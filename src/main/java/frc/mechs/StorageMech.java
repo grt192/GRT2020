@@ -17,7 +17,16 @@ public class StorageMech implements Mech {
 
     private int IRRange, IRIntakeRange, IRBotRange;
 
-    private double storageVelocity;
+    /** percent motor output for the conveyer when it is loading balls */
+    private final double loadStorageVelocity;
+    /** percent motor output for the conveyer when it is shooting balls */
+    private final double shootStorageVelocity;
+
+    /** whether in this cycle of balls, we've shot already. 
+     * if we've shot already in this cycle of balls, just run the conveyer at
+     * shooting speed, even if the motor speed is not completely accurate
+     */
+    private boolean shotInLoad = false;
 
     // private final int range = 400;
     private boolean intakingLemon, waitingLemon = false;
@@ -49,7 +58,8 @@ public class StorageMech implements Mech {
         lemonCount = BIGData.getInt("initial_total_lemon_count");
         conveyerCount = BIGData.getInt("initial_conveyer_lemon_count");
 
-        storageVelocity = BIGData.getStorageSpeedAuto();
+        loadStorageVelocity = BIGData.getStorageSpeedAuto();
+        shootStorageVelocity = BIGData.getDouble("storage_speed_shoot");
         
         IRIntakeRange = 1100;
         IRBotRange = 1300;
@@ -155,19 +165,24 @@ public class StorageMech implements Mech {
             topWaiting = false;
         }
 
-        // System.out.println("manual should run: "
-        //         + (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0));
-
-        if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
-                && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
-                || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
-            //System.out.println("SHOULD BE MOVING CONVEYOR");
-            motor.set(ControlMode.PercentOutput, storageVelocity);
+        // what the auton code wants the shooter to run at 
+        double requestedShooterSpeed = BIGData.getDouble("shooter_auto");
+        // what the shooter is actually running at
+        double actualShooterSpeed = BIGData.getDouble("shooter_current_rpm");
+        // conveyer will run automatically when shooter is at correct rpm or if we have already shot in this cycle
+        // if we've shot in this load already, make the rpm requirement less strict
+        if ((shotInLoad && Math.abs(actualShooterSpeed - requestedShooterSpeed) < requestedShooterSpeed/2)
+            || ((Math.abs(actualShooterSpeed - requestedShooterSpeed) < 50)
+                && Math.abs(BIGData.getDouble("shooter_auto")) > 0)) {
+            motor.set(ControlMode.PercentOutput, shootStorageVelocity);
+            shotInLoad = true;
             return;
+        } else {
+            shotInLoad = false;
         }
 
         if ((conveyerCount == 1 && !lemonInMiddle) || (conveyerCount == 2 && !lemonInTop)) {
-            motor.set(ControlMode.PercentOutput, storageVelocity);
+            motor.set(ControlMode.PercentOutput, loadStorageVelocity);
         } else {
             motor.set(ControlMode.PercentOutput, 0.0);
         }
