@@ -17,7 +17,7 @@ import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
-import frc.pathfinding.*;
+import frc.pathfinding.Target;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -70,6 +70,10 @@ public class Robot extends TimedRobot {
             mode.setNumber(0);
             i = 0;
         }
+        if (!Mode.getMode(i).loop()) {
+            autonomous.modeFinished();
+            mode.setNumber(0);
+        }
     }
 
     /**
@@ -103,18 +107,18 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
     }
-    
+
     private boolean manualOverride() {
         double x = JoystickProfile.applyProfile(Input.SWERVE_XBOX.getY(Hand.kLeft));
         double y = JoystickProfile.applyProfile(-Input.SWERVE_XBOX.getX(Hand.kLeft));
         boolean temp = !(x == 0 && y == 0);
         if (temp && !overridden) {
-          overridden = temp;
-          return true;
+            overridden = temp;
+            return true;
         }
         overridden = temp;
         return false;
-      }
+    }
 
     /**
      * This autonomous (along with the chooser code above) shows how to select
@@ -131,7 +135,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         BIGData.put("auton_started", true);
-        autonomous.init("bezier2.txt");
+        autonomous.init("score.txt");
     }
 
     /**
