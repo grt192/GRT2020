@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import frc.gen.BIGData;
-import java.util.Arrays;
-
 public class JetsonCamera implements Runnable {
     // thread that contains code to connect to and read from socket
     private Thread thread;

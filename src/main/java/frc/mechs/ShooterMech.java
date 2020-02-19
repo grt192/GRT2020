@@ -1,13 +1,5 @@
 package frc.mechs;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
-
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.BigDecimalDeserializer;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -22,6 +14,8 @@ import frc.gen.BIGData;
 import static frc.gen.BIGData.downRPMMap;
 import static frc.gen.BIGData.upRPMMap;
 
+import java.util.Map;
+
 public class ShooterMech implements Mech {
 
     private static final int DEFAULT_RPM = 3500;
@@ -31,7 +25,6 @@ public class ShooterMech implements Mech {
     private CANEncoder encoder;
     private CANPIDController pid;
     private SimpleMotorFeedforward smff;
-    private double kP, kI, kFF, kMaxOutput, kMinOutput;
     private Solenoid hood;
     private boolean shooterUp;
 

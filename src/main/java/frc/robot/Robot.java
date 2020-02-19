@@ -74,7 +74,11 @@ public class Robot extends TimedRobot {
             mode.setNumber(0);
             i = 0;
         }
-    }
+        if (!Mode.getMode(i).loop()) {
+            autonomous.modeFinished();
+            mode.setNumber(0);
+        }
+  }
 
     /**
      * This function is called periodically during test mode.
