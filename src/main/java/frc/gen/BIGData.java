@@ -12,10 +12,10 @@ public class BIGData {
 
 	private static Map<String, String> map;
 
-    // RPM map of <distance (inches), RPM> for when the hood is up
-    public static TreeMap<Integer, Integer> upRPMMap;
-    // RPM map of <distance (inches), RPM> for when the hood is down
-    public static TreeMap<Integer, Integer> downRPMMap;
+	// RPM map of <distance (inches), RPM> for when the hood is up
+	public static TreeMap<Integer, Integer> upRPMMap;
+	// RPM map of <distance (inches), RPM> for when the hood is down
+	public static TreeMap<Integer, Integer> downRPMMap;
 
 	public static final int FR_WHEEL = 0;
 	public static final int BR_WHEEL = 1;
@@ -135,11 +135,16 @@ public class BIGData {
 	public static int getWheelNum(String wheelName) {
 		wheelName = wheelName.toLowerCase();
 		switch (wheelName) {
-			case "fr": return FR_WHEEL;
-			case "br": return BR_WHEEL;
-			case "bl": return BL_WHEEL;
-			case "fl": return FL_WHEEL;
-			default: return -1;
+		case "fr":
+			return FR_WHEEL;
+		case "br":
+			return BR_WHEEL;
+		case "bl":
+			return BL_WHEEL;
+		case "fl":
+			return FL_WHEEL;
+		default:
+			return -1;
 		}
 	}
 
@@ -261,6 +266,7 @@ public class BIGData {
 	public static void putZeroIndivSwerveRequest(int wheelNum, boolean setTo) {
 		put("zero_module_" + wheelNum, setTo);
 	}
+
 	/** get whether a single swerve module has been requested to be zeroed */
 	public static boolean getZeroIndivSwerveRequest(int wheelNum) {
 		return getBoolean("zero_module_" + wheelNum);
@@ -337,8 +343,8 @@ public class BIGData {
 	}
 
 	/**
-	 * set the output speed of the winch motor, from -1.0 to 1.0 
-	 * TODO maybe only make winch turn one way
+	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
+	 * make winch turn one way
 	 */
 	public static void requestWinchSpeed(double output) {
 		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
@@ -484,18 +490,29 @@ public class BIGData {
 	public static String getCanvasClick() {
 		return getString("canvas_click");
 	}
-	/** update lidar values
-	 * @param azimuth angle in radians between the 0 rad line of lidar and the line 
-	 * from lidar to center of target. the plane of this angle is parallel to the floor
-	 * @param range distance from lidar to center of the target in the plane parallel to the floor
-	 * @param relAngle angle of the robot relative to target, where 0 rad is right 
-	 * in front of target, and right of target are positive angles, and left of target 
-	 * are negative angles.
+
+	/**
+	 * update lidar values
+	 * 
+	 * @param azimuth
+	 *                     angle in radians between the 0 rad line of lidar and the
+	 *                     line from lidar to center of target. the plane of this
+	 *                     angle is parallel to the floor
+	 * @param range
+	 *                     distance from lidar to center of the target in the plane
+	 *                     parallel to the floor
+	 * @param relAngle
+	 *                     angle of the robot relative to target, where 0 rad is
+	 *                     right in front of target, and right of target are
+	 *                     positive angles, and left of target are negative angles.
+	 * @param quality
+	 *                     the quality of the data, lower is better
 	 */
-	public static void updateLidar(double azimuth, double range, double relAngle) {
+	public static void updateLidar(double azimuth, double range, double relAngle, double quality) {
 		put("lidar_range", range);
 		put("lidar_azimuth", azimuth);
 		put("lidar_rel_angle", relAngle);
+		put("lidar_quality", quality);
 	}
 
 	/** put (or update) a key/value mapping into the map */
@@ -512,10 +529,15 @@ public class BIGData {
 	}
 
 	/**
-	 * @param r the range (distance from the target horizontally, in inches)
-	 * @param a the azimuth (in degrees, where positive means camera is pointed to the left)
-	 * @param x TODO TELL ME WHAT THIS IS!
-	 * @param y TODO TELL ME WHAT THIS IS!!!!!!!!!!!!!!
+	 * @param r
+	 *              the range (distance from the target horizontally, in inches)
+	 * @param a
+	 *              the azimuth (in degrees, where positive means camera is pointed
+	 *              to the left)
+	 * @param x
+	 *              TODO TELL ME WHAT THIS IS!
+	 * @param y
+	 *              TODO TELL ME WHAT THIS IS!!!!!!!!!!!!!!
 	 */
 	public static void updateCamera(double r, double a, double x, double y) {
 		put("camera_azimuth", a);
@@ -534,7 +556,8 @@ public class BIGData {
 	}
 
 	/**
-	 * @param r distance in inches
+	 * @param r
+	 *              distance in inches
 	 */
 	public static void updateLidar(double r) {
 		put("lidar_range", r);
@@ -555,7 +578,10 @@ public class BIGData {
 		map.put(key, "" + val);
 	}
 
-	/** resets the local RPM config file with the corresponding deploy-file RPM config file */
+	/**
+	 * resets the local RPM config file with the corresponding deploy-file RPM
+	 * config file
+	 */
 	public static void resetLocalRPMConfigFile() {
 		Config.resetLocalRPMConfigFile();
 	}
@@ -565,8 +591,10 @@ public class BIGData {
 		Config.resetLocalConfigFile();
 	}
 
-	/** Writes the current local mappings to the local config file in home/lvuser.
-	 * (updates swerve zeroes in local file) */
+	/**
+	 * Writes the current local mappings to the local config file in home/lvuser.
+	 * (updates swerve zeroes in local file)
+	 */
 	public static void updateLocalConfigFile() {
 		Config.updateLocalConfigFile();
 	}

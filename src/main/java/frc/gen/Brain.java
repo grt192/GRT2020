@@ -25,12 +25,12 @@ public class Brain implements Runnable {
 
     public Brain() {
         swerve = new Swerve();
-        //tracking = new PositionTracking();
+        // tracking = new PositionTracking();
         // fieldGUI = new FieldGUI("10.1.92.147", 5000);
         mechs = new MechCollection();
         // pdp = new PowerDistributionPanel(0);
         shuffleboardCommands = new ShuffleboardCommands();
-        //lidar = new Lidar();
+        lidar = new Lidar();
         camera = new JetsonCamera();
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
@@ -42,7 +42,7 @@ public class Brain implements Runnable {
 
     public void run() {
         swerve.update();
-        //tracking.update();
+        // tracking.update();
         mechs.update();
         shuffleboardCommands.update();
         // fieldGUI.update();

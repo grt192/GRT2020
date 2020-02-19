@@ -22,7 +22,7 @@ public class StorageMech implements Mech {
     // private final int range = 400;
     private boolean intakingLemon, waitingLemon = false;
     private boolean topWaiting = false;
-    
+
     private int lemonCount = 0;
     private int conveyerCount = 0;
 
@@ -50,7 +50,7 @@ public class StorageMech implements Mech {
         conveyerCount = BIGData.getInt("initial_conveyer_lemon_count");
 
         storageVelocity = BIGData.getStorageSpeedAuto();
-        
+
         IRIntakeRange = 1100;
         IRBotRange = 1300;
         IRRange = 1300;
@@ -64,7 +64,6 @@ public class StorageMech implements Mech {
         midArr = new double[5];
         botArr = new double[5];
         inArr = new double[5];
-        
 
         BIGData.put("lemon_count", lemonCount);
     }
@@ -110,11 +109,12 @@ public class StorageMech implements Mech {
         // System.out.println("lemon count: " + lemonCount);
         // System.out.println("conveyor count: " + conveyerCount);
 
-        System.out.println("shooter rpm: " + BIGData.getDouble("shooter_current_rpm"));
+        // System.out.println("shooter rpm: " +
+        // BIGData.getDouble("shooter_current_rpm"));
 
         // System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
         // System.out.println("shooter speed: " + BIGData.getDouble("shooter_speed"));
-        
+
         findMed();
         lemonInTop = topMedVal > IRRange;
         lemonInMiddle = midMedVal > IRRange;
@@ -159,12 +159,13 @@ public class StorageMech implements Mech {
         }
 
         // System.out.println("manual should run: "
-        //         + (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0));
+        // + (!BIGData.getShooterState() &&
+        // Math.abs(BIGData.getDouble("shooter_manual")) > 0));
 
         if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
                 && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
                 || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
-            //System.out.println("SHOULD BE MOVING CONVEYOR");
+            // System.out.println("SHOULD BE MOVING CONVEYOR");
             motor.set(ControlMode.PercentOutput, storageVelocity);
             return;
         }
@@ -211,6 +212,7 @@ public class StorageMech implements Mech {
         conveyerCount = 0;
         updateBigData();
     }
+
     public void setCount(int lemonCount, int conveyerCount) {
         this.lemonCount = lemonCount;
         this.conveyerCount = conveyerCount;

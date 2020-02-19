@@ -111,6 +111,7 @@ public class ShooterMech implements Mech {
      * @return the rpm to run the shooter at
      */
     public double calcSpeed(int range) {
+
         // System.out.println(range);
         if (upRPMMap.containsKey(range) && shooterUp) {
             return upRPMMap.get(range);
