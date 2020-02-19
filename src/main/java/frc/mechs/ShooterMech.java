@@ -77,11 +77,12 @@ public class ShooterMech implements Mech {
                 range = BIGData.getDouble("range_testing");
                 System.out.println(range);
             }
-            double rpm = calcSpeedWhileMoving((int) range);
+            double rpm = calcSpeed((int) range);
             // System.out.println(rpm);
 
-            if (BIGData.getInt("shooter_rpm") > 1) {
+            if (BIGData.getDouble("shooter_rpm") > 1) {
                 rpm = BIGData.getDouble("shooter_rpm");
+                System.out.println(rpm);
             }
             // int offset = BIGData.getInt("shooter_offset_change");
             // double newSpeed = rpm + offset;
@@ -110,7 +111,7 @@ public class ShooterMech implements Mech {
      * @return the rpm to run the shooter at
      */
     public double calcSpeed(int range) {
-        System.out.println(range);
+        // System.out.println(range);
         if (upRPMMap.containsKey(range) && shooterUp) {
             return upRPMMap.get(range);
         } else if (downRPMMap.containsKey(range) && !shooterUp) {
