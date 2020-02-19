@@ -111,9 +111,6 @@ public class StorageMech implements Mech {
         // System.out.println("conveyor count: " + conveyerCount);
 
         System.out.println("shooter rpm: " + BIGData.getDouble("shooter_current_rpm"));
-
-        // System.out.println("shooter auto: " + BIGData.getDouble("shooter_auto"));
-        // System.out.println("shooter speed: " + BIGData.getDouble("shooter_speed"));
         
         findMed();
         lemonInTop = topMedVal > IRRange;
@@ -175,15 +172,9 @@ public class StorageMech implements Mech {
             motor.set(ControlMode.PercentOutput, 0.0);
         }
 
-        // System.out.println("count: " + count);
-
-        // System.out.println("lemon count: " + lemonCount);
-        // System.out.println("conveyor count: " + conveyerCount);
-
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
-        // BIGData.getDouble("shooter_auto")));
-
+    
         // System.out.println("Top sensor " + lemonInTop);
         // System.out.println("Bot sensor " + lemonInBottom);
         // System.out.println("Mid sensor " + lemonInMiddle);
@@ -193,11 +184,6 @@ public class StorageMech implements Mech {
         // System.out.println("Bot sensor " + botMedVal);
         // System.out.println("Mid sensor " + midMedVal);
         // System.out.println("In sensor: " + intakeMedVal);
-
-        // System.out.println("Top sensor " + top.getValue());
-        // System.out.println("Bot sensor " + bottom.getValue());
-        // System.out.println("Mid sensor " + middle.getValue());
-        // System.out.println("Intake sensor " + intake.getValue());
 
         updateBigData();
     }
