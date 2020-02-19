@@ -1,4 +1,4 @@
-# format: distance (in ft), rpm
+# format: distance (in inches), rpm
 # example:
 # 10,3000
 down

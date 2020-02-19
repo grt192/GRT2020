@@ -574,4 +574,8 @@ public class BIGData {
 	public static void updateLocalRPMConfigFile() {
 		Config.updateLocalRPMConfigFile();
 	}
+
+	public static String getMechToRun() {
+		return getString("mech_to_run");
+	}
 }
