@@ -1,4 +1,4 @@
-# format: distance (in ft), rpm
+# format: distance (in inches), rpm
 # example:
 # 10,3000
 down
@@ -23,7 +23,6 @@ up
 164,4350
 179,4350
 192,4350
-202,
 212,4600
 226,4800
 243,4850

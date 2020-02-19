@@ -31,15 +31,15 @@ public class JoystickProfile {
 		if (ans != 0) {
 			ans -= DEFAULT_DEADBAND;
 		}
-		ans = GRTUtil.toRange(0, 1 - DEFAULT_DEADBAND, 0, 1, ans);
+		ans = GRTUtil.transformation(0, 1 - DEFAULT_DEADBAND, 0, 1, ans);
 		// apply profiling
 		if (GRTUtil.inRange(0, ans, profilingPoints[0][0])) {
-			ans = GRTUtil.toRange(0, profilingPoints[0][0], 0, profilingPoints[0][1], ans);
+			ans = GRTUtil.transformation(0, profilingPoints[0][0], 0, profilingPoints[0][1], ans);
 		} else if (GRTUtil.inRange(profilingPoints[0][0], ans, profilingPoints[1][0])) {
-			ans = GRTUtil.toRange(profilingPoints[0][0], profilingPoints[1][0], profilingPoints[0][1],
+			ans = GRTUtil.transformation(profilingPoints[0][0], profilingPoints[1][0], profilingPoints[0][1],
 					profilingPoints[1][1], ans);
 		} else {
-			ans = GRTUtil.toRange(profilingPoints[1][0], 1.01, profilingPoints[1][1], .99, ans);
+			ans = GRTUtil.transformation(profilingPoints[1][0], 1.01, profilingPoints[1][1], .99, ans);
 		}
 		return ans * signum;
 	}

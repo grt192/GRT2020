@@ -6,18 +6,18 @@ local_config_file=omega_local.txt
 # local file for shooter rpms to load in, from the directory "/home/lvuser"
 shooter_rpm_file=omega_rpms.txt
 
-
 swerve_width=22.25
 swerve_height=21.70
 
-robot_width=37.00
-robot_height=41
-
+robot_width=33.00
+robot_height=38.5
 
 swerve_inverted=true
 swerve_kp=0.5
 swerve_kd=0.5
 swerve_kf=2.0
+
+correct_with_camera=false
 
 # Offsets are inverted
 br_rotate=12

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+
 import frc.gen.BIGData;
 public class JetsonCamera implements Runnable {
     // thread that contains code to connect to and read from socket
@@ -88,7 +90,7 @@ public class JetsonCamera implements Runnable {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
                 BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
                         Double.parseDouble(data[2]), Double.parseDouble(data[3]));
-                // System.out.println(Arrays.toString(data));
+                System.out.println(Arrays.toString(data));
             }
         } catch (IOException e) {
             e.printStackTrace();

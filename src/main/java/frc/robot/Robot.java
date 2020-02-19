@@ -17,7 +17,7 @@ import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
-import frc.pathfinding.*;
+import frc.pathfinding.Target;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -48,13 +48,9 @@ public class Robot extends TimedRobot {
         BIGData.start();
         BIGData.put("gyro_ang", 0.0);
         JoystickProfile.init();
-        BIGData.put("robot_width", 33.0);
-        BIGData.put("robot_height", 38.5);
-        ROBOT_HEIGHT = 33.0;
-        ROBOT_WIDTH = 38.5;
+        ROBOT_HEIGHT = BIGData.getDouble("robot_height");
+        ROBOT_WIDTH = BIGData.getDouble("robot_width");
         ROBOT_RADIUS = Math.max(ROBOT_WIDTH, ROBOT_HEIGHT) / 2;
-        System.out.println("height" + ROBOT_HEIGHT);
-        System.out.println("width" + ROBOT_WIDTH);
 
         autonomous = new Autonomous(this);
         Mode.initModes();
@@ -78,7 +74,7 @@ public class Robot extends TimedRobot {
             autonomous.modeFinished();
             mode.setNumber(0);
         }
-  }
+    }
 
     /**
      * This function is called periodically during test mode.
@@ -111,18 +107,18 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
     }
-    
+
     private boolean manualOverride() {
         double x = JoystickProfile.applyProfile(Input.SWERVE_XBOX.getY(Hand.kLeft));
         double y = JoystickProfile.applyProfile(-Input.SWERVE_XBOX.getX(Hand.kLeft));
         boolean temp = !(x == 0 && y == 0);
         if (temp && !overridden) {
-          overridden = temp;
-          return true;
+            overridden = temp;
+            return true;
         }
         overridden = temp;
         return false;
-      }
+    }
 
     /**
      * This autonomous (along with the chooser code above) shows how to select
@@ -139,7 +135,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         BIGData.put("auton_started", true);
-        autonomous.init("bezier2.txt");
+        autonomous.init("score.txt");
     }
 
     /**
