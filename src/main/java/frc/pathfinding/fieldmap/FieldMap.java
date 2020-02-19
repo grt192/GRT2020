@@ -14,7 +14,6 @@ public class FieldMap {
 	private Polygon wall;
 	private static Polygon[] obstacles;
 	private static Polygon[] safeZones;
-	private static VisionTarget[] visionTargets;
 	private static double SHORTEST_SIDE;
 	private static double ROBOT_RADIUS;
 
@@ -29,7 +28,6 @@ public class FieldMap {
 	private static void buildMap() {
 		obstacles = new Polygon[7];
 		safeZones = new Polygon[3];
-		visionTargets = new VisionTarget[1];
 		FIELD_SHORT = 323.25;
 		FIELD_LONG = 629.25;
 		double TRENCH_WIDTH = 52;
@@ -63,9 +61,6 @@ public class FieldMap {
 		safeZones[0] = SafeCloseAlliance;
 		safeZones[1] = SafeFarAlliance;
 		safeZones[2] = SafeTrench;
-
-		VisionTarget farGoal = new VisionTarget(new Vector(FIELD_LONG, 228.655), Math.PI, true);
-		visionTargets[0] = farGoal;
 	}
 
 	public Vector closestWallPoint(Vector p) {
