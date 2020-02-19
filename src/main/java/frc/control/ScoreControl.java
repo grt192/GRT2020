@@ -17,6 +17,11 @@ public class ScoreControl extends Mode {
         cameraRange = BIGData.getDouble("camera_range");
         lemonCount = BIGData.getInt("lemon_count");
 
+        //TODO: remove after testing
+        System.out.println("camera range: " + cameraRange);
+        System.out.println("lemon count: " + lemonCount);
+        System.out.println("camera azimuth: " + cameraAzimuth);
+
         if (cameraRange == 0) {
             System.out.println("no vision target found!! turning!!");
             BIGData.requestDrive(0, 0, 0.2);

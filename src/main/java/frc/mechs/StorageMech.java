@@ -110,7 +110,7 @@ public class StorageMech implements Mech {
         // System.out.println("lemon count: " + lemonCount);
         // System.out.println("conveyor count: " + conveyerCount);
 
-        System.out.println("shooter rpm: " + BIGData.getDouble("shooter_current_rpm"));
+        // System.out.println("shooter rpm: " + BIGData.getDouble("shooter_current_rpm"));
         
         findMed();
         lemonInTop = topMedVal > IRRange;
