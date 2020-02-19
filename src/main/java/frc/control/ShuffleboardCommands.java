@@ -198,7 +198,7 @@ public class ShuffleboardCommands {
         if (!newMsg.equals(configMessage.getString(""))) {
             configMessage.forceSetString(newMsg);
         }
-        gyroAngle.forceSetDouble(BIGData.getGyroAngle());
+        gyroAngle.forceSetDouble((180 / Math.PI) * BIGData.getGyroAngle());
         gyroRate.forceSetDouble(BIGData.getGyroW());
 
         // update zeros on dashboard

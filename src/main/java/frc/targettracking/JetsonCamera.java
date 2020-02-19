@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import frc.gen.BIGData;
+
 public class JetsonCamera implements Runnable {
     // thread that contains code to connect to and read from socket
     private Thread thread;
@@ -46,7 +47,7 @@ public class JetsonCamera implements Runnable {
                         || !socket.isBound()) {
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
-                        System.out.println("UNABLE TO CONNECT TO CAMERA");
+                        // System.out.println("UNABLE TO CONNECT TO CAMERA");
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);
                     }

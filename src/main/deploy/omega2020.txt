@@ -14,7 +14,7 @@ robot_height=38.5
 
 swerve_inverted=true
 swerve_kp=0.5
-swerve_kd=0.5
+swerve_kd=0.3
 swerve_kf=2.0
 
 correct_with_camera=false

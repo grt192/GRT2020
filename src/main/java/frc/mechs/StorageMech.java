@@ -20,7 +20,7 @@ public class StorageMech implements Mech {
     private double storageVelocity;
 
     // private final int range = 400;
-    private boolean intakingLemon, waitingLemon = false;
+    private boolean intakingLemon, waitingLemon = true;
     private boolean topWaiting = false;
 
     private int lemonCount = 0;
@@ -172,11 +172,12 @@ public class StorageMech implements Mech {
 
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
-    
-        // System.out.println("Top sensor " + lemonInTop);
-        // System.out.println("Bot sensor " + lemonInBottom);
-        // System.out.println("Mid sensor " + lemonInMiddle);
-        // System.out.println("In sensor " + intakeSeen);
+
+        System.out.println("Top sensor " + lemonInTop);
+        System.out.println("Bot sensor " + lemonInBottom);
+        System.out.println("Mid sensor " + lemonInMiddle);
+        System.out.println("In sensor " + intakeSeen);
+        System.out.println("waitingLemon " + waitingLemon);
 
         // System.out.println("Top sensor " + topMedVal);
         // System.out.println("Bot sensor " + botMedVal);

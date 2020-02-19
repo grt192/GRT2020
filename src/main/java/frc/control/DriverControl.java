@@ -41,10 +41,10 @@ class DriverControl extends Mode {
         }
         pov = Input.SWERVE_XBOX.getPOV();
         if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
-            pov = lastPov - 45;
+            pov = lastPov - 10;
         }
         if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
-            pov = lastPov + 45;
+            pov = lastPov + 10;
         }
         if (buttonPressed) {
             if (pov == -1) {
@@ -97,18 +97,10 @@ class DriverControl extends Mode {
 
     }
 
-    public double calcPID(double azimuthDeg) {
-        return azimuthDeg * .01;
-    }
-
     private void driveMechs() {
         if (Input.MECH_XBOX.getStartButtonReleased()) {
             BIGData.put("reset_lemon_count", true);
         }
-        // if (Input.SWERVE_XBOX.getAButtonReleased()) {
-        // boolean currState = BIGData.getLinkageState();
-        // BIGData.requestLinkageState(!currState);
-        // }
 
         if (Input.SWERVE_XBOX.getXButtonPressed()) {
             boolean currState = BIGData.getSpinnerState();
