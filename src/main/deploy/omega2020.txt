@@ -14,7 +14,7 @@ robot_height=38.5
 
 swerve_inverted=true
 swerve_kp=0.5
-swerve_kd=0.5
+swerve_kd=0.3
 swerve_kf=2.0
 
 correct_with_camera=false
@@ -76,7 +76,8 @@ middle_analog=1
 bottom_analog=0
 
 storage_motor=8
-storage_speed_auto=-0.4
+storage_speed_load=-0.4
+storage_speed_shoot=-0.9
 
 #initial ball count
 initial_total_lemon_count=3

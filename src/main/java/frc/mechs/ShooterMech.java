@@ -18,7 +18,8 @@ import java.util.Map;
 
 public class ShooterMech implements Mech {
 
-    private static final int DEFAULT_RPM = 3500;
+    private static final int DEFAULT_HIGH_RPM = 4400;
+    private static final int DEFAULT_LOW_RPM = 5300;
 
     private CANSparkMax motor_lead;
     private CANSparkMax motor_follow;
@@ -33,6 +34,7 @@ public class ShooterMech implements Mech {
     private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
     private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
     private double shooterAngle;
+    private double lastGood = 0;
 
     public ShooterMech() {
         this.motor_lead = new CANSparkMax(BIGData.getInt("one_wheel_shooter_lead"), MotorType.kBrushless);
@@ -67,11 +69,13 @@ public class ShooterMech implements Mech {
             // distance to vision target
         } else {
             double range = BIGData.getDouble("camera_range");
+            if (range > 0)
+                lastGood = range;
             if (BIGData.getDouble("range_testing") > 1) {
-                range = BIGData.getDouble("range_testing");
-                System.out.println(range);
+                lastGood = BIGData.getDouble("range_testing");
+                System.out.println(lastGood);
             }
-            double rpm = calcSpeed((int) range);
+            double rpm = calcSpeed((int) lastGood);
             // System.out.println(rpm);
 
             if (BIGData.getDouble("shooter_rpm") > 1) {
@@ -121,7 +125,7 @@ public class ShooterMech implements Mech {
 
             if (floorEntry == null && ceilEntry == null) {
                 System.out.println("Used Default");
-                return DEFAULT_RPM;
+                return shooterUp ? DEFAULT_HIGH_RPM : DEFAULT_LOW_RPM;
             } else if (floorEntry == null) {
                 return ceilEntry.getValue();
             } else if (ceilEntry == null) {

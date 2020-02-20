@@ -20,7 +20,7 @@ class DriverControl extends Mode {
     }
 
     private void driveSwerve() {
-        // zero swerve gyro if start button (menu button) is pressed
+        // zero swerve gyro if start button (menu button) is pressed on swerve controller
         if (Input.SWERVE_XBOX.getStartButtonReleased()) {
             BIGData.putZeroGyroRequest(true);
         }
@@ -33,36 +33,27 @@ class DriverControl extends Mode {
         // rotate the robot
         double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
         double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
-        double rotate = 0;
-
-        boolean buttonPressed = false;
-        if (pov == -1) {
-            buttonPressed = true;
-        }
-        pov = Input.SWERVE_XBOX.getPOV();
-        if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
-            pov = lastPov - 45;
-        }
-        if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
-            pov = lastPov + 45;
-        }
-        if (buttonPressed) {
-            if (pov == -1) {
-            } else {
-                BIGData.setAngle(pov);
-                lastPov = pov;
-            }
-        }
-
-        if (lTrigger + rTrigger > 0.05) {
+        double rotate = JoystickProfile.applyProfile(-(rTrigger * rTrigger - lTrigger * lTrigger));
+        if (rotate != 0) {
             BIGData.setPIDFalse();
-            rotate = -(rTrigger * rTrigger - lTrigger * lTrigger);
-        } else {
-            rotate = 0;
+        }
+
+        // get input for automatically snapping to an angle (in increments of 45deg)
+        pov = Input.SWERVE_XBOX.getPOV();
+        if (pov != -1) {
+            lastPov = pov;
+            BIGData.setAngle(pov);
+        } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
+            pov = lastPov - 45;
+            lastPov = pov;
+            BIGData.setAngle(pov);
+        } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
+            pov = lastPov + 45;
+            lastPov = pov;
+            BIGData.setAngle(pov);
         }
 
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
-
         if (Input.SWERVE_XBOX.getAButtonPressed()) {
             centeringCamera = true;
             BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle()); // TODO does not work
@@ -102,18 +93,10 @@ class DriverControl extends Mode {
 
     }
 
-    public double calcPID(double azimuthDeg) {
-        return azimuthDeg * .01;
-    }
-
     private void driveMechs() {
         if (Input.MECH_XBOX.getStartButtonReleased()) {
             BIGData.put("reset_lemon_count", true);
         }
-        // if (Input.SWERVE_XBOX.getAButtonReleased()) {
-        // boolean currState = BIGData.getLinkageState();
-        // BIGData.requestLinkageState(!currState);
-        // }
 
         if (Input.SWERVE_XBOX.getXButtonPressed()) {
             boolean currState = BIGData.getSpinnerState();
@@ -184,3 +167,4 @@ class DriverControl extends Mode {
     }
 
 }
+

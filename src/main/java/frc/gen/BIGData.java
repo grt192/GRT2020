@@ -164,17 +164,29 @@ public class BIGData {
 		put("requested_w", w);
 	}
 
+	/** Set the angle of the robot, in degrees, to turn to. */
 	public static void setAngle(double theta) {
 		setPIDTrue();
 		put("requested_angle", theta);
 	}
 
+	public static double getRequestedAngle() {
+		return getDouble("requested_angle");
+	}
+
+	/** Request that swerve use PID loop to go to the requested angle */
 	public static void setPIDTrue() {
 		put("PID?", true);
 	}
 
+	/** Request that swerve stop using PID loop to go to the requested angle */
 	public static void setPIDFalse() {
 		put("PID?", false);
+	}
+
+	/** @return whether swerve should use PID or not */
+	public static boolean isPID() {
+		return getBoolean("PID?");
 	}
 
 	/** get the requested x velocity of the robot */
@@ -343,14 +355,9 @@ public class BIGData {
 		return getDouble("storage_speed");
 	}
 
-	/** Set the motor spin speed with percentage motor output */
-	public static void requestStorageSpeedAuto(double speed) {
-		put("storage_speed_auto", GRTUtil.clamp(-1.0, speed, 1.0));
-	}
-
 	/** Get the motor spin speed with percentage motor output */
 	public static double getStorageSpeedAuto() {
-		return getDouble("storage_speed_auto");
+		return getDouble("storage_speed_load");
 	}
 
 	/**
