@@ -188,7 +188,7 @@ public class StorageMech implements Mech {
         }
 
         if (lemonInBottom && !lemonInTop) {
-            motor.set(ControlMode.PercentOutput, storageVelocity);
+            motor.set(ControlMode.PercentOutput, loadStorageVelocity);
         } else {
             motor.set(ControlMode.PercentOutput, 0.0);
         }
