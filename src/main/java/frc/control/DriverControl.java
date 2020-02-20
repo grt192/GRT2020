@@ -9,7 +9,7 @@ class DriverControl extends Mode {
     private int pov = -1;
     private int lastPov;
 
-    private boolean centeringCamera, centeringCameraLidar = false;
+    private boolean centeringCamera, centeringLidar = false;
 
     @Override
     public boolean loop() {
@@ -53,9 +53,10 @@ class DriverControl extends Mode {
             BIGData.setAngle(pov);
         }
 
-        // center using camera data if the a button is pressed. 
+        double cameraAzimuth = BIGData.getDouble("camera_azimuth");
         if (Input.SWERVE_XBOX.getAButtonPressed()) {
             centeringCamera = true;
+            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle()); // TODO does not work
         }
 
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
@@ -63,43 +64,34 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        double cameraAzimuth = BIGData.getDouble("camera_azimuth");
         // System.out.println(azimuth);
-        if (centeringCamera && Math.abs(cameraAzimuth) > 1) {
-            BIGData.setAngle(cameraAzimuth);
-        }
+
         // TODO test centering robot to target using camera
 
-        // if (Input.SWERVE_XBOX.getXButtonPressed()) {
-        //     centeringCameraLidar = true;
-        // }
+        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
+        double lidarRange = BIGData.getDouble("lidar_range");
+        if (Input.SWERVE_XBOX.getXButtonPressed()) {
+            centeringLidar = true;
+            BIGData.setAngle(Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        }
 
-        // if (Input.SWERVE_XBOX.getXButtonReleased()) {
-        //     centeringCameraLidar = false;
-        //     BIGData.setPIDFalse();
-        // }
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            centeringLidar = false;
+            BIGData.setPIDFalse();
+        }
 
-        // double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
-        // double lidarRange = BIGData.getDouble("lidar_range");
         // if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
-        //     BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        // rotate =
+        // BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
         // }
         BIGData.requestDrive(x, y, rotate);
 
-    }
-
-    public double calcPID(double azimuthDeg) {
-        return azimuthDeg * .01;
     }
 
     private void driveMechs() {
         if (Input.MECH_XBOX.getStartButtonReleased()) {
             BIGData.put("reset_lemon_count", true);
         }
-        // if (Input.SWERVE_XBOX.getAButtonReleased()) {
-        //     boolean currState = BIGData.getLinkageState();
-        //     BIGData.requestLinkageState(!currState);
-        // }
 
         if (Input.SWERVE_XBOX.getXButtonPressed()) {
             boolean currState = BIGData.getSpinnerState();
@@ -149,15 +141,15 @@ class DriverControl extends Mode {
         }
 
         // if (Input.MECH_XBOX.getAButtonReleased()) {
-        //     BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
-        //     BIGData.put("firstTime?", true);
+        // BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
+        // BIGData.put("firstTime?", true);
         // }
 
         if (Input.MECH_XBOX.getBButtonReleased()) {
             BIGData.put("spinner_manual_control", true);
             BIGData.put("spinner_manual_speed", JoystickProfile.applyDeadband(Input.SWERVE_XBOX.getY(Hand.kRight)));
         }
-        //TODO: make this not bad later
+        // TODO: make this not bad later
 
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards

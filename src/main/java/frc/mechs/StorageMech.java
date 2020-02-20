@@ -29,9 +29,9 @@ public class StorageMech implements Mech {
     private boolean shotInLoad = false;
 
     // private final int range = 400;
-    private boolean intakingLemon, waitingLemon = false;
+    private boolean intakingLemon, waitingLemon = true;
     private boolean topWaiting = false;
-    
+
     private int lemonCount = 0;
     private int conveyerCount = 0;
 
@@ -74,7 +74,6 @@ public class StorageMech implements Mech {
         midArr = new double[5];
         botArr = new double[5];
         inArr = new double[5];
-        
 
         BIGData.put("lemon_count", lemonCount);
     }
@@ -120,8 +119,6 @@ public class StorageMech implements Mech {
         // System.out.println("lemon count: " + lemonCount);
         // System.out.println("conveyor count: " + conveyerCount);
 
-        // System.out.println("shooter rpm: " + BIGData.getDouble("shooter_current_rpm"));
-        
         findMed();
         lemonInTop = topMedVal > IRRange;
         lemonInMiddle = midMedVal > IRRange;
@@ -189,11 +186,12 @@ public class StorageMech implements Mech {
 
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
-    
-        // System.out.println("Top sensor " + lemonInTop);
-        // System.out.println("Bot sensor " + lemonInBottom);
-        // System.out.println("Mid sensor " + lemonInMiddle);
-        // System.out.println("In sensor " + intakeSeen);
+
+        System.out.println("Top sensor " + lemonInTop);
+        System.out.println("Bot sensor " + lemonInBottom);
+        System.out.println("Mid sensor " + lemonInMiddle);
+        System.out.println("In sensor " + intakeSeen);
+        System.out.println("waitingLemon " + waitingLemon);
 
         // System.out.println("Top sensor " + topMedVal);
         // System.out.println("Bot sensor " + botMedVal);
@@ -212,6 +210,7 @@ public class StorageMech implements Mech {
         conveyerCount = 0;
         updateBigData();
     }
+
     public void setCount(int lemonCount, int conveyerCount) {
         this.lemonCount = lemonCount;
         this.conveyerCount = conveyerCount;

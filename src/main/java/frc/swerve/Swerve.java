@@ -48,7 +48,7 @@ public class Swerve {
 		SWERVE_HEIGHT = BIGData.getDouble("swerve_height");
 		kP = BIGData.getDouble("swerve_kp");
 		kD = BIGData.getDouble("swerve_kd");
-		kF = Math.toRadians(BIGData.getDouble("swerve_kf"));
+		kF = BIGData.getDouble("swerve_kf");
 		RADIUS = Math.sqrt(SWERVE_WIDTH * SWERVE_WIDTH + SWERVE_HEIGHT * SWERVE_HEIGHT) / 2;
 		WHEEL_ANGLE = Math.atan2(SWERVE_WIDTH, SWERVE_HEIGHT);
 		ROTATE_SCALE = 1 / RADIUS;
@@ -112,6 +112,7 @@ public class Swerve {
 	 * angle, kP, and kD
 	 */
 	private double calcPID() {
+		// System.out.println("kF: " + kF);
 		double error = GRTUtil.angularDifference(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
 				Math.toRadians(kF));
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;

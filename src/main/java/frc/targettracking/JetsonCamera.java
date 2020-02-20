@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import frc.gen.BIGData;
+
 public class JetsonCamera implements Runnable {
     // thread that contains code to connect to and read from socket
     private Thread thread;
@@ -19,7 +20,7 @@ public class JetsonCamera implements Runnable {
     private String jetsonAddress;
     // reader that reads from socket
     private BufferedReader stdIn;
-    
+
     // default port of jetson to connect to
     private final static int DEFAULT_PORT = 1337;
 
@@ -42,9 +43,11 @@ public class JetsonCamera implements Runnable {
                 if (Thread.interrupted()) {
                     return;
                 }
-                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
+                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected()
+                        || !socket.isBound()) {
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
+                        // System.out.println("UNABLE TO CONNECT TO CAMERA");
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);
                     }
@@ -52,12 +55,11 @@ public class JetsonCamera implements Runnable {
                     BIGData.putJetsonCameraConnected(true);
                     cameraData();
                 }
-            } 
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 return;
-            }
-            catch (Exception e) {
-                System.out.println("Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
+            } catch (Exception e) {
+                System.out.println(
+                        "Outer exception caught in CAMERA code. unknown error. camera code still trying to connect to jetson socket");
             }
         }
     }
@@ -95,9 +97,9 @@ public class JetsonCamera implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
-            System.out.println("unable to parse lidar data, NullPointerException");
+            System.out.println("unable to parse camera data, NullPointerException");
         } catch (NumberFormatException e) {
-            System.out.println("unable to parse lidar data, NumberFormatException");
+            System.out.println("unable to parse camera data, NumberFormatException");
         }
     }
 

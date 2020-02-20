@@ -26,7 +26,7 @@ public class Lidar implements Runnable {
         port = BIGData.getInt("jetson_lidar_port");
         if (port == -1) {
             System.out.println("unable to read valid config file value for port number for lidar on jetson"
-                + ", using default port " + DEFAULT_PORT);
+                    + ", using default port " + DEFAULT_PORT);
             port = DEFAULT_PORT;
         }
         jetsonAddress = BIGData.getString("jetson_address");
@@ -41,19 +41,20 @@ public class Lidar implements Runnable {
                 if (Thread.interrupted()) {
                     return;
                 }
-                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected() || !socket.isBound()) {
+                if (stdIn == null || socket == null || socket.isClosed() || !socket.isConnected()
+                        || !socket.isBound()) {
                     if (!connect()) {
+                        BIGData.put("lidar_connected", false);
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);
                     }
                 } else {
+                    BIGData.put("lidar_connected", true);
                     lidarData();
                 }
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 return;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Outer exception caught in LIDAR code. unknown error");
             }
         }
@@ -86,10 +87,10 @@ public class Lidar implements Runnable {
             if (in != null) {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
                 // data[0], data[3] should be in radians.
-                BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]), Double.parseDouble(data[2]));
+                BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
+                        Double.parseDouble(data[2]), Double.parseDouble(data[3]));
             }
         } catch (IOException e) {
-            e.printStackTrace();
         } catch (NullPointerException e) {
             System.out.println("unable to parse lidar data, NullPointerException");
         } catch (NumberFormatException e) {

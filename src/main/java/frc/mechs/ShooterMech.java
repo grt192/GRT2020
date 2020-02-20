@@ -34,6 +34,7 @@ public class ShooterMech implements Mech {
     private final double SHOOTER_HIGH_ANGLE = BIGData.getDouble("shooter_high_angle") / 180 * Math.PI;
     private final double LOW_HIGH_ANGLE = BIGData.getDouble("low_high_angle") / 180 * Math.PI;
     private double shooterAngle;
+    private double lastGood = 0;
 
     public ShooterMech() {
         this.motor_lead = new CANSparkMax(BIGData.getInt("one_wheel_shooter_lead"), MotorType.kBrushless);
@@ -68,11 +69,13 @@ public class ShooterMech implements Mech {
             // distance to vision target
         } else {
             double range = BIGData.getDouble("camera_range");
+            if (range > 0)
+                lastGood = range;
             if (BIGData.getDouble("range_testing") > 1) {
-                range = BIGData.getDouble("range_testing");
-                System.out.println(range);
+                lastGood = BIGData.getDouble("range_testing");
+                System.out.println(lastGood);
             }
-            double rpm = calcSpeed((int) range);
+            double rpm = calcSpeed((int) lastGood);
             // System.out.println(rpm);
 
             if (BIGData.getDouble("shooter_rpm") > 1) {
@@ -106,6 +109,7 @@ public class ShooterMech implements Mech {
      * @return the rpm to run the shooter at
      */
     public double calcSpeed(int range) {
+
         // System.out.println(range);
         if (upRPMMap.containsKey(range) && shooterUp) {
             return upRPMMap.get(range);
