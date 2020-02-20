@@ -74,6 +74,7 @@ intake_analog=3
 top_analog=2
 middle_analog=1
 bottom_analog=0
+intake_back_analog=7
 
 storage_motor=8
 storage_speed_load=-0.4

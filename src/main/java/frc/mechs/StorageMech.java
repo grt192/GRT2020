@@ -67,7 +67,7 @@ public class StorageMech implements Mech {
         shootStorageVelocity = BIGData.getDouble("storage_speed_shoot");
 
         IRIntakeRange = 1100;
-        IRBotRange = 1300;
+        IRBotRange = 1500;
         IRRange = 1300;
 
         count = 0;
@@ -100,7 +100,6 @@ public class StorageMech implements Mech {
         } else {
             double speed = BIGData.getStorageSpeed();
             motor.set(ControlMode.PercentOutput, speed);
-            correctValues();
         }
     }
 
@@ -131,21 +130,12 @@ public class StorageMech implements Mech {
         System.out.println("conveyor count: " + conveyerCount);
 
         findMed();
+        
         lemonIntake = intakeMedVal > IRRange;
         lemonTop = topMedVal > IRRange;
         lemonMiddle = middleMedVal > IRBotRange;
         lemonBottom = bottomMedVal > IRIntakeRange;
         lemonIntakeBack = intakeBackMedVal > IRIntakeRange;
-
-        if (lemonTop) {
-            topWaiting = true;
-        }
-
-        if (topWaiting && !lemonTop) {
-            System.out.println("BALL LEFT SYSTEM");
-            lemonCount--;
-            conveyerCount--;
-        }
 
         // what the auton code wants the shooter to run at
         double requestedShooterSpeed = BIGData.getDouble("shooter_auto");
@@ -166,26 +156,31 @@ public class StorageMech implements Mech {
 
         if (!lemonMiddle && !lemonTop && lemonBottom)
             motor.set(ControlMode.PercentOutput, loadStorageVelocity);
-        if (lemonMiddle && !lemonTop && lemonBottom)
+        else if (lemonMiddle && !lemonTop && lemonBottom)
             motor.set(ControlMode.PercentOutput, loadStorageVelocity);
-        if (!lemonMiddle && lemonTop)
+        else if (!lemonMiddle && lemonTop)
             motor.set(ControlMode.PercentOutput, -loadStorageVelocity);
-        
+        else
+            motor.set(ControlMode.PercentOutput, 0.0);
+
         correctValues();
 
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
 
-        // System.out.println("Top sensor " + lemonInTop);
-        // System.out.println("Bot sensor " + lemonInBottom);
-        // System.out.println("Mid sensor " + lemonInMiddle);
+        // System.out.println("Top sensor " + lemonTop);
+        // System.out.println("Bot sensor " + lemonBottom);
+        // System.out.println("Mid sensor " + lemonMiddle);
+        // System.out.println("In sensor " + lemonIntake);
+        // System.out.println("In Back sensor " + lemonIntakeBack);
         // System.out.println("In sensor " + intakeSeen);
         // System.out.println("waitingLemon " + waitingLemon);
 
-        // System.out.println("Top sensor " + topMedVal);
-        // System.out.println("Bot sensor " + botMedVal);
-        // System.out.println("Mid sensor " + midMedVal);
-        // System.out.println("In sensor: " + intakeMedVal);
+        System.out.println("Top sensor " + top.getValue());
+        System.out.println("Bot sensor " + bottom.getValue());
+        System.out.println("Mid sensor " + middle.getValue());
+        System.out.println("In sensor: " + intake.getValue());
+        System.out.println("In Back sensor: " + intakeBack.getValue());
 
         updateBigData();
     }
@@ -195,22 +190,18 @@ public class StorageMech implements Mech {
         int newLemonCount = 0;
         if (lemonIntake)
             newLemonCount++;
-        if (lemonTop)
+        if (lemonBottom)
+            newLemonCount++;
+        if (lemonIntakeBack)
             newLemonCount++;
         if (lemonMiddle) {
             newLemonCount++;
             newConveyorCount++;
         }
-        if (lemonBottom) {
+        if (lemonTop) {
             newLemonCount++;
             newConveyorCount++;
         }
-        if (lemonIntakeBack) {
-            newLemonCount++;
-            newConveyorCount++;
-        }
-        System.out.println("new lemon " + newLemonCount);
-        System.out.println("new conveyor " + newConveyorCount);
 
         conveyerCount = newConveyorCount;
         lemonCount = newLemonCount;
