@@ -137,11 +137,11 @@ public class StorageMech implements Mech {
         lemonBottom = bottomMedVal > IRIntakeRange;
         lemonIntakeBack = intakeBackMedVal > IRIntakeRange;
 
-        if (lemonIntakeBack) {
+        if (lemonTop) {
             topWaiting = true;
         }
 
-        if (topWaiting && !lemonIntakeBack) {
+        if (topWaiting && !lemonTop) {
             System.out.println("BALL LEFT SYSTEM");
             lemonCount--;
             conveyerCount--;
