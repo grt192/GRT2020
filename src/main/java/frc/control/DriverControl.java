@@ -73,8 +73,6 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        // System.out.println(azimuth);
-
         // TODO test centering robot to target using camera
 
         double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
@@ -87,6 +85,13 @@ class DriverControl extends Mode {
         if (Input.SWERVE_XBOX.getXButtonReleased()) {
             centeringLidar = false;
             BIGData.setPIDFalse();
+        }
+
+        //TODO: test azimuth angle thresholds
+        if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
+            BIGData.putShooterState(true, "swerve");
+        } else {
+            BIGData.putShooterState(false, "swerve");
         }
 
         // if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
@@ -121,7 +126,7 @@ class DriverControl extends Mode {
         rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
         BIGData.requestWinchSpeed(rJoystickSwerve);
 
-        BIGData.putShooterState(Input.MECH_XBOX.getAButton());
+        BIGData.putShooterState(Input.MECH_XBOX.getAButton(), "mech");
 
         if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
             int offsetChange = BIGData.getInt("shooter_offset_change");

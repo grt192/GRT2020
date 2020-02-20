@@ -92,7 +92,6 @@ public class Autonomous {
                 robot.setMode(2);
                 break;
             case "score":
-                System.out.println("score1");
                 robot.setMode(3);
                 break;
             }

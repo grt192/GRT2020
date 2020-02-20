@@ -1,6 +1,8 @@
 package frc.mechs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -34,6 +36,7 @@ public class StorageMech implements Mech {
     private int count;
 
     public StorageMech() {
+
         intake = new AnalogInput(BIGData.getInt("intake_analog"));
         top = new AnalogInput(BIGData.getInt("top_analog"));
         middle = new AnalogInput(BIGData.getInt("middle_analog"));
@@ -152,14 +155,9 @@ public class StorageMech implements Mech {
             topWaiting = false;
         }
 
-        // System.out.println("manual should run: "
-        // + (!BIGData.getShooterState() &&
-        // Math.abs(BIGData.getDouble("shooter_manual")) > 0));
-
         if (((Math.abs(BIGData.getDouble("shooter_current_rpm") - BIGData.getDouble("shooter_auto")) < 50)
                 && Math.abs(BIGData.getDouble("shooter_auto")) > 0)
                 || (!BIGData.getShooterState() && Math.abs(BIGData.getDouble("shooter_manual")) > 0)) {
-            // System.out.println("SHOULD BE MOVING CONVEYOR");
             motor.set(ControlMode.PercentOutput, storageVelocity);
             return;
         }
@@ -169,6 +167,14 @@ public class StorageMech implements Mech {
         } else {
             motor.set(ControlMode.PercentOutput, 0.0);
         }
+
+        if (lemonInBottom && !lemonInTop) {
+            motor.set(ControlMode.PercentOutput, storageVelocity);
+        } else {
+            motor.set(ControlMode.PercentOutput, 0.0);
+        }
+
+        correctValues();
 
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
@@ -184,6 +190,27 @@ public class StorageMech implements Mech {
         // System.out.println("In sensor: " + intakeMedVal);
 
         updateBigData();
+    }
+
+    private void correctValues() {
+        int newConveyorCount = 0;
+        int newLemonCount = 0;
+        if (lemonInBottom) newLemonCount++;
+        if (lemonInMiddle) {
+            newLemonCount++;
+            newConveyorCount++;
+        }
+        if (lemonInTop) {
+            newLemonCount++;
+            newConveyorCount++;
+        }
+        if (intakeSeen && newLemonCount == 3) {
+            newLemonCount = 5;
+        } else {
+            newLemonCount = lemonCount;
+        }
+        conveyerCount = newConveyorCount;
+        lemonCount = newLemonCount;
     }
 
     public void disable() {

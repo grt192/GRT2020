@@ -303,13 +303,24 @@ public class BIGData {
 	}
 
 	/** Set the state of shooter; false = manual, true = automatic */
+	public static void putShooterState(boolean state, String controller) {
+		switch (controller) {
+		case "mech":
+			put("shooter_state_mech", state);
+		case "swerve":
+			put("shooter_state_swerve", state);
+		}
+	}
+
+	/** Set the state of shooter; false = manual, true = automatic */
 	public static void putShooterState(boolean state) {
-		put("shooter_state", state);
+		put("shooter_state_mech", state);
+		put("shooter_state_swerve", state);
 	}
 
 	/** Get the state of shooter; false = manual, true = automatic */
 	public static boolean getShooterState() {
-		return getBoolean("shooter_state");
+		return (getBoolean("shooter_state_swerve") || getBoolean("shooter_state_mech"));
 	}
 
 	/** Set the state of storage; true = automatic, false = manual */
