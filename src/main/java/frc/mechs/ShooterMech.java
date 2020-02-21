@@ -176,4 +176,8 @@ public class ShooterMech implements Mech {
     public double getSpeed() {
         return encoder.getVelocity();
     }
+
+    private void disable() {
+        motor_lead.setVoltage(0.0);
+    }
 }
