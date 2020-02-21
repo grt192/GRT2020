@@ -20,7 +20,8 @@ class DriverControl extends Mode {
     }
 
     private void driveSwerve() {
-        // zero swerve gyro if start button (menu button) is pressed on swerve controller
+        // zero swerve gyro if start button (menu button) is pressed on swerve
+        // controller
         if (Input.SWERVE_XBOX.getStartButtonReleased()) {
             BIGData.putZeroGyroRequest(true);
         }
@@ -70,7 +71,7 @@ class DriverControl extends Mode {
         double lidarRange = BIGData.getDouble("lidar_range");
         if (Input.SWERVE_XBOX.getXButtonPressed()) {
             centeringLidar = true;
-            BIGData.setAngle(Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
         }
 
         if (Input.SWERVE_XBOX.getXButtonReleased()) {
@@ -78,7 +79,7 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        //TODO: test azimuth angle thresholds
+        // TODO: test azimuth angle thresholds
         if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
             BIGData.putShooterState(true, "swerve");
         } else {
@@ -167,4 +168,3 @@ class DriverControl extends Mode {
     }
 
 }
-

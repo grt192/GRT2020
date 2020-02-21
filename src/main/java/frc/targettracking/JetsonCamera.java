@@ -47,7 +47,7 @@ public class JetsonCamera implements Runnable {
                         || !socket.isBound()) {
                     if (!connect()) {
                         BIGData.putJetsonCameraConnected(false);
-                        // System.out.println("UNABLE TO CONNECT TO CAMERA");
+                        System.out.println("UNABLE TO CONNECT TO CAMERA");
                         // if we don't connect, wait before trying to connect again
                         Thread.sleep(500);
                     }

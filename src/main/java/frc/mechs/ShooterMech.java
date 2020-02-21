@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class ShooterMech implements Mech {
 
-    private static final int DEFAULT_HIGH_RPM = 4400;
-    private static final int DEFAULT_LOW_RPM = 5300;
+    private static final int DEFAULT_HIGH_RPM = 4800;
+    private static final int DEFAULT_LOW_RPM = 5400;
 
     private CANSparkMax motor_lead;
     private CANSparkMax motor_follow;
@@ -68,7 +68,8 @@ public class ShooterMech implements Mech {
             // mode being true means it's in automatic control, speed calculated based on
             // distance to vision target
         } else {
-            double range = BIGData.getDouble("camera_range");
+            // TODO change this to a general range
+            double range = 4 + BIGData.getDouble("lidar_range");
             if (range > 0)
                 lastGood = range;
             if (BIGData.getDouble("range_testing") > 1) {

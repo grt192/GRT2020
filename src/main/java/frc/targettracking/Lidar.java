@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+
 import frc.gen.BIGData;
 
 public class Lidar implements Runnable {
@@ -83,12 +85,15 @@ public class Lidar implements Runnable {
 
     public void lidarData() {
         try {
-            String in = stdIn.readLine();
-            if (in != null) {
-                String[] data = in.replace("(", "").replace(")", "").split(",");
-                // data[0], data[3] should be in radians.
-                BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
-                        Double.parseDouble(data[2]), Double.parseDouble(data[3]));
+            if (stdIn.ready()) {
+                String in = stdIn.readLine();
+                if (in != null) {
+                    String[] data = in.replace("(", "").replace(")", "").split(",");
+                    // data[0], data[3] should be in radians.
+                    BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
+                            Double.parseDouble(data[2]), Double.parseDouble(data[3]));
+                    System.out.println(Arrays.toString(data));
+                }
             }
         } catch (IOException e) {
         } catch (NullPointerException e) {

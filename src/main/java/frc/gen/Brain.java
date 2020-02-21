@@ -31,11 +31,12 @@ public class Brain implements Runnable {
         // pdp = new PowerDistributionPanel(0);
         shuffleboardCommands = new ShuffleboardCommands();
         lidar = new Lidar();
-        camera = new JetsonCamera();
+        // camera = new JetsonCamera();
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
-        CameraServer.getInstance().startAutomaticCapture(0);
-        CameraServer.getInstance().startAutomaticCapture(1);
+        // TODO Fix this
+        // CameraServer.getInstance().startAutomaticCapture(0);
+        // CameraServer.getInstance().startAutomaticCapture(1);
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
     }

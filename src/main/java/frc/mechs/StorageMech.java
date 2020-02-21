@@ -24,9 +24,10 @@ public class StorageMech implements Mech {
     /** percent motor output for the conveyer when it is shooting balls */
     private final double shootStorageVelocity;
 
-    /** whether in this cycle of balls, we've shot already. 
-     * if we've shot already in this cycle of balls, just run the conveyer at
-     * shooting speed, even if the motor speed is not completely accurate
+    /**
+     * whether in this cycle of balls, we've shot already. if we've shot already in
+     * this cycle of balls, just run the conveyer at shooting speed, even if the
+     * motor speed is not completely accurate
      */
     private boolean shotInLoad = false;
 
@@ -46,6 +47,8 @@ public class StorageMech implements Mech {
 
     public StorageMech() {
 
+        
+
         intake = new AnalogInput(BIGData.getInt("intake_analog"));
         top = new AnalogInput(BIGData.getInt("top_analog"));
         middle = new AnalogInput(BIGData.getInt("middle_analog"));
@@ -63,7 +66,7 @@ public class StorageMech implements Mech {
 
         loadStorageVelocity = BIGData.getStorageSpeedAuto();
         shootStorageVelocity = BIGData.getDouble("storage_speed_shoot");
-        
+
         IRIntakeRange = 1100;
         IRBotRange = 1300;
         IRRange = 1300;
@@ -165,15 +168,16 @@ public class StorageMech implements Mech {
             topWaiting = false;
         }
 
-        // what the auton code wants the shooter to run at 
+        // what the auton code wants the shooter to run at
         double requestedShooterSpeed = BIGData.getDouble("shooter_auto");
         // what the shooter is actually running at
         double actualShooterSpeed = BIGData.getDouble("shooter_current_rpm");
-        // conveyer will run automatically when shooter is at correct rpm or if we have already shot in this cycle
+        // conveyer will run automatically when shooter is at correct rpm or if we have
+        // already shot in this cycle
         // if we've shot in this load already, make the rpm requirement less strict
-        if ((shotInLoad && Math.abs(actualShooterSpeed - requestedShooterSpeed) < requestedShooterSpeed/2)
-            || ((Math.abs(actualShooterSpeed - requestedShooterSpeed) < 50)
-                && Math.abs(BIGData.getDouble("shooter_auto")) > 0)) {
+        if ((shotInLoad && Math.abs(actualShooterSpeed - requestedShooterSpeed) < requestedShooterSpeed / 2)
+                || ((Math.abs(actualShooterSpeed - requestedShooterSpeed) < 50)
+                        && Math.abs(BIGData.getDouble("shooter_auto")) > 0)) {
             motor.set(ControlMode.PercentOutput, shootStorageVelocity);
             shotInLoad = true;
             return;
@@ -198,11 +202,11 @@ public class StorageMech implements Mech {
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
 
-        System.out.println("Top sensor " + lemonInTop);
-        System.out.println("Bot sensor " + lemonInBottom);
-        System.out.println("Mid sensor " + lemonInMiddle);
-        System.out.println("In sensor " + intakeSeen);
-        System.out.println("waitingLemon " + waitingLemon);
+        // System.out.println("Top sensor " + lemonInTop);
+        // System.out.println("Bot sensor " + lemonInBottom);
+        // System.out.println("Mid sensor " + lemonInMiddle);
+        // System.out.println("In sensor " + intakeSeen);
+        // System.out.println("waitingLemon " + waitingLemon);
 
         // System.out.println("Top sensor " + topMedVal);
         // System.out.println("Bot sensor " + botMedVal);
@@ -215,7 +219,8 @@ public class StorageMech implements Mech {
     private void correctValues() {
         int newConveyorCount = 0;
         int newLemonCount = 0;
-        if (lemonInBottom) newLemonCount++;
+        if (lemonInBottom)
+            newLemonCount++;
         if (lemonInMiddle) {
             newLemonCount++;
             newConveyorCount++;
