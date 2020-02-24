@@ -86,31 +86,30 @@ class DriverControl extends Mode {
             BIGData.putShooterState(false, "swerve");
         }
 
-        // if (centeringCameraLidar && Math.abs(Math.toDegrees(lidarAzimuth)) > 1) {
-        // rotate =
-        // BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
-        // }
         BIGData.requestDrive(x, y, rotate);
-
     }
 
     private void driveMechs() {
-        if (Input.MECH_XBOX.getStartButtonReleased()) {
-            BIGData.put("reset_lemon_count", true);
-        }
 
-        if (Input.SWERVE_XBOX.getXButtonPressed()) {
-            boolean currState = BIGData.getSpinnerState();
-            BIGData.putSpinnerState(!currState);
-            BIGData.put("firstTime?", true);
-        }
+        // Mechs on the swerve xbox
 
         BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
         double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
         rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
         BIGData.requestWinchSpeed(rJoystickSwerve);
 
-        BIGData.putShooterState(Input.MECH_XBOX.getAButton(), "mech");
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            boolean linkageUp = BIGData.getLinkageState();
+            linkageUp = !linkageUp;
+            BIGData.requestLinkageState(linkageUp);
+        }
+
+        // Mechs on the mech xbox
+        BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
+        
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.put("reset_lemon_count", true);
+        }
 
         if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
             int offsetChange = BIGData.getInt("shooter_offset_change");
@@ -124,15 +123,7 @@ class DriverControl extends Mode {
             BIGData.put("shooter_auto_offset", currOffset + offsetChange);
         }
 
-        BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
-
-        double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);
-        lJoystickMech = JoystickProfile.applyProfile(lJoystickMech);
-        BIGData.requestStorageSpeed(lJoystickMech);
-
-        double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
-        rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
-        BIGData.put("shooter_manual", rJoystickMech);
+        BIGData.putShooterState(Input.MECH_XBOX.getAButton(), "mech");
 
         if (Input.MECH_XBOX.getBButtonReleased()) {
             boolean shooterUp = BIGData.getBoolean("shooter_up");
@@ -146,16 +137,21 @@ class DriverControl extends Mode {
             BIGData.requestIntakeState(!currState);
         }
 
-        // if (Input.MECH_XBOX.getAButtonReleased()) {
-        // BIGData.put("Spinner?", !BIGData.getBoolean("Spinner?"));
-        // BIGData.put("firstTime?", true);
-        // }
-
-        if (Input.MECH_XBOX.getBButtonReleased()) {
-            BIGData.put("spinner_manual_control", true);
-            BIGData.put("spinner_manual_speed", JoystickProfile.applyDeadband(Input.SWERVE_XBOX.getY(Hand.kRight)));
+        if (Input.SWERVE_XBOX.getYButtonPressed()) {
+            boolean currState = BIGData.getSpinnerState();
+            BIGData.putSpinnerState(!currState);
+            BIGData.put("firstTime?", true);
         }
-        // TODO: make this not bad later
+
+        double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);
+        lJoystickMech = JoystickProfile.applyProfile(lJoystickMech);
+        BIGData.requestStorageSpeed(lJoystickMech);
+
+        double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
+        rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
+        BIGData.put("shooter_manual", rJoystickMech);
+
+        BIGData.put("correct_storage_values", (Input.MECH_XBOX.getXButtonReleased() && Input.MECH_XBOX.getYButtonReleased()));
 
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards

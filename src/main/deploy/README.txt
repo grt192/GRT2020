@@ -4,9 +4,10 @@ right joystick = winch control
 triggers = swerve rotation
 bumpers = 
 pov buttons = ?
-a = linkage
-b = line up to target
-x = spinner enable
+start = reset gyro
+a = line up to target and shoot
+b = 
+x = linkage
 y = enable winch -- dead mans since winch when rope not up breaks it
 -------------------------
 mech xbox controller
@@ -14,11 +15,12 @@ left joystick = storage control
 right joystick = manual shooter control
 triggers = forward / backward intake
 bumpers = minor shooter adjustments
+start = reset storage count
 pov buttons = ?
 a = hold to toggle automatic shooter
 b = shooter flap
 x = intake
-y = hold to toggle manual storage control
+y = spinner enable
 -------------------------
 winch control - double
 lining up control - boolean (true=line up, false=nothing)

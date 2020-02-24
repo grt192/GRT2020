@@ -1,8 +1,6 @@
 package frc.mechs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -31,6 +29,9 @@ public class StorageMech implements Mech {
      */
     private boolean shotInLoad = false;
 
+    private boolean runToMiddle = false;
+    private boolean runToTop = false;
+
     // private final int range = 400;
     private boolean intakingLemon, waitingLemon = true;
     private boolean topWaiting = false;
@@ -38,7 +39,7 @@ public class StorageMech implements Mech {
     private int lemonCount = 0;
     private int conveyerCount = 0;
 
-    private boolean lemonIntake, lemonTop, lemonMiddle, lemonBottom, lemonIntakeBack;
+    private boolean lemonInIntake, lemonInTop, lemonInMiddle, lemonInBottom, lemonIntakeBack;
 
     private double intakeMedVal, topMedVal, middleMedVal, bottomMedVal, intakeBackMedVal;
     private double[] intakeArr, topArr, middleArr, bottomArr, intakeBackArr;
@@ -67,7 +68,7 @@ public class StorageMech implements Mech {
         shootStorageVelocity = BIGData.getDouble("storage_speed_shoot");
 
         IRIntakeRange = 1100;
-        IRBotRange = 1500;
+        IRBotRange = 1600;
         IRRange = 1300;
 
         count = 0;
@@ -103,39 +104,79 @@ public class StorageMech implements Mech {
         }
     }
 
-    private void findMed() {
-        intakeArr[count % 5] = top.getValue();
-        topArr[count % 5] = middle.getValue();
-        middleArr[count % 5] = bottom.getValue();
-        bottomArr[count % 5] = intake.getValue();
-        intakeBackArr[count % 5] = intakeBack.getValue();
-
-        Arrays.sort(intakeArr);
-        Arrays.sort(topArr);
-        Arrays.sort(middleArr);
-        Arrays.sort(bottomArr);
-        Arrays.sort(intakeBackArr);
-
-        intakeMedVal = intakeArr[2];
-        topMedVal = topArr[2];
-        middleMedVal = middleArr[2];
-        bottomMedVal = bottomArr[2];
-        intakeBackMedVal = intakeBackArr[2];
-
-        count += 1;
+    private double findMed(double input, double[] array) {
+        array[count % 5] = input;
+        Arrays.sort(array);
+        return array[2];
     }
 
     public void automaticControl() {
-        System.out.println("lemon count: " + lemonCount);
-        System.out.println("conveyor count: " + conveyerCount);
+        // System.out.println("lemon count: " + lemonCount);
+        // System.out.println("conveyor count: " + conveyerCount);
 
-        findMed();
+        intakeMedVal = findMed(intake.getValue(), intakeArr);
+        intakeBackMedVal = findMed(intakeBack.getValue(), intakeBackArr);
+        bottomMedVal = findMed(bottom.getValue(), bottomArr);
+        middleMedVal = findMed(middle.getValue(), middleArr);
+        topMedVal = findMed(top.getValue(), topArr);
+        count += 1;
 
-        lemonIntake = intakeMedVal > IRRange;
-        lemonTop = topMedVal > IRRange;
-        lemonMiddle = middleMedVal > IRBotRange;
-        lemonBottom = bottomMedVal > IRIntakeRange;
+        lemonInIntake = intakeMedVal > IRIntakeRange;
+        lemonInTop = topMedVal > IRRange;
+        lemonInMiddle = middleMedVal > IRRange;
+        lemonInBottom = bottomMedVal > IRBotRange;
         lemonIntakeBack = intakeBackMedVal > IRIntakeRange;
+
+        // if (lemonInIntake && !intakingLemon) {
+        //     lemonCount++;
+        //     intakingLemon = true;
+        // }
+
+        // // if no lemon is being intaked, set to false so new one can be counted
+        // if (!lemonInIntake) {
+        //     intakingLemon = false;
+        // }
+
+        // // only room for two lemons in conveyor
+        // if (lemonInBottom && conveyerCount < 2 && !waitingLemon) {
+        //     conveyerCount++;
+        //     waitingLemon = true;
+        // }
+
+        // if (!lemonInBottom) {
+        //     waitingLemon = false;
+        // }
+
+        // if (conveyerCount > lemonCount) {
+        //     conveyerCount = lemonCount;
+        // }
+
+        // if ((conveyerCount == 1 && !lemonInMiddle) || (conveyerCount == 2 && !lemonInTop)) {
+        //     motor.set(ControlMode.PercentOutput, loadStorageVelocity);
+        // } else {
+        //     motor.set(ControlMode.PercentOutput, 0.0);
+        // }
+    
+        // if (lemonInBottom && !lemonInTop) {
+        //     motor.set(ControlMode.PercentOutput, loadStorageVelocity);
+        // } else {
+        //     motor.set(ControlMode.PercentOutput, 0.0);
+        // }
+
+        if (lemonInBottom && !lemonInTop) {
+            runToMiddle = true;
+            if (lemonInMiddle)
+                runToTop = true;
+        }
+        if (runToMiddle || runToTop) {
+            motor.set(ControlMode.PercentOutput, loadStorageVelocity);
+        } else {
+            motor.set(ControlMode.PercentOutput, 0.0);
+        }
+        if (lemonInMiddle)
+            runToMiddle = false;
+        if (lemonInTop)
+            runToTop = false;
 
         // what the auton code wants the shooter to run at
         double requestedShooterSpeed = BIGData.getDouble("shooter_auto");
@@ -154,33 +195,25 @@ public class StorageMech implements Mech {
             shotInLoad = false;
         }
 
-        if (!lemonMiddle && !lemonTop && lemonBottom)
-            motor.set(ControlMode.PercentOutput, loadStorageVelocity);
-        else if (lemonMiddle && !lemonTop && lemonBottom)
-            motor.set(ControlMode.PercentOutput, loadStorageVelocity);
-        else if (!lemonMiddle && lemonTop)
-            motor.set(ControlMode.PercentOutput, -loadStorageVelocity);
-        else
-            motor.set(ControlMode.PercentOutput, 0.0);
-
-        correctValues();
+        if (BIGData.getBoolean("correct_storage_values"))
+            correctValues();
 
         // System.out.println("shooter diff: "
         // + Math.abs(BIGData.getDouble("shooter_current_rpm") -
 
-        // System.out.println("Top sensor " + lemonTop);
-        // System.out.println("Bot sensor " + lemonBottom);
-        // System.out.println("Mid sensor " + lemonMiddle);
-        // System.out.println("In sensor " + lemonIntake);
+        System.out.println("Top sensor " + lemonInTop);
+        System.out.println("Bot sensor " + lemonInBottom);
+        System.out.println("Mid sensor " + lemonInMiddle);
+        // System.out.println("In sensor " + lemonInIntake);
         // System.out.println("In Back sensor " + lemonIntakeBack);
         // System.out.println("In sensor " + intakeSeen);
         // System.out.println("waitingLemon " + waitingLemon);
 
-        System.out.println("Top sensor " + top.getValue());
-        System.out.println("Bot sensor " + bottom.getValue());
-        System.out.println("Mid sensor " + middle.getValue());
-        System.out.println("In sensor: " + intake.getValue());
-        System.out.println("In Back sensor: " + intakeBack.getValue());
+        System.out.println("Top sensor " + topMedVal);
+        System.out.println("Bot sensor " + bottomMedVal);
+        System.out.println("Mid sensor " + middleMedVal);
+        // System.out.println("In sensor: " + intake.getValue());
+        // System.out.println("In Back sensor: " + intakeBack.getValue());
 
         updateBigData();
     }
@@ -188,17 +221,17 @@ public class StorageMech implements Mech {
     private void correctValues() {
         int newConveyorCount = 0;
         int newLemonCount = 0;
-        if (lemonIntake)
+        if (lemonInIntake)
             newLemonCount++;
-        if (lemonBottom)
+        if (lemonInBottom)
             newLemonCount++;
         if (lemonIntakeBack)
             newLemonCount++;
-        if (lemonMiddle) {
+        if (lemonInMiddle) {
             newLemonCount++;
             newConveyorCount++;
         }
-        if (lemonTop) {
+        if (lemonInTop) {
             newLemonCount++;
             newConveyorCount++;
         }
