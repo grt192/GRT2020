@@ -142,9 +142,6 @@ public class PositionTracking {
         }
         // the robot's field centric coordinate plane is different than the actual field's coordinate plane
         Vector curr_pos = new Vector(-tempY, tempX);
-        
-        // TODO: remove after debugging
-        // System.out.println("curr_x:" + curr_pos.x + " curr_y:" + curr_pos.y);
         BIGData.setPosition(curr_pos, "curr");
     }
 

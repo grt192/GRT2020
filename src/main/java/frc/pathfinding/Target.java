@@ -8,6 +8,9 @@ public class Target {
 
     private static ArrayList<Vector> targets;
     private static Vector target;
+    private static Actions action;
+    private static double angle;
+    private static boolean intakeState;
 
     private static Vector c1, c2;
 
@@ -38,12 +41,42 @@ public class Target {
         }
     }
 
+    public static int size() {
+        return targets.size();
+    }
+
     public static ArrayList<Vector> getTargets() {
         return targets;
     }
 
-    public static int size() {
-        return targets.size();
+    public static Vector getTarget() {
+        return target;
+    }
+
+    public static void setTarget(Vector v) {
+        target = v;
+    }
+
+    public static double getAngle() {
+        return angle;
+    }
+
+    public static void setAngle(double a) {
+        angle = a;
+    }
+
+    public static ArrayList<Vector> getBezier() {
+        ArrayList<Vector> array = new ArrayList<>();
+        array.add(c1);
+        array.add(c2);
+        array.add(target);
+        return array;
+    }
+
+    public static void setBezier(Vector control1, Vector control2, Vector t) {
+        target = t;
+        c1 = control1;
+        c2 = control2;
     }
 
     public static Vector getNext() {
@@ -54,25 +87,23 @@ public class Target {
         }
     }
 
-    public static void setTarget(Vector v) {
-        target = v;
+    public static Actions getAction() {
+        return action;
     }
 
-    public static Vector getTarget() {
-        return target;
+    public static void setAction(Actions a) {
+        action = a;
     }
 
-    public static void setBezier(Vector control1, Vector control2, Vector t) {
-        target = t;
-        c1 = control1;
-        c2 = control2;
+    public static boolean getIntakeState() {
+        return intakeState;
     }
 
-    public static ArrayList<Vector> getBezier() {
-        ArrayList<Vector> array = new ArrayList<>();
-        array.add(c1);
-        array.add(c2);
-        array.add(target);
-        return array;
+    public static void setIntakeState(boolean i) {
+        intakeState = i;
+    }
+
+    public enum Actions {
+        TURN, DRIVETO, INTAKE;
     }
 }
