@@ -81,6 +81,50 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+
+        // TESTING INVOLVING VISION
+
+        boolean centeringCamera = false;
+        boolean centeringLidar = false;
+        double cameraAzimuth = BIGData.getDouble("camera_azimuth");
+        double x = Input.SWERVE_XBOX.getX(Hand.kLeft);
+        double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);
+        double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
+        double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
+        double rotate = JoystickProfile.applyProfile(-(rTrigger * rTrigger - lTrigger * lTrigger));
+
+        if (Input.SWERVE_XBOX.getAButtonPressed()) {
+            centeringCamera = true;
+            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle()); // TODO does not work
+        }
+
+        if (Input.SWERVE_XBOX.getAButtonReleased()) {
+            centeringCamera = false;
+            BIGData.setPIDFalse();
+        }
+
+        // TODO test centering robot to target using camera
+
+        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
+        double lidarRange = BIGData.getDouble("lidar_range");
+        if (Input.SWERVE_XBOX.getXButtonPressed()) {
+            centeringLidar = true;
+            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        }
+
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            centeringLidar = false;
+            BIGData.setPIDFalse();
+        }
+
+        // TODO: test azimuth angle thresholds
+        if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
+            BIGData.putShooterState(true, "swerve");
+        } else {
+            BIGData.putShooterState(false, "swerve");
+        }
+
+        BIGData.requestDrive(x, y, rotate);
     }
 
     @Override
@@ -148,6 +192,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+
     }
 
     /**

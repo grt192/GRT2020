@@ -1,15 +1,13 @@
 package frc.control;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.gen.BIGData;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
+import frc.gen.BIGData;
 
 class DriverControl extends Mode {
     private int pov = -1;
     private int lastPov;
-
-    private boolean centeringCamera, centeringLidar = false;
 
     @Override
     public boolean loop() {
@@ -54,39 +52,6 @@ class DriverControl extends Mode {
             BIGData.setAngle(pov);
         }
 
-        double cameraAzimuth = BIGData.getDouble("camera_azimuth");
-        if (Input.SWERVE_XBOX.getAButtonPressed()) {
-            centeringCamera = true;
-            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle()); // TODO does not work
-        }
-
-        if (Input.SWERVE_XBOX.getAButtonReleased()) {
-            centeringCamera = false;
-            BIGData.setPIDFalse();
-        }
-
-        // TODO test centering robot to target using camera
-
-        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
-        double lidarRange = BIGData.getDouble("lidar_range");
-        if (Input.SWERVE_XBOX.getXButtonPressed()) {
-            centeringLidar = true;
-            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
-        }
-
-        if (Input.SWERVE_XBOX.getXButtonReleased()) {
-            centeringLidar = false;
-            BIGData.setPIDFalse();
-        }
-
-        // TODO: test azimuth angle thresholds
-        if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
-            BIGData.putShooterState(true, "swerve");
-        } else {
-            BIGData.putShooterState(false, "swerve");
-        }
-
-        BIGData.requestDrive(x, y, rotate);
     }
 
     private void driveMechs() {
@@ -106,9 +71,9 @@ class DriverControl extends Mode {
 
         // Mechs on the mech xbox
         BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
-        
+
         if (Input.MECH_XBOX.getStartButtonReleased()) {
-            BIGData.put("reset_lemon_count", true);
+            // TODO spin spinner
         }
 
         if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
@@ -151,7 +116,8 @@ class DriverControl extends Mode {
         rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
         BIGData.put("shooter_manual", rJoystickMech);
 
-        BIGData.put("correct_storage_values", (Input.MECH_XBOX.getXButtonReleased() && Input.MECH_XBOX.getYButtonReleased()));
+        BIGData.put("correct_storage_values",
+                (Input.MECH_XBOX.getXButtonReleased() && Input.MECH_XBOX.getYButtonReleased()));
 
         // if left trigger is pressed, run intake motor in reverse
         // if right trigger is pressed, run intake motor in forwards
