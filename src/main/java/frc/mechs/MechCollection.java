@@ -13,7 +13,7 @@ public class MechCollection {
         mechs.add(new StorageMech());
         mechs.add(new WinchMech());
         // mechs.add(new LidarMech());
-        // mechs.add(new SpinnerMech());
+        mechs.add(new SpinnerMech());
         mechs.add(new LightRingMech());
     }
 

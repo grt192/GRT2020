@@ -304,6 +304,16 @@ public class BIGData {
 		return getBoolean("linkage_state");
 	}
 
+	/** set the state of the hook: true=on, false=off */
+	public static void requestHookState(boolean state) {
+		put("hook_state", state);
+	}
+
+	/** get the state of the hook true=on, false=off */
+	public static boolean getHookState() {
+		return getBoolean("hook_state");
+	}
+
 	/** Set the state of intake; true=extended, false=retracted */
 	public static void requestIntakeState(boolean state) {
 		put("intake_state", state);
@@ -380,20 +390,19 @@ public class BIGData {
 		return getBoolean("winch_state");
 	}
 
+	/** set the state of the spinner true=up, false=down */
 	public static void putSpinnerState(boolean state) {
 		put("spinner_state", state);
 	}
 
-	public static void setSpinnerState(boolean state) {
-		put("spinner_state", state);
-	}
-
+	/** get the state of the spinner true=up, false=down */
 	public static boolean getSpinnerState() {
 		return getBoolean("spinner_state");
 	}
 
+	/** get the speed to spin the spinner at manually */
 	public static double getSpinnerSpeed() {
-		return getDouble("spinner_manual_speed");
+		return getDouble("spinner_speed");
 	}
 
 	/** set the original value of the first joystick profile point */

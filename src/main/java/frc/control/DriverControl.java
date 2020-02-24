@@ -67,24 +67,24 @@ class DriverControl extends Mode {
 
         // TODO test centering robot to target using camera
 
-        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
-        double lidarRange = BIGData.getDouble("lidar_range");
-        if (Input.SWERVE_XBOX.getXButtonPressed()) {
-            centeringLidar = true;
-            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
-        }
+        // double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
+        // double lidarRange = BIGData.getDouble("lidar_range");
+        // if (Input.SWERVE_XBOX.getXButtonPressed()) {
+        //     centeringLidar = true;
+        //     BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        // }
 
-        if (Input.SWERVE_XBOX.getXButtonReleased()) {
-            centeringLidar = false;
-            BIGData.setPIDFalse();
-        }
+        // if (Input.SWERVE_XBOX.getXButtonReleased()) {
+        //     centeringLidar = false;
+        //     BIGData.setPIDFalse();
+        // }
 
         // TODO: test azimuth angle thresholds
-        if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
-            BIGData.putShooterState(true, "swerve");
-        } else {
-            BIGData.putShooterState(false, "swerve");
-        }
+        // if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
+        //     BIGData.putShooterState(true, "swerve");
+        // } else {
+        //     BIGData.putShooterState(false, "swerve");
+        // }
 
         BIGData.requestDrive(x, y, rotate);
     }
@@ -104,13 +104,14 @@ class DriverControl extends Mode {
             BIGData.requestLinkageState(linkageUp);
         }
 
+        // run the hook if the back button (change views button is pressed)
+        if (Input.SWERVE_XBOX.getBackButtonReleased()) {
+            BIGData.requestHookState(!BIGData.getHookState());
+        }
+
         // Mechs on the mech xbox
         BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
         
-        if (Input.MECH_XBOX.getStartButtonReleased()) {
-            BIGData.put("reset_lemon_count", true);
-        }
-
         if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
             int offsetChange = BIGData.getInt("shooter_offset_change");
             int currOffset = BIGData.getInt("shooter_auto_offset");
@@ -137,10 +138,12 @@ class DriverControl extends Mode {
             BIGData.requestIntakeState(!currState);
         }
 
-        if (Input.SWERVE_XBOX.getYButtonPressed()) {
-            boolean currState = BIGData.getSpinnerState();
-            BIGData.putSpinnerState(!currState);
-            BIGData.put("firstTime?", true);
+        if (Input.MECH_XBOX.getBackButtonReleased()) {
+            boolean state = BIGData.getSpinnerState();
+            BIGData.putSpinnerState(!state);
+        }
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.put("in_spinner_manual", !BIGData.getBoolean("in_spinner_manual"));
         }
 
         double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);

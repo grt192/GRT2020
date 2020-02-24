@@ -65,14 +65,18 @@ public class SpinnerMech implements Mech {
     }
 
     public void update() {
+        // if the spinner is up
         boolean state = BIGData.getSpinnerState();
-        boolean manual = BIGData.getBoolean("spinner_manual_control");
+        sol.set(state);
         if (state) {
-            automaticControl();
-        } else if (manual){
-            sol.set(true);
-            double speed = BIGData.getSpinnerSpeed();
-            motor.set(ControlMode.PercentOutput, speed);
+            // if we are up, do stuff
+            boolean manual = BIGData.getBoolean("in_spinner_manual");
+            if (manual) {
+                //TODO add a method to spin the spinner backwards
+                motor.set(ControlMode.PercentOutput, BIGData.getSpinnerSpeed());
+            } else {
+                automaticControl();
+            }
         }
     }
 
