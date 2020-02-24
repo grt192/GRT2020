@@ -8,8 +8,8 @@ public class MechCollection {
     public MechCollection() {
         mechs = new ArrayList<>();
         mechs.add(new IntakeMech());
-        //mechs.add(new LinkageMech());
-        // mechs.add(new ShooterMech());
+        mechs.add(new LinkageMech());
+        mechs.add(new ShooterMech());
         mechs.add(new StorageMech());
         mechs.add(new WinchMech());
         // mechs.add(new LidarMech());
