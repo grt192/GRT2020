@@ -144,7 +144,7 @@ public class StorageMech implements Mech {
         // conveyer will run automatically when shooter is at correct rpm or if we have
         // already shot in this cycle
         // if we've shot in this load already, make the rpm requirement less strict
-        if ((shotInLoad && Math.abs(actualShooterSpeed - requestedShooterSpeed) < requestedShooterSpeed / 2)
+        if ((shotInLoad && Math.abs(actualShooterSpeed - requestedShooterSpeed) < 100)
                 || ((Math.abs(actualShooterSpeed - requestedShooterSpeed) < 50)
                         && Math.abs(BIGData.getDouble("shooter_auto")) > 0)) {
             motor.set(ControlMode.PercentOutput, shootStorageVelocity);
