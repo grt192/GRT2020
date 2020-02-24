@@ -30,7 +30,7 @@ public class Brain implements Runnable {
         mechs = new MechCollection();
         // pdp = new PowerDistributionPanel(0);
         shuffleboardCommands = new ShuffleboardCommands();
-        lidar = new Lidar();
+        //lidar = new Lidar();
         //camera = new JetsonCamera();
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 

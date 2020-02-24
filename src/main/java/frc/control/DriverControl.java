@@ -69,6 +69,11 @@ class DriverControl extends Mode {
             BIGData.requestLinkageState(linkageUp);
         }
 
+        // run the hook if the back button (change views button is pressed)
+        if (Input.SWERVE_XBOX.getBackButtonReleased()) {
+            BIGData.requestHookState(!BIGData.getHookState());
+        }
+
         // Mechs on the mech xbox
         BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
 
@@ -102,10 +107,12 @@ class DriverControl extends Mode {
             BIGData.requestIntakeState(!currState);
         }
 
-        if (Input.SWERVE_XBOX.getYButtonPressed()) {
-            boolean currState = BIGData.getSpinnerState();
-            BIGData.putSpinnerState(!currState);
-            BIGData.put("firstTime?", true);
+        if (Input.MECH_XBOX.getBackButtonReleased()) {
+            boolean state = BIGData.getSpinnerState();
+            BIGData.putSpinnerState(!state);
+        }
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.put("in_spinner_manual", !BIGData.getBoolean("in_spinner_manual"));
         }
 
         double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);

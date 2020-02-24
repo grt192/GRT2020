@@ -17,6 +17,8 @@ swerve_kp=0.5
 swerve_kd=0.3
 swerve_kf=2.0
 
+pcm_id=9
+
 correct_with_camera=false
 
 # Offsets are inverted
@@ -45,6 +47,7 @@ joystick_y2=0.4
 
 # linkage solenoid id
 linkage_sol_id=0
+hook_sol_id=7
 
 # intake motor CAN id
 intake_talon_id=6
@@ -89,6 +92,7 @@ initial_conveyer_lemon_count=2
 spinner_speed=0.5
 spinner_id=15
 spinner_sol=5 
+spinner_manual_speed=.5
 
 #jetson variables
 jetson_camera_port=1337
