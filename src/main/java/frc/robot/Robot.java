@@ -148,6 +148,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        BIGData.put("in_teleop", true);
     }
 
     /**
@@ -156,7 +157,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Mode.getMode(0).loop();
-
     }
 
 }

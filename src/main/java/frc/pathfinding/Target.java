@@ -104,6 +104,6 @@ public class Target {
     }
 
     public enum Actions {
-        TURN, DRIVETO, INTAKE;
+        DRIVETO, INTAKE, SCORE, TURN;
     }
 }

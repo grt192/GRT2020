@@ -102,5 +102,4 @@ public class JetsonCamera implements Runnable {
             System.out.println("unable to parse camera data, NumberFormatException");
         }
     }
-
 }

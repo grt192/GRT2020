@@ -10,6 +10,8 @@ public class IntakeMech implements Mech {
     private TalonSRX motor;
     private Solenoid sol;
 
+    private double intakeSpeed;
+
     public IntakeMech() {
         motor = new TalonSRX(BIGData.getInt("intake_talon_id"));
         motor.configContinuousCurrentLimit(10, 0);
@@ -22,13 +24,9 @@ public class IntakeMech implements Mech {
     @Override
     public void update() {
         boolean state = BIGData.getIntakeState();
-        // boolean disable = BIGData.getDisabled(1);
-        // if (disable) {
-        //      disable();
-        // } else {
-        motor.set(ControlMode.PercentOutput, state ? BIGData.getDouble("intake_speed") : 0);
+        intakeSpeed = BIGData.getBoolean("in_teleop") ? BIGData.getDouble("intake_speed") : 0.4;
+        motor.set(ControlMode.PercentOutput, state ? intakeSpeed : 0);
         sol.set(state);
-        // }
     }
 
     public void disable() {

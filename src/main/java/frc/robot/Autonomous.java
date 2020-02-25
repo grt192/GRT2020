@@ -92,19 +92,23 @@ public class Autonomous {
                 robot.setMode(2);
                 break;
             case "score":
+                Target.setAction(Target.Actions.SCORE);
                 robot.setMode(3);
                 break;
             case "turn":
                 Target.setAngle(Double.parseDouble(cmd[1]));
                 Target.setAction(Target.Actions.TURN);
+                robot.setMode(3);
                 break;
             case "intake":
                 Target.setIntakeState(Boolean.parseBoolean(cmd[1]));
                 Target.setAction(Target.Actions.INTAKE);
+                robot.setMode(3);
                 break;
             case "driveto":
                 Target.setTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
                 Target.setAction(Target.Actions.DRIVETO);
+                robot.setMode(3);
                 break;
             }
         }

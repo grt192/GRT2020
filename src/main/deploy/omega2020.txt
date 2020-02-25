@@ -13,7 +13,7 @@ robot_width=33.00
 robot_height=38.5
 
 swerve_inverted=true
-swerve_kp=0.5
+swerve_kp=0.3
 swerve_kd=0.3
 swerve_kf=2.0
 
