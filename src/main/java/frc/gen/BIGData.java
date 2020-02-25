@@ -324,7 +324,10 @@ public class BIGData {
 		return getBoolean("intake_state");
 	}
 
-	/** Set the state of shooter; false = manual, true = automatic */
+	/** Set the state of shooter; false = manual, true = automatic
+	 * @param controller where this command is coming from: controller="mech" means coming from mech controller, 
+	 * controller="swerve" means the control is coming from swerve after centering itself
+	 */
 	public static void putShooterState(boolean state, String controller) {
 		switch (controller) {
 		case "mech":
@@ -355,13 +358,13 @@ public class BIGData {
 		return getBoolean("storage_state");
 	}
 
-	/** Set the motor spin speed with percentage motor output */
-	public static void requestStorageSpeed(double speed) {
+	/** Set the manual storage motor spin speed with percentage motor output */
+	public static void requestManualStorageSpeed(double speed) {
 		put("storage_speed", GRTUtil.clamp(-1.0, speed, 1.0));
 	}
 
-	/** Get the motor spin speed with percentage motor output */
-	public static double getStorageSpeed() {
+	/** Get the motor spin speed for manual control with percentage motor output */
+	public static double getManualStorageSpeed() {
 		return getDouble("storage_speed");
 	}
 
@@ -400,9 +403,28 @@ public class BIGData {
 		return getBoolean("spinner_state");
 	}
 
+	/** set the speed to spin the spinner at during manual control */
+	public static void setManualSpinnerSpeed(double manualSpeed) {
+		put("spinner_manual_speed", manualSpeed);
+	}
+
 	/** get the speed to spin the spinner at manually */
-	public static double getSpinnerSpeed() {
-		return getDouble("spinner_speed");
+	public static double getManualSpinnerSpeed() {
+		return getDouble("spinner_manual_speed");
+	}
+
+	/** set whether we should use the manual spinner speed or automatic control 
+	 * @param use true if we should use manual control, false if we should use automatic spinner control
+	*/
+	public static void setUseManualSpinner(boolean use) {
+		put("use_spinner_manual_speed", use);
+	}
+
+	/** get whether we should use manual spinner speed or automatic control
+	 * @return true if we should use manual control, false if we should use automatic spinner control
+	 */
+	public static boolean getUseManualSpinner() {
+		return getBoolean("use_spinner_manual_speed");
 	}
 
 	/** set the original value of the first joystick profile point */

@@ -88,8 +88,12 @@ initial_total_lemon_count=3
 initial_conveyer_lemon_count=2
 
 # spinner
-
-spinner_speed=0.5
+# speed to spin during automatic control
+auto_spinner_speed=0.5
+# slow speed to spin at during manual control
+slow_spinner_speed=0.2
+# fast speed to spin at during manual control
+fast_spinner_speed=0.5
 spinner_id=15
 spinner_sol=5 
 spinner_manual_speed=.5

@@ -51,7 +51,7 @@ public class ShooterMech implements Mech {
         this.encoder = motor_lead.getEncoder();
         BIGData.putShooterState(false);
         this.shooterUp = BIGData.getBoolean("shooter_up");
-        this.hood = new Solenoid(9, BIGData.getInt("one_wheel_hood"));
+        this.hood = new Solenoid(BIGData.getInt("pcm_id"), BIGData.getInt("one_wheel_hood"));
         // currentSpike = BIGData.getDouble("current_spike");
     }
 
@@ -83,10 +83,10 @@ public class ShooterMech implements Mech {
                 rpm = BIGData.getDouble("shooter_rpm");
                 System.out.println(rpm);
             }
-            // int offset = BIGData.getInt("shooter_offset_change");
-            // double newSpeed = rpm + offset;
-            // newSpeed = 5500;
-            // rpm = BIGData.getDouble("shooter_speed");
+            int offset = BIGData.getInt("shooter_auto_offset");
+            double newSpeed = rpm + offset;
+            newSpeed = 5500;
+            rpm = BIGData.getDouble("shooter_speed");
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             motor_lead.setVoltage(smff.calculate(rpm / 60));

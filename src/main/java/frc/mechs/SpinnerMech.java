@@ -47,7 +47,7 @@ public class SpinnerMech implements Mech {
     public SpinnerMech() {
         // System.out.print(BIGData.getInt("spinner_id"));
         motor = new TalonSRX(BIGData.getInt("spinner_id"));
-        sol = new Solenoid(9, BIGData.getInt("spinner_sol"));
+        sol = new Solenoid(BIGData.getInt("pcm_id"), BIGData.getInt("spinner_sol"));
         // BIGData.put("Spinner?", false);
         // BIGData.put("firstTime?", true);
 
@@ -65,15 +65,14 @@ public class SpinnerMech implements Mech {
     }
 
     public void update() {
-        // if the spinner is up
+        // if the spinner is up; true=up, false=down
         boolean state = BIGData.getSpinnerState();
         sol.set(state);
+        boolean useManual = BIGData.getUseManualSpinner();
         if (state) {
-            // if we are up, do stuff
-            boolean manual = BIGData.getBoolean("in_spinner_manual");
-            if (manual) {
-                //TODO add a method to spin the spinner backwards
-                motor.set(ControlMode.PercentOutput, BIGData.getSpinnerSpeed());
+            // if we are up, we are allowed to do stuff
+            if (useManual) {
+                motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());
             } else {
                 automaticControl();
             }
@@ -124,7 +123,7 @@ public class SpinnerMech implements Mech {
                 }
 
                 if (counter <= 7) {
-                    motor.set(ControlMode.PercentOutput, BIGData.getDouble("spinner_speed"));
+                    motor.set(ControlMode.PercentOutput, BIGData.getDouble("auto_spinner_speed"));
 
                 } else {
                     motor.set(ControlMode.PercentOutput, 0.0);
@@ -139,7 +138,7 @@ public class SpinnerMech implements Mech {
                 if (result.color == (reqColor)) {
                     motor.set(ControlMode.PercentOutput, 0.0);
                 } else {
-                    motor.set(ControlMode.PercentOutput, BIGData.getDouble("spinner_speed"));
+                    motor.set(ControlMode.PercentOutput, BIGData.getDouble("auto_spinner_speed"));
                 }
                 break;
             }
