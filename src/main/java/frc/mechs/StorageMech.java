@@ -100,7 +100,8 @@ public class StorageMech implements Mech {
         } else if (state) {
             automaticControl();
         } else {
-            double speed = BIGData.getStorageSpeed();
+            // get the requested manual speed from BIGData
+            double speed = BIGData.getManualStorageSpeed();
             motor.set(ControlMode.PercentOutput, speed);
         }
     }

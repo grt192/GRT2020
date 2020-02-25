@@ -18,7 +18,7 @@ public class IntakeMech implements Mech {
         motor.configPeakCurrentLimit(15, 0);
         motor.configPeakCurrentDuration(100, 0);
         motor.enableCurrentLimit(true);
-        sol = new Solenoid(9, BIGData.getInt("intake_sol_id"));
+        sol = new Solenoid(BIGData.getInt("pcm_id"), BIGData.getInt("intake_sol_id"));
     }
 
     @Override

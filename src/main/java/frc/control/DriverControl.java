@@ -1,21 +1,26 @@
 package frc.control;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.gen.BIGData;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
+import frc.gen.BIGData;
 
 class DriverControl extends Mode {
     private int pov = -1;
     private int lastPov;
 
-    private boolean centeringCamera, centeringLidar = false;
+    private boolean useCameraCenter, useLidarCenter;
 
     @Override
     public boolean loop() {
         JoystickProfile.updateProfilingPoints();
         driveSwerve();
-        driveMechs();
+        driveShooterMech();
+        driveIntakeMech();
+        driveStorageMech();
+        driveWinchMech();
+        driveLinkageMech();
+        driveSpinnerMech();
         return true;
     }
 
@@ -54,63 +59,53 @@ class DriverControl extends Mode {
             BIGData.setAngle(pov);
         }
 
+        // center with vision if the a button is being held
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
         if (Input.SWERVE_XBOX.getAButtonPressed()) {
-            centeringCamera = true;
-            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle()); // TODO does not work
+            useCameraCenter = true;
         }
-
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
-            centeringCamera = false;
+            useCameraCenter = false;
             BIGData.setPIDFalse();
         }
-
-        // TODO test centering robot to target using camera
-
-        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
-        double lidarRange = BIGData.getDouble("lidar_range");
-        if (Input.SWERVE_XBOX.getXButtonPressed()) {
-            centeringLidar = true;
-            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
-        }
-
-        if (Input.SWERVE_XBOX.getXButtonReleased()) {
-            centeringLidar = false;
-            BIGData.setPIDFalse();
-        }
-
-        // TODO: test azimuth angle thresholds
-        if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
-            BIGData.putShooterState(true, "swerve");
-        } else {
-            BIGData.putShooterState(false, "swerve");
+        if (useCameraCenter) {
+            // set the angle to rotate to
+            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
         }
 
         BIGData.requestDrive(x, y, rotate);
     }
 
-    private void driveMechs() {
-
-        // Mechs on the swerve xbox
-
-        BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
-        double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
-        rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
-        BIGData.requestWinchSpeed(rJoystickSwerve);
-
-        if (Input.SWERVE_XBOX.getXButtonReleased()) {
-            boolean linkageUp = BIGData.getLinkageState();
-            linkageUp = !linkageUp;
-            BIGData.requestLinkageState(linkageUp);
+    private void driveIntakeMech() {
+        // if left trigger is pressed, run intake motor in reverse
+        // if right trigger is pressed, run intake motor in forwards
+        double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
+        double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
+        double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));
+        BIGData.put("intake_speed", mechTriggerSum);
+        // if x button is released, toggle the intake position
+        if (Input.MECH_XBOX.getXButtonReleased()) {
+            boolean currState = BIGData.getIntakeState();
+            BIGData.requestIntakeState(!currState);
         }
+    }
 
-        // Mechs on the mech xbox
-        BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
-        
-        if (Input.MECH_XBOX.getStartButtonReleased()) {
-            BIGData.put("reset_lemon_count", true);
+    private void driveShooterMech() {
+        // if mech b button is pressed, toggle the hood
+        if (Input.MECH_XBOX.getBButtonReleased()) {
+            boolean shooterUp = BIGData.getBoolean("shooter_up");
+            shooterUp = !shooterUp;
+            BIGData.put("shooter_up", shooterUp);
         }
+        // if mech a button is pressed, automatic control for shooter
+        BIGData.putShooterState(Input.MECH_XBOX.getAButton(), "mech");
 
+        // put in requested shooter manual speed
+        double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
+        rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
+        BIGData.put("shooter_manual", rJoystickMech);
+
+        // if the bumpers are pressed, change the base offset
         if (Input.MECH_XBOX.getBumperReleased(Hand.kLeft)) {
             int offsetChange = BIGData.getInt("shooter_offset_change");
             int currOffset = BIGData.getInt("shooter_auto_offset");
@@ -122,45 +117,66 @@ class DriverControl extends Mode {
             int currOffset = BIGData.getInt("shooter_auto_offset");
             BIGData.put("shooter_auto_offset", currOffset + offsetChange);
         }
+    }
 
-        BIGData.putShooterState(Input.MECH_XBOX.getAButton(), "mech");
-
-        if (Input.MECH_XBOX.getBButtonReleased()) {
-            boolean shooterUp = BIGData.getBoolean("shooter_up");
-            shooterUp = !shooterUp;
-            BIGData.put("shooter_up", shooterUp);
-        }
-
-        // if x button is released, toggle the intake position
-        if (Input.MECH_XBOX.getXButtonReleased()) {
-            boolean currState = BIGData.getIntakeState();
-            BIGData.requestIntakeState(!currState);
-        }
-
-        if (Input.SWERVE_XBOX.getYButtonPressed()) {
-            boolean currState = BIGData.getSpinnerState();
-            BIGData.putSpinnerState(!currState);
-            BIGData.put("firstTime?", true);
-        }
-
+    private void driveStorageMech() {
+        // if y is being held, set to manual control (aka false)
+        BIGData.putStorageState(!Input.MECH_XBOX.getYButton());
+        // set the speed of manual control
         double lJoystickMech = Input.MECH_XBOX.getY(Hand.kLeft);
         lJoystickMech = JoystickProfile.applyProfile(lJoystickMech);
-        BIGData.requestStorageSpeed(lJoystickMech);
+        BIGData.requestManualStorageSpeed(lJoystickMech);
+    }
 
-        double rJoystickMech = Input.MECH_XBOX.getY(Hand.kRight);
-        rJoystickMech = JoystickProfile.applyProfile(rJoystickMech);
-        BIGData.put("shooter_manual", rJoystickMech);
+    private void driveWinchMech() {
+        // only allow the winch to be driven when the swerve y button is being pressed
+        BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
+        // read motor speed from right joystick of swerve controller
+        double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
+        rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
+        // set the speed to spin at
+        BIGData.requestWinchSpeed(rJoystickSwerve);
+    }
 
-        BIGData.put("correct_storage_values", (Input.MECH_XBOX.getXButtonReleased() && Input.MECH_XBOX.getYButtonReleased()));
+    private void driveLinkageMech() {
+        // if the x button is released, toggle linkage state
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            boolean linkageUp = BIGData.getLinkageState();
+            linkageUp = !linkageUp;
+            BIGData.requestLinkageState(linkageUp);
+        }
+        // if the b button is released, toggle the hook solenoid
+        if (Input.SWERVE_XBOX.getBButtonReleased()) {
+            BIGData.requestHookState(!BIGData.getHookState());
+        }
+    }
 
-        // if left trigger is pressed, run intake motor in reverse
-        // if right trigger is pressed, run intake motor in forwards
-        double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
-        double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
-        double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));
-
-        BIGData.put("intake_speed", mechTriggerSum);
-
+    private void driveSpinnerMech() {
+        // check if we need to toggle spinner state (up/down)
+        boolean spinnerUp = BIGData.getSpinnerState();
+        if (Input.SWERVE_XBOX.getBackButtonReleased()) {
+            BIGData.putSpinnerState(!spinnerUp);
+        }
+        // check if we should be in automatic control of the color wheel
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.setUseManualSpinner(false);
+        }
+        // Use the POV on MECH_XBOX to set the speed
+        int mechPOV = Input.MECH_XBOX.getPOV();
+        System.out.println(mechPOV);
+        // if POV is being pressed, we should use the manual control
+        if (mechPOV >= 0) {
+            BIGData.setUseManualSpinner(true);
+        }
+        switch (mechPOV) {
+            case 0: BIGData.setManualSpinnerSpeed(0); break;
+            case 45: BIGData.setManualSpinnerSpeed(BIGData.getDouble("slow_spinner_speed")); break;
+            case 90: BIGData.setManualSpinnerSpeed(BIGData.getDouble("fast_spinner_speed")); break;
+            case 270: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("fast_spinner_speed")); break;
+            case 315: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed")); break;
+            default: BIGData.setManualSpinnerSpeed(0); break;
+        }
+        System.out.println(BIGData.getManualSpinnerSpeed());
     }
 
 }
