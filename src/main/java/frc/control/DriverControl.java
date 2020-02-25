@@ -152,14 +152,20 @@ class DriverControl extends Mode {
     }
 
     private void driveSpinnerMech() {
-        // check if we need to toggle spinner state
+        // check if we need to toggle spinner state (up/down)
         boolean spinnerUp = BIGData.getSpinnerState();
         if (Input.SWERVE_XBOX.getBackButtonReleased()) {
             BIGData.putSpinnerState(!spinnerUp);
         }
+        // check if we should be in automatic control of the color wheel
+        if (Input.MECH_XBOX.getStartButtonReleased()) {
+            BIGData.setUseManualSpinner(false);
+        }
         // Use the POV on MECH_XBOX to set the speed
         int mechPOV = Input.MECH_XBOX.getPOV();
-        if (mechPOV != -1) {
+        System.out.println(mechPOV);
+        // if POV is being pressed, we should use the manual control
+        if (mechPOV >= 0) {
             BIGData.setUseManualSpinner(true);
         }
         switch (mechPOV) {
@@ -168,9 +174,9 @@ class DriverControl extends Mode {
             case 90: BIGData.setManualSpinnerSpeed(BIGData.getDouble("fast_spinner_speed")); break;
             case 270: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("fast_spinner_speed")); break;
             case 315: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed")); break;
-            case 135: case 180: case 225: BIGData.setManualSpinnerSpeed(0); break;
-            default: BIGData.setUseManualSpinner(false);
+            default: BIGData.setManualSpinnerSpeed(0); break;
         }
+        System.out.println(BIGData.getManualSpinnerSpeed());
     }
 
 }

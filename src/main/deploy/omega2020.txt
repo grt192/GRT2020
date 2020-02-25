@@ -94,7 +94,7 @@ auto_spinner_speed=0.5
 slow_spinner_speed=0.2
 # fast speed to spin at during manual control
 fast_spinner_speed=0.5
-spinner_id=15
+spinner_motor_id=15
 spinner_sol=5 
 spinner_manual_speed=.5
 

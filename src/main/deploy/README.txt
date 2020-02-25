@@ -9,7 +9,7 @@ b = toggle hook
 x = toggle the linkage
 y = press/hold this button to enable winch
 menu/start = zero gyro
-change view/back = move spinner mech up and spin it automatically
+change view/back = move spinner mech up
 -------------------------
 mech xbox controller
 left joystick = manual storage control (used in conjunction with the y button)
@@ -22,5 +22,5 @@ a = hold to toggle automatic shooter
 b = toggle shooter hood up/down
 x = toggle intake up/down
 y = hold to enable manual storage control
-menu/start = hold to spin color wheel counterclockwise
-change view/back = hold to spin color wheel clockwise
+menu/start = start automatic control of the color wheel
+change view/back = 
