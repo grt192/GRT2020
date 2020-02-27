@@ -39,7 +39,7 @@ class DriverControl extends Mode {
         // rotate the robot
         double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
         double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
-        double rotate = JoystickProfile.applyProfile(-(rTrigger * rTrigger - lTrigger * lTrigger));
+        double rotate = JoystickProfile.applyProfile(-(Math.abs(rTrigger) - Math.abs(lTrigger)));
         if (rotate != 0) {
             BIGData.setPIDFalse();
         }
