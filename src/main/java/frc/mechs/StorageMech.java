@@ -108,8 +108,9 @@ public class StorageMech implements Mech {
 
     private double findMed(double input, double[] array) {
         array[count % 5] = input;
-        Arrays.sort(array);
-        return array[2];
+        double[] cloned = array.clone();
+        Arrays.sort(cloned);
+        return cloned[2];
     }
 
     public void automaticControl() {
@@ -121,6 +122,7 @@ public class StorageMech implements Mech {
         bottomMedVal = findMed(bottom.getValue(), bottomArr);
         middleMedVal = findMed(middle.getValue(), middleArr);
         topMedVal = findMed(top.getValue(), topArr);
+        
         count += 1;
 
         lemonInIntake = intakeMedVal > IRIntakeRange;

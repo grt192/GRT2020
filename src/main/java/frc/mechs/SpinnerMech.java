@@ -55,6 +55,7 @@ public class SpinnerMech implements Mech {
         i2cPort = I2C.Port.kOnboard;
         sensor = new ColorSensorV3(i2cPort);
         motor = new TalonSRX(BIGData.getInt("spinner_motor_id"));
+        motor.configFactoryDefault();
         sol = new Solenoid(BIGData.getInt("pcm_id"), BIGData.getInt("spinner_sol"));
         
         // initialize the color mappings
@@ -83,11 +84,11 @@ public class SpinnerMech implements Mech {
     }
 
     public void update() {
-        // if the spinner is up; true=up, false=down
+        // if the spinner is up; false=up, true=down
         boolean state = BIGData.getSpinnerState();
         sol.set(state);
         boolean useManual = BIGData.getUseManualSpinner();
-        if (state) {
+        if (!state) {
             // if we are up, we are allowed to do stuff
             if (useManual) {
                 motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());

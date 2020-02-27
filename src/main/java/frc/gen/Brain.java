@@ -35,8 +35,8 @@ public class Brain implements Runnable {
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
         // TODO Fix this
-        // CameraServer.getInstance().startAutomaticCapture(0);
-        // CameraServer.getInstance().startAutomaticCapture(1);
+        CameraServer.getInstance().startAutomaticCapture(0);
+        CameraServer.getInstance().startAutomaticCapture(1);
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
     }

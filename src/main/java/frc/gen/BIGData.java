@@ -393,12 +393,12 @@ public class BIGData {
 		return getBoolean("winch_state");
 	}
 
-	/** set the state of the spinner true=up, false=down */
+	/** set the state of the spinner false=up, true=down */
 	public static void putSpinnerState(boolean state) {
 		put("spinner_state", state);
 	}
 
-	/** get the state of the spinner true=up, false=down */
+	/** get the state of the spinner false=up, true=down */
 	public static boolean getSpinnerState() {
 		return getBoolean("spinner_state");
 	}
