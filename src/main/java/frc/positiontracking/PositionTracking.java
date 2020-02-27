@@ -140,9 +140,8 @@ public class PositionTracking {
             cachedX = tempX;
             cachedY = tempY;
         }
-        // the robot's field centric coordinate plane is different than the actual field's coordinate plane
-        Vector curr_pos = new Vector(-tempY, tempX);
-        // Vector curr_pos = new Vector(-tempY, -tempX);
+        Vector curr_pos = new Vector(tempX, tempY);
+        // System.out.println("x: " + curr_pos.x + " y: " + curr_pos.y);
         BIGData.setPosition(curr_pos, "curr");
     }
 

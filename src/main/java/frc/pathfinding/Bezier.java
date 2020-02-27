@@ -7,7 +7,7 @@ import frc.pathfinding.fieldmap.geometry.*;
 
 public class Bezier {
 
-    private static double size = 500;
+    private static double size = 50;
 
     private Vector[] vector;
 

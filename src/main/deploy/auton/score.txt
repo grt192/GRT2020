@@ -1,5 +1,4 @@
 ## testing ball scoring
 pos 0.0 0.0
-## intake true
-## driveto 0.0 30.0
-turn 90.0
+intake true
+driveto 80.0 0.0

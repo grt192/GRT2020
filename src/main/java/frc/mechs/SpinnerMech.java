@@ -43,8 +43,10 @@ public class SpinnerMech implements Mech {
     private boolean loadedFirstColor;
     /** Whether we are on the first color that we loaded for rotation control */
     private boolean onFirstColor;
-    /** The color that we started position control with. We use the number of 
-     * times this color passes by to determine the number of rotations we are at */
+    /**
+     * The color that we started position control with. We use the number of times
+     * this color passes by to determine the number of rotations we are at
+     */
     private Color firstColor;
 
     private final ColorMatch colorMatcher;
@@ -57,14 +59,14 @@ public class SpinnerMech implements Mech {
         motor = new TalonSRX(BIGData.getInt("spinner_motor_id"));
         motor.configFactoryDefault();
         sol = new Solenoid(BIGData.getInt("pcm_id"), BIGData.getInt("spinner_sol"));
-        
+
         // initialize the color mappings
         colorMap = new HashMap<Character, Color>();
         colorMap.put('B', kBlueTarget);
         colorMap.put('G', kGreenTarget);
         colorMap.put('R', kRedTarget);
         colorMap.put('Y', kYellowTarget);
-        
+
         // add the colors to the color matcher
         colorMatcher = new ColorMatch();
         colorMatcher.addColorMatch(kBlueTarget);
@@ -91,6 +93,7 @@ public class SpinnerMech implements Mech {
         if (!state) {
             // if we are up, we are allowed to do stuff
             if (useManual) {
+                System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
                 motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());
             } else {
                 automaticControl();
@@ -114,51 +117,53 @@ public class SpinnerMech implements Mech {
         ColorMatchResult result = colorMatcher.matchClosestColor(sensor.getColor());
         if (sensor.getProximity() < IRRange) {
             switch (stage) {
-                case ROTATION_CONTROL:
-                    if (!loadedFirstColor) {
-                        // if we have not loaded a first color, load the current color as the first color
-                        System.out.println("loading the first color for rotation control...");
-                        loadedFirstColor = true;
-                        firstColor = result.color;
+            case ROTATION_CONTROL:
+                if (!loadedFirstColor) {
+                    // if we have not loaded a first color, load the current color as the first
+                    // color
+                    System.out.println("loading the first color for rotation control...");
+                    loadedFirstColor = true;
+                    firstColor = result.color;
+                    onFirstColor = true;
+                } else {
+                    // if we have loaded a first color already
+                    if (!result.color.equals(firstColor) && onFirstColor) {
+                        // if we just moved off the first color
+                        onFirstColor = false;
+                    } else if (result.color.equals(firstColor) && !onFirstColor) {
+                        // if we just moved onto the first color
+                        counter++;
                         onFirstColor = true;
-                    } else {
-                        // if we have loaded a first color already
-                        if (!result.color.equals(firstColor) && onFirstColor) {
-                            // if we just moved off the first color
-                            onFirstColor = false;
-                        } else if (result.color.equals(firstColor) && !onFirstColor) {
-                            // if we just moved onto the first color
-                            counter++;
-                            onFirstColor = true;
-                        }
                     }
+                }
 
-                    if (counter <= 7) {
-                        motor.set(ControlMode.PercentOutput, BIGData.getDouble("auto_spinner_speed"));
+                if (counter <= 7) {
+                    motor.set(ControlMode.PercentOutput, BIGData.getDouble("auto_spinner_speed"));
 
-                    } else {
-                        motor.set(ControlMode.PercentOutput, 0.0);
-                        loadedFirstColor = false;
-                        counter = 0;
-                        BIGData.setUseManualSpinner(true);
-                    }
-                    break;
-                case POSITION_CONTROL:
-                    if (result.color == (reqColor)) {
-                        motor.set(ControlMode.PercentOutput, 0.0);
-                    } else {
-                        motor.set(ControlMode.PercentOutput, BIGData.getDouble("auto_spinner_speed"));
-                    }
-                    break;
-                default: 
+                } else {
                     motor.set(ControlMode.PercentOutput, 0.0);
+                    loadedFirstColor = false;
+                    counter = 0;
+                    BIGData.setUseManualSpinner(true);
+                }
+                break;
+            case POSITION_CONTROL:
+                if (result.color == (reqColor)) {
+                    motor.set(ControlMode.PercentOutput, 0.0);
+                } else {
+                    motor.set(ControlMode.PercentOutput, BIGData.getDouble("auto_spinner_speed"));
+                }
+                break;
+            default:
+                motor.set(ControlMode.PercentOutput, 0.0);
             }
         }
     }
+
     enum Stage {
         /** rotate the control panel 3-5 times */
         ROTATION_CONTROL,
-        /** rotate to a given color */ 
+        /** rotate to a given color */
         POSITION_CONTROL;
     }
 }

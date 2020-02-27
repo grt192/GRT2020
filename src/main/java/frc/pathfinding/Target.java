@@ -7,8 +7,9 @@ import frc.pathfinding.fieldmap.geometry.*;
 public class Target {
 
     private static ArrayList<Vector> targets;
+    private static ArrayList<Actions> actions;
+
     private static Vector target;
-    private static Actions action;
     private static double angle;
     private static boolean intakeState;
 
@@ -16,6 +17,7 @@ public class Target {
 
     public Target() {
         targets = new ArrayList<>();
+        actions = new ArrayList<>();
     }
 
     public static void put(Vector v) {
@@ -53,6 +55,10 @@ public class Target {
         return target;
     }
 
+    public static ArrayList<Actions> getActions() {
+        return actions;
+    }
+
     public static void setTarget(Vector v) {
         target = v;
     }
@@ -87,12 +93,16 @@ public class Target {
         }
     }
 
-    public static Actions getAction() {
-        return action;
+    public static void putAction(Actions a) {
+        actions.add(a);
     }
 
-    public static void setAction(Actions a) {
-        action = a;
+    public static Actions getAction() {
+        return actions.get(0);
+    }
+
+    public static void removeAction() {
+        actions.remove(0);
     }
 
     public static boolean getIntakeState() {
@@ -104,6 +114,6 @@ public class Target {
     }
 
     public enum Actions {
-        DRIVETO, INTAKE, SCORE, TURN;
+        BEZ, DRIVETO, INTAKE, PATH, SCORE, TURN;
     }
 }

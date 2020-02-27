@@ -178,9 +178,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        BIGData.putZeroGyroRequest(true);
         BIGData.put("in_teleop", false);
         BIGData.put("auton_started", true);
-        autonomous.init("score.txt");
+        autonomous.init("bezier1.txt");
     }
 
     /**

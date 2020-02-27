@@ -83,31 +83,35 @@ public class Autonomous {
                 BIGData.requestDrive(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2]),
                         cmd.length > 3 ? Double.parseDouble(cmd[3]) : 0);
                 break;
-            case "pmp":
+            case "path":
+                Target.putAction(Target.Actions.PATH);
                 Target.setTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
                 robot.setMode(1);
                 break;
             case "bez":
-                Target.setBezier(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])), new Vector(Double.parseDouble(cmd[3]), Double.parseDouble(cmd[4])), new Vector(Double.parseDouble(cmd[5]), Double.parseDouble(cmd[6])));
+                Target.putAction(Target.Actions.BEZ);
+                Target.setBezier(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])),
+                        new Vector(Double.parseDouble(cmd[3]), Double.parseDouble(cmd[4])),
+                        new Vector(Double.parseDouble(cmd[5]), Double.parseDouble(cmd[6])));
                 robot.setMode(2);
                 break;
             case "score":
-                Target.setAction(Target.Actions.SCORE);
+                Target.putAction(Target.Actions.SCORE);
                 robot.setMode(3);
                 break;
             case "turn":
                 Target.setAngle(Double.parseDouble(cmd[1]));
-                Target.setAction(Target.Actions.TURN);
+                Target.putAction(Target.Actions.TURN);
                 robot.setMode(3);
                 break;
             case "intake":
                 Target.setIntakeState(Boolean.parseBoolean(cmd[1]));
-                Target.setAction(Target.Actions.INTAKE);
+                Target.putAction(Target.Actions.INTAKE);
                 robot.setMode(3);
                 break;
             case "driveto":
                 Target.setTarget(new Vector(Double.parseDouble(cmd[1]), Double.parseDouble(cmd[2])));
-                Target.setAction(Target.Actions.DRIVETO);
+                Target.putAction(Target.Actions.DRIVETO);
                 robot.setMode(3);
                 break;
             }
