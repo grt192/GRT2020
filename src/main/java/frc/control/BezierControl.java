@@ -8,7 +8,7 @@ import frc.pathfinding.*;
 
 public class BezierControl extends Mode {
 
-    private static final double SPEED = 0.1;
+    private static final double SPEED = 0.3;
     private static final double e = 4;
 
     private static Vector velocity;
@@ -20,7 +20,6 @@ public class BezierControl extends Mode {
     private static double d;
     private static double distance;
     private static double dist;
-    private static double vx, vy;
     private static int counter;
 
     private static ArrayList<Vector> control_pts;
@@ -38,7 +37,6 @@ public class BezierControl extends Mode {
         currentPos = BIGData.getPosition("curr");
         targetPos = Target.getTarget();
         control_pts = Target.getBezier();
-
         runBezier();
         return check();
     }
@@ -46,18 +44,11 @@ public class BezierControl extends Mode {
     private static boolean check() {
         if (distance < e) {
             BIGData.requestDrive(0, 0, 0);
+            Target.removeAction();
             return false;
         }
 
-        vx = -velocity.x;
-        vy = -velocity.y;
-        BIGData.requestDrive(vx, vy, 0);
-        //TODO: remove after debugging
-        // System.out.println("counter: " + counter);
-        // System.out.println("d: " + d);
-        // System.out.println("curr_x: " + currentPos.x + " curr_y: " + currentPos.y);
-        // System.out.println("spline_x: " + spline.getNext(counter).x + " spline_y: " + spline.getNext(counter).y);
-        // System.out.println("vx: " + vx + " vy: " + vy);
+        BIGData.requestDrive(velocity.y, -velocity.x, 0);
         return true;
     }
 
@@ -72,7 +63,7 @@ public class BezierControl extends Mode {
         velocity = currentPos.subtract(spline.getNext(counter)).multiply(1 / d).multiply(SPEED);
         
         // TODO: test the value
-        while ((dist = currentPos.distanceTo(spline.getNext(counter))) <= 3 && counter < spline.size()) {
+        while ((dist = currentPos.distanceTo(spline.getNext(counter))) <= 3 && counter < spline.size() - 1) {
             counter++;
         }
     }

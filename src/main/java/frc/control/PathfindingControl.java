@@ -51,13 +51,14 @@ public class PathfindingControl extends Mode {
         if (d < e) {
             BIGData.requestDrive(0, 0, 0);
             Target.clear();
+            Target.removeAction();
             return false;
         } else if (dtoNext < e) {
             BIGData.requestDrive(0, 0, 0);
             Target.remove();
             return true;
         } else {
-            BIGData.requestDrive(velocity.x, velocity.y, 0);
+            BIGData.requestDrive(velocity.y, -velocity.x, 0);
             return true;
         }
     }

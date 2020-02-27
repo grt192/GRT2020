@@ -10,7 +10,6 @@ public class GeneralControl extends Mode {
     private boolean returnBool = true;
 
     private double startAngle;
-    private double currentAngle;
     private double targetAngle;
 
     private static double SPEED = 0.2;
@@ -46,6 +45,8 @@ public class GeneralControl extends Mode {
             runTurn();
             break;
         }
+        if (!returnBool)
+            Target.removeAction();
         return returnBool;
     }
 
@@ -64,12 +65,12 @@ public class GeneralControl extends Mode {
             newLoop = true;
             returnBool = false;
         } else {
-            BIGData.requestDrive(velocity.x, velocity.y, 0);
+            BIGData.requestDrive(velocity.y, -velocity.x, 0);
         }
     }
 
     private void runIntake() {
-        BIGData.put("auto_intake_speed", 0.4);
+        BIGData.put("auto_intake_speed", 0.6);
         intakeState = Target.getIntakeState();
         BIGData.requestIntakeState(intakeState);
         returnBool = false;
@@ -82,20 +83,15 @@ public class GeneralControl extends Mode {
 
         if (cameraRange == 0) {
             System.out.println("no vision target found!! turning!!");
-            BIGData.requestDrive(0, 0, 0.2);
+            BIGData.requestDrive(0, 0, 0.1);
         } else {
-            BIGData.requestDrive(0, 0, 0);
-            if (lemonCount < 1) {
+            BIGData.setAngle(cameraAzimuth);
+            if (cameraAzimuth < 2)
+                BIGData.putShooterState(true);
+            returnBool = true;
+            if (lemonCount < 1)
                 returnBool = false;
-            } else {
-                if (Math.abs(cameraAzimuth) > 2)
-                    BIGData.setAngle(cameraAzimuth);
-                if (Math.abs(cameraAzimuth) <= 2)
-                    BIGData.putShooterState(true);
-                returnBool = true;
-            }
         }
-
     }
 
     private void runTurn() {

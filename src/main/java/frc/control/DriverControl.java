@@ -163,7 +163,7 @@ class DriverControl extends Mode {
         }
         // Use the POV on MECH_XBOX to set the speed
         int mechPOV = Input.MECH_XBOX.getPOV();
-        System.out.println(mechPOV);
+        //System.out.println(mechPOV);
         // if POV is being pressed, we should use the manual control
         if (mechPOV >= 0) {
             BIGData.setUseManualSpinner(true);
@@ -176,7 +176,7 @@ class DriverControl extends Mode {
             case 315: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed")); break;
             default: BIGData.setManualSpinnerSpeed(0); break;
         }
-        System.out.println(BIGData.getManualSpinnerSpeed());
+        //System.out.println(BIGData.getManualSpinnerSpeed());
     }
 
 }

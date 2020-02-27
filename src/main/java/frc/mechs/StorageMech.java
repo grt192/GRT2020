@@ -129,6 +129,22 @@ public class StorageMech implements Mech {
         lemonInBottom = bottomMedVal > IRBotRange;
         lemonIntakeBack = intakeBackMedVal > IRIntakeRange;
 
+        if (lemonInIntake && !intakingLemon){
+            lemonCount++;
+            intakingLemon = true;
+        }
+        if (!lemonInIntake) {
+            intakingLemon = false;
+        }
+
+        if (lemonInTop) {
+            topWaiting = true;
+        }
+        if (!lemonInTop && topWaiting) {
+            lemonCount--;
+            topWaiting = false;
+        }
+
         if (lemonInBottom && !lemonInTop) {
             runToMiddle = true;
             if (lemonInMiddle)

@@ -1,3 +1,0 @@
-## full field test
-pos 30 144
-pmp 150 144
