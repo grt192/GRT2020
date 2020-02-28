@@ -1,3 +1,0 @@
-## shop testing
-pos 120 161.625
-pmp 160 200

@@ -1,0 +1,4 @@
+## testing ball scoring
+pos 0.0 0.0
+intake true
+driveto 80.0 0.0

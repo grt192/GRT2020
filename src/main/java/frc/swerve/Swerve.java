@@ -1,9 +1,9 @@
 package frc.swerve;
 
-import static frc.gen.BIGData.FR_WHEEL;
-import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.BL_WHEEL;
+import static frc.gen.BIGData.BR_WHEEL;
 import static frc.gen.BIGData.FL_WHEEL;
+import static frc.gen.BIGData.FR_WHEEL;
 
 import frc.gen.BIGData;
 import frc.util.GRTUtil;
@@ -48,12 +48,12 @@ public class Swerve {
 		SWERVE_HEIGHT = BIGData.getDouble("swerve_height");
 		kP = BIGData.getDouble("swerve_kp");
 		kD = BIGData.getDouble("swerve_kd");
-		kF = Math.toRadians(BIGData.getDouble("swerve_kf"));
+		kF = BIGData.getDouble("swerve_kf");
 		RADIUS = Math.sqrt(SWERVE_WIDTH * SWERVE_WIDTH + SWERVE_HEIGHT * SWERVE_HEIGHT) / 2;
 		WHEEL_ANGLE = Math.atan2(SWERVE_WIDTH, SWERVE_HEIGHT);
 		ROTATE_SCALE = 1 / RADIUS;
 		calcSwerveData();
-		//TODO: test swerve PID
+		// TODO: test swerve PID
 		setAngle(0.0);
 	}
 
@@ -69,8 +69,8 @@ public class Swerve {
 	}
 
 	private void refreshVals() {
-		withPID = BIGData.getBoolean("PID?");
-		angle = BIGData.getDouble("requested_angle");
+		withPID = BIGData.isPID();
+		angle = BIGData.getRequestedAngle();
 
 		userVX = BIGData.getRequestedVX();
 		userVY = BIGData.getRequestedVY();
@@ -112,7 +112,8 @@ public class Swerve {
 	 * angle, kP, and kD
 	 */
 	private double calcPID() {
-		double error = GRTUtil.distanceToAngle(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
+		// System.out.println("kF: " + kF);
+		double error = GRTUtil.angularDifference(Math.toRadians(gyro.getAngle()), Math.toRadians(angle),
 				Math.toRadians(kF));
 		double w = error * kP - Math.toRadians(gyro.getRate()) * kD;
 		// System.out.print("W: " + w);%

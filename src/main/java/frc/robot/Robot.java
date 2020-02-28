@@ -17,7 +17,7 @@ import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
 import frc.gen.Brain;
-import frc.pathfinding.*;
+import frc.pathfinding.Target;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -48,13 +48,9 @@ public class Robot extends TimedRobot {
         BIGData.start();
         BIGData.put("gyro_ang", 0.0);
         JoystickProfile.init();
-        BIGData.put("robot_width", 33.0);
-        BIGData.put("robot_height", 38.5);
-        ROBOT_HEIGHT = 33.0;
-        ROBOT_WIDTH = 38.5;
+        ROBOT_HEIGHT = BIGData.getDouble("robot_height");
+        ROBOT_WIDTH = BIGData.getDouble("robot_width");
         ROBOT_RADIUS = Math.max(ROBOT_WIDTH, ROBOT_HEIGHT) / 2;
-        System.out.println("height" + ROBOT_HEIGHT);
-        System.out.println("width" + ROBOT_WIDTH);
 
         autonomous = new Autonomous(this);
         Mode.initModes();
@@ -74,6 +70,10 @@ public class Robot extends TimedRobot {
             mode.setNumber(0);
             i = 0;
         }
+        if (!Mode.getMode(i).loop()) {
+            autonomous.modeFinished();
+            mode.setNumber(0);
+        }
     }
 
     /**
@@ -81,6 +81,50 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+
+        // TESTING INVOLVING VISION
+
+        boolean centeringCamera = false;
+        boolean centeringLidar = false;
+        double cameraAzimuth = BIGData.getDouble("camera_azimuth");
+        double x = Input.SWERVE_XBOX.getX(Hand.kLeft);
+        double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);
+        double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
+        double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
+        double rotate = JoystickProfile.applyProfile(-(rTrigger * rTrigger - lTrigger * lTrigger));
+
+        if (Input.SWERVE_XBOX.getAButtonPressed()) {
+            centeringCamera = true;
+            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle()); // TODO does not work
+        }
+
+        if (Input.SWERVE_XBOX.getAButtonReleased()) {
+            centeringCamera = false;
+            BIGData.setPIDFalse();
+        }
+
+        // TODO test centering robot to target using camera
+
+        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
+        double lidarRange = BIGData.getDouble("lidar_range");
+        if (Input.SWERVE_XBOX.getXButtonPressed()) {
+            centeringLidar = true;
+            BIGData.setAngle(-Math.toDegrees(lidarAzimuth) + BIGData.getGyroAngle());
+        }
+
+        if (Input.SWERVE_XBOX.getXButtonReleased()) {
+            centeringLidar = false;
+            BIGData.setPIDFalse();
+        }
+
+        // TODO: test azimuth angle thresholds
+        if ((centeringLidar || centeringCamera) && (lidarAzimuth < 2 || cameraAzimuth < 2)) {
+            BIGData.putShooterState(true, "swerve");
+        } else {
+            BIGData.putShooterState(false, "swerve");
+        }
+
+        BIGData.requestDrive(x, y, rotate);
     }
 
     @Override
@@ -107,18 +151,18 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
     }
-    
+
     private boolean manualOverride() {
         double x = JoystickProfile.applyProfile(Input.SWERVE_XBOX.getY(Hand.kLeft));
         double y = JoystickProfile.applyProfile(-Input.SWERVE_XBOX.getX(Hand.kLeft));
         boolean temp = !(x == 0 && y == 0);
         if (temp && !overridden) {
-          overridden = temp;
-          return true;
+            overridden = temp;
+            return true;
         }
         overridden = temp;
         return false;
-      }
+    }
 
     /**
      * This autonomous (along with the chooser code above) shows how to select
@@ -134,8 +178,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        BIGData.putZeroGyroRequest(true);
+        BIGData.put("in_teleop", false);
         BIGData.put("auton_started", true);
-        autonomous.init("bezier2.txt");
+        autonomous.init("bezier1.txt");
     }
 
     /**
@@ -148,6 +194,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        BIGData.put("in_teleop", true);
     }
 
     /**
@@ -156,7 +203,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Mode.getMode(0).loop();
-
     }
 
 }

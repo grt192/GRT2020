@@ -1,28 +1,26 @@
 swerve xbox controller
 left joystick = swerve translation
-right joystick = winch control
+right joystick = winch speed control (used in conjunction with y button)
 triggers = swerve rotation
-bumpers = 
-pov buttons = ?
-a = linkage
-b = line up to target
-x = spinner enable
-y = enable winch -- dead mans since winch when rope not up breaks it
+bumpers = rotate by 45 degrees
+pov buttons = PID
+a = hold a to center to target
+b = toggle hook
+x = toggle the linkage
+y = press/hold this button to enable winch
+menu/start = zero gyro
+change view/back = move spinner mech up
 -------------------------
 mech xbox controller
-left joystick = storage control
-right joystick = manual shooter control
+left joystick = manual storage control (used in conjunction with the y button)
+right joystick = manual shooter speed control
 triggers = forward / backward intake
-bumpers = minor shooter adjustments
-pov buttons = ?
+bumpers = shooter offset adjustments
+pov buttons = right pov spins color wheel counterclockwise, left pov spins color wheel clockwise
+              up-right and up-left pov spins color wheel slower, down povs stops color wheel
 a = hold to toggle automatic shooter
-b = shooter flap
-x = intake
-y = hold to toggle manual storage control
--------------------------
-winch control - double
-lining up control - boolean (true=line up, false=nothing)
-shooter control - boolean & double (true=use auto control, false=use double val)
-storage control - boolean & double (false=use auto control, true= use double val)
-intake - boolean & double (true=out, false=in, speed)
-linkage - boolean (true=up, false=down)
+b = toggle shooter hood up/down
+x = toggle intake up/down
+y = hold to enable manual storage control
+menu/start = start automatic control of the color wheel
+change view/back = 

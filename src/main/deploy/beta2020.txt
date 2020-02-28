@@ -56,7 +56,7 @@ intake_speed=0.9
 
 #Shooter Values
 shooter_high_angle=50
-shooter_high_angle=25
+shooter_low_angle=25
 shooter_up=false
 shooter_offset_change=100
 
@@ -73,4 +73,4 @@ middle_analog=1
 bottom_analog=0
 
 storage_motor=8
-storage_speed_auto=0.1
+storage_speed_load=0.1

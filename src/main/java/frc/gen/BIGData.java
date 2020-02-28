@@ -12,10 +12,10 @@ public class BIGData {
 
 	private static Map<String, String> map;
 
-    // RPM map of <distance (inches), RPM> for when the hood is up
-    public static TreeMap<Integer, Integer> upRPMMap;
-    // RPM map of <distance (inches), RPM> for when the hood is down
-    public static TreeMap<Integer, Integer> downRPMMap;
+	// RPM map of <distance (inches), RPM> for when the hood is up
+	public static TreeMap<Integer, Integer> upRPMMap;
+	// RPM map of <distance (inches), RPM> for when the hood is down
+	public static TreeMap<Integer, Integer> downRPMMap;
 
 	public static final int FR_WHEEL = 0;
 	public static final int BR_WHEEL = 1;
@@ -135,11 +135,16 @@ public class BIGData {
 	public static int getWheelNum(String wheelName) {
 		wheelName = wheelName.toLowerCase();
 		switch (wheelName) {
-			case "fr": return FR_WHEEL;
-			case "br": return BR_WHEEL;
-			case "bl": return BL_WHEEL;
-			case "fl": return FL_WHEEL;
-			default: return -1;
+		case "fr":
+			return FR_WHEEL;
+		case "br":
+			return BR_WHEEL;
+		case "bl":
+			return BL_WHEEL;
+		case "fl":
+			return FL_WHEEL;
+		default:
+			return -1;
 		}
 	}
 
@@ -159,17 +164,29 @@ public class BIGData {
 		put("requested_w", w);
 	}
 
+	/** Set the angle of the robot, in degrees, to turn to. */
 	public static void setAngle(double theta) {
 		setPIDTrue();
 		put("requested_angle", theta);
 	}
 
+	public static double getRequestedAngle() {
+		return getDouble("requested_angle");
+	}
+
+	/** Request that swerve use PID loop to go to the requested angle */
 	public static void setPIDTrue() {
 		put("PID?", true);
 	}
 
+	/** Request that swerve stop using PID loop to go to the requested angle */
 	public static void setPIDFalse() {
 		put("PID?", false);
+	}
+
+	/** @return whether swerve should use PID or not */
+	public static boolean isPID() {
+		return getBoolean("PID?");
 	}
 
 	/** get the requested x velocity of the robot */
@@ -261,6 +278,7 @@ public class BIGData {
 	public static void putZeroIndivSwerveRequest(int wheelNum, boolean setTo) {
 		put("zero_module_" + wheelNum, setTo);
 	}
+
 	/** get whether a single swerve module has been requested to be zeroed */
 	public static boolean getZeroIndivSwerveRequest(int wheelNum) {
 		return getBoolean("zero_module_" + wheelNum);
@@ -286,6 +304,16 @@ public class BIGData {
 		return getBoolean("linkage_state");
 	}
 
+	/** set the state of the hook: true=on, false=off */
+	public static void requestHookState(boolean state) {
+		put("hook_state", state);
+	}
+
+	/** get the state of the hook true=on, false=off */
+	public static boolean getHookState() {
+		return getBoolean("hook_state");
+	}
+
 	/** Set the state of intake; true=extended, false=retracted */
 	public static void requestIntakeState(boolean state) {
 		put("intake_state", state);
@@ -296,14 +324,28 @@ public class BIGData {
 		return getBoolean("intake_state");
 	}
 
+	/** Set the state of shooter; false = manual, true = automatic
+	 * @param controller where this command is coming from: controller="mech" means coming from mech controller, 
+	 * controller="swerve" means the control is coming from swerve after centering itself
+	 */
+	public static void putShooterState(boolean state, String controller) {
+		switch (controller) {
+		case "mech":
+			put("shooter_state_mech", state);
+		case "swerve":
+			put("shooter_state_swerve", state);
+		}
+	}
+
 	/** Set the state of shooter; false = manual, true = automatic */
 	public static void putShooterState(boolean state) {
-		put("shooter_state", state);
+		put("shooter_state_mech", state);
+		put("shooter_state_swerve", state);
 	}
 
 	/** Get the state of shooter; false = manual, true = automatic */
 	public static boolean getShooterState() {
-		return getBoolean("shooter_state");
+		return (getBoolean("shooter_state_swerve") || getBoolean("shooter_state_mech"));
 	}
 
 	/** Set the state of storage; true = automatic, false = manual */
@@ -316,29 +358,24 @@ public class BIGData {
 		return getBoolean("storage_state");
 	}
 
-	/** Set the motor spin speed with percentage motor output */
-	public static void requestStorageSpeed(double speed) {
+	/** Set the manual storage motor spin speed with percentage motor output */
+	public static void requestManualStorageSpeed(double speed) {
 		put("storage_speed", GRTUtil.clamp(-1.0, speed, 1.0));
 	}
 
-	/** Get the motor spin speed with percentage motor output */
-	public static double getStorageSpeed() {
+	/** Get the motor spin speed for manual control with percentage motor output */
+	public static double getManualStorageSpeed() {
 		return getDouble("storage_speed");
-	}
-
-	/** Set the motor spin speed with percentage motor output */
-	public static void requestStorageSpeedAuto(double speed) {
-		put("storage_speed_auto", GRTUtil.clamp(-1.0, speed, 1.0));
 	}
 
 	/** Get the motor spin speed with percentage motor output */
 	public static double getStorageSpeedAuto() {
-		return getDouble("storage_speed_auto");
+		return getDouble("storage_speed_load");
 	}
 
 	/**
-	 * set the output speed of the winch motor, from -1.0 to 1.0 
-	 * TODO maybe only make winch turn one way
+	 * set the output speed of the winch motor, from -1.0 to 1.0 TODO maybe only
+	 * make winch turn one way
 	 */
 	public static void requestWinchSpeed(double output) {
 		put("winch_speed", GRTUtil.clamp(-1.0, output, 1.0));
@@ -356,20 +393,38 @@ public class BIGData {
 		return getBoolean("winch_state");
 	}
 
+	/** set the state of the spinner false=up, true=down */
 	public static void putSpinnerState(boolean state) {
 		put("spinner_state", state);
 	}
 
-	public static void setSpinnerState(boolean state) {
-		put("spinner_state", state);
-	}
-
+	/** get the state of the spinner false=up, true=down */
 	public static boolean getSpinnerState() {
 		return getBoolean("spinner_state");
 	}
 
-	public static double getSpinnerSpeed() {
+	/** set the speed to spin the spinner at during manual control */
+	public static void setManualSpinnerSpeed(double manualSpeed) {
+		put("spinner_manual_speed", manualSpeed);
+	}
+
+	/** get the speed to spin the spinner at manually */
+	public static double getManualSpinnerSpeed() {
 		return getDouble("spinner_manual_speed");
+	}
+
+	/** set whether we should use the manual spinner speed or automatic control 
+	 * @param use true if we should use manual control, false if we should use automatic spinner control
+	*/
+	public static void setUseManualSpinner(boolean use) {
+		put("use_spinner_manual_speed", use);
+	}
+
+	/** get whether we should use manual spinner speed or automatic control
+	 * @return true if we should use manual control, false if we should use automatic spinner control
+	 */
+	public static boolean getUseManualSpinner() {
+		return getBoolean("use_spinner_manual_speed");
 	}
 
 	/** set the original value of the first joystick profile point */
@@ -484,18 +539,29 @@ public class BIGData {
 	public static String getCanvasClick() {
 		return getString("canvas_click");
 	}
-	/** update lidar values
-	 * @param azimuth angle in radians between the 0 rad line of lidar and the line 
-	 * from lidar to center of target. the plane of this angle is parallel to the floor
-	 * @param range distance from lidar to center of the target in the plane parallel to the floor
-	 * @param relAngle angle of the robot relative to target, where 0 rad is right 
-	 * in front of target, and right of target are positive angles, and left of target 
-	 * are negative angles.
+
+	/**
+	 * update lidar values
+	 * 
+	 * @param azimuth
+	 *                     angle in radians between the 0 rad line of lidar and the
+	 *                     line from lidar to center of target. the plane of this
+	 *                     angle is parallel to the floor
+	 * @param range
+	 *                     distance from lidar to center of the target in the plane
+	 *                     parallel to the floor
+	 * @param relAngle
+	 *                     angle of the robot relative to target, where 0 rad is
+	 *                     right in front of target, and right of target are
+	 *                     positive angles, and left of target are negative angles.
+	 * @param quality
+	 *                     the quality of the data, lower is better
 	 */
-	public static void updateLidar(double azimuth, double range, double relAngle) {
+	public static void updateLidar(double azimuth, double range, double relAngle, double quality) {
 		put("lidar_range", range);
 		put("lidar_azimuth", azimuth);
 		put("lidar_rel_angle", relAngle);
+		put("lidar_quality", quality);
 	}
 
 	/** put (or update) a key/value mapping into the map */
@@ -512,10 +578,15 @@ public class BIGData {
 	}
 
 	/**
-	 * @param r the range (distance from the target horizontally, in inches)
-	 * @param a the azimuth (in degrees, where positive means camera is pointed to the left)
-	 * @param x TODO TELL ME WHAT THIS IS!
-	 * @param y TODO TELL ME WHAT THIS IS!!!!!!!!!!!!!!
+	 * @param r
+	 *              the range (distance from the target horizontally, in inches)
+	 * @param a
+	 *              the azimuth (in degrees, where positive means camera is pointed
+	 *              to the left)
+	 * @param x
+	 *              TODO TELL ME WHAT THIS IS!
+	 * @param y
+	 *              TODO TELL ME WHAT THIS IS!!!!!!!!!!!!!!
 	 */
 	public static void updateCamera(double r, double a, double x, double y) {
 		put("camera_azimuth", a);
@@ -534,7 +605,8 @@ public class BIGData {
 	}
 
 	/**
-	 * @param r distance in inches
+	 * @param r
+	 *              distance in inches
 	 */
 	public static void updateLidar(double r) {
 		put("lidar_range", r);
@@ -555,7 +627,10 @@ public class BIGData {
 		map.put(key, "" + val);
 	}
 
-	/** resets the local RPM config file with the corresponding deploy-file RPM config file */
+	/**
+	 * resets the local RPM config file with the corresponding deploy-file RPM
+	 * config file
+	 */
 	public static void resetLocalRPMConfigFile() {
 		Config.resetLocalRPMConfigFile();
 	}
@@ -565,13 +640,19 @@ public class BIGData {
 		Config.resetLocalConfigFile();
 	}
 
-	/** Writes the current local mappings to the local config file in home/lvuser.
-	 * (updates swerve zeroes in local file) */
+	/**
+	 * Writes the current local mappings to the local config file in home/lvuser.
+	 * (updates swerve zeroes in local file)
+	 */
 	public static void updateLocalConfigFile() {
 		Config.updateLocalConfigFile();
 	}
 
 	public static void updateLocalRPMConfigFile() {
 		Config.updateLocalRPMConfigFile();
+	}
+
+	public static String getMechToRun() {
+		return getString("mech_to_run");
 	}
 }
