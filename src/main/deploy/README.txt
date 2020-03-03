@@ -2,12 +2,13 @@ swerve xbox controller
 left joystick = swerve translation
 right joystick = winch speed control (used in conjunction with y button)
 triggers = swerve rotation
-bumpers = rotate by 45 degrees
+left bumper = hold to enable slow swerve rotation
+right bumper = hold to enable winch
 pov buttons = PID
 a = hold a to center to target
 b = toggle hook
 x = toggle the linkage
-y = press/hold this button to enable winch
+y =
 menu/start = zero gyro
 change view/back = move spinner mech up
 -------------------------
