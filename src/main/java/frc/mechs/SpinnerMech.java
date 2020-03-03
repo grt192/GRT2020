@@ -83,6 +83,8 @@ public class SpinnerMech implements Mech {
         firstColor = Color.kBlack;
 
         BIGData.putSpinnerState(false);
+        BIGData.setUseManualSpinner(false);
+        BIGData.setManualSpinnerSpeed(0);
     }
 
     public void update() {
@@ -90,14 +92,11 @@ public class SpinnerMech implements Mech {
         boolean state = BIGData.getSpinnerState();
         sol.set(state);
         boolean useManual = BIGData.getUseManualSpinner();
-        if (!state) {
-            // if we are up, we are allowed to do stuff
-            if (useManual) {
-                // System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
-                motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());
-            } else {
-                automaticControl();
-            }
+        if (useManual) {
+            System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
+            motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());
+        } else {
+            automaticControl();
         }
     }
 
