@@ -93,7 +93,7 @@ public class SpinnerMech implements Mech {
         sol.set(state);
         boolean useManual = BIGData.getUseManualSpinner();
         if (useManual) {
-            System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
+            // System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
             motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());
         } else {
             automaticControl();

@@ -37,20 +37,34 @@ class DriverControl extends Mode {
         double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);
         x = JoystickProfile.applyProfile(x);
         y = JoystickProfile.applyProfile(y);
+        
         // rotate the robot
         double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
         double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
-        double rotate = JoystickProfile.applyProfile(-(Math.abs(rTrigger) - Math.abs(lTrigger)));
+        double rotate;
+        if (Input.SWERVE_XBOX.getBumper(Hand.kLeft)) {
+            rotate = JoystickProfile.applyProfile(-(Math.abs(rTrigger) - Math.abs(lTrigger)));
+            rotate = GRTUtil.transformation(-1, 1, -0.2, 0.2, rotate);
+
+        } else {
+            rotate = JoystickProfile.applyProfile(-(Math.abs(rTrigger) - Math.abs(lTrigger)));
+        }
         if (rotate != 0) {
             BIGData.setPIDFalse();
         }
+
+        pov = Input.SWERVE_XBOX.getPOV();
+        if (pov != -1) {
+            lastPov = pov;
+            BIGData.setAngle(pov);
+        } 
 
         // center with vision if the a button is being held
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
         double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
         if (Input.SWERVE_XBOX.getAButtonPressed()) {
             useCenter = true;
-            // don't center if we don't have 
+            // don't center if we don't have
         }
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
             useCenter = false;
@@ -156,20 +170,32 @@ class DriverControl extends Mode {
         }
         // Use the POV on MECH_XBOX to set the speed
         int mechPOV = Input.MECH_XBOX.getPOV();
-        //System.out.println(mechPOV);
+        // System.out.println(mechPOV);
         // if POV is being pressed, we should use the manual control
         if (mechPOV >= 0) {
             BIGData.setUseManualSpinner(true);
         }
         switch (mechPOV) {
-            case 0: BIGData.setManualSpinnerSpeed(0); break;
-            case 45: BIGData.setManualSpinnerSpeed(BIGData.getDouble("slow_spinner_speed")); break;
-            case 90: BIGData.setManualSpinnerSpeed(BIGData.getDouble("fast_spinner_speed")); break;
-            case 270: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("fast_spinner_speed")); break;
-            case 315: BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed")); break;
-            default: BIGData.setManualSpinnerSpeed(0); break;
+        case 0:
+            BIGData.setManualSpinnerSpeed(0);
+            break;
+        case 45:
+            BIGData.setManualSpinnerSpeed(BIGData.getDouble("slow_spinner_speed"));
+            break;
+        case 90:
+            BIGData.setManualSpinnerSpeed(BIGData.getDouble("fast_spinner_speed"));
+            break;
+        case 270:
+            BIGData.setManualSpinnerSpeed(-BIGData.getDouble("fast_spinner_speed"));
+            break;
+        case 315:
+            BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed"));
+            break;
+        default:
+            BIGData.setManualSpinnerSpeed(0);
+            break;
         }
-        //System.out.println(BIGData.getManualSpinnerSpeed());
+        // System.out.println(BIGData.getManualSpinnerSpeed());
     }
 
 }

@@ -92,7 +92,7 @@ public class GeneralControl extends Mode {
             BIGData.requestDrive(0, 0, 0.1);
             returnBool = true;
         } else {
-            BIGData.setAngle(cameraAzimuth);
+            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
             if (cameraAzimuth < 2)
                 BIGData.putShooterState(true);
             returnBool = true;
