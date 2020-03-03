@@ -128,7 +128,6 @@ public class PositionTracking {
             Z.put(0, 0, absoluteEstimate.x, absoluteEstimate.y);
             kf.correct(Z);
         }
-
         tempX = getX();
         tempY = getY();
 

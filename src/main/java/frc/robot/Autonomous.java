@@ -114,6 +114,16 @@ public class Autonomous {
                 Target.putAction(Target.Actions.DRIVETO);
                 robot.setMode(3);
                 break;
+            case "shoot":
+                BIGData.put("auton_manual_shooter_speed", Double.parseDouble(cmd[1]));
+                Target.putAction(Target.Actions.SHOOT);
+                robot.setMode(3);
+                break;
+            case "hood":
+                Target.setHoodState(cmd[1]);
+                Target.putAction(Target.Actions.HOOD);
+                robot.setMode(3);
+                break;
             }
         }
     }

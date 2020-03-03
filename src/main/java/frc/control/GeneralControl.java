@@ -44,6 +44,12 @@ public class GeneralControl extends Mode {
         case TURN:
             runTurn();
             break;
+        case SHOOT:
+            runShoot();
+            break;
+        case HOOD:
+            runHood();
+            break;
         }
         if (!returnBool)
             Target.removeAction();
@@ -70,7 +76,7 @@ public class GeneralControl extends Mode {
     }
 
     private void runIntake() {
-        BIGData.put("auto_intake_speed", 0.6);
+        BIGData.put("auto_intake_speed", 0.5);
         intakeState = Target.getIntakeState();
         BIGData.requestIntakeState(intakeState);
         returnBool = false;
@@ -84,6 +90,7 @@ public class GeneralControl extends Mode {
         if (cameraRange == 0) {
             System.out.println("no vision target found!! turning!!");
             BIGData.requestDrive(0, 0, 0.1);
+            returnBool = true;
         } else {
             BIGData.setAngle(cameraAzimuth);
             if (cameraAzimuth < 2)
@@ -98,6 +105,21 @@ public class GeneralControl extends Mode {
         startAngle = BIGData.getGyroAngle();
         targetAngle = Target.getAngle() + startAngle;
         BIGData.setAngle(targetAngle);
+        returnBool = false;
+    }
+
+    private void runShoot() {
+        BIGData.put("auton_manual_shooter", true);
+        if (lemonCount < 1) {
+            BIGData.put("auton_manual_shooter", false);
+            returnBool = false;
+        } else {
+            returnBool = true;
+        }
+    }
+
+    private void runHood() {
+        BIGData.put("shooter_up", Target.getHoodState());
         returnBool = false;
     }
 }

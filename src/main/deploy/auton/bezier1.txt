@@ -1,6 +1,7 @@
 # drive in a spline
 pos 0.0 0.0
-bez 80.0 0.0 80.0 -50.0 80.0 -100.0
+bez 100.0 0.0 100.0 -50.0 100.0 -100.0
 wait
 turn 180.0
-intake true
+wait
+## intake true

@@ -12,6 +12,7 @@ public class Target {
     private static Vector target;
     private static double angle;
     private static boolean intakeState;
+    private static boolean hoodState;
 
     private static Vector c1, c2;
 
@@ -113,7 +114,22 @@ public class Target {
         intakeState = i;
     }
 
+    public static void setHoodState(String hoodPos) {
+        switch (hoodPos.toLowerCase()) {
+        case "up":
+            hoodState = true;
+            break;
+        case "down":
+            hoodState = false;
+            break;
+        } 
+    }
+
+    public static boolean getHoodState() {
+        return hoodState;
+    }
+
     public enum Actions {
-        BEZ, DRIVETO, INTAKE, PATH, SCORE, TURN;
+        BEZ, DRIVETO, INTAKE, PATH, SCORE, TURN, SHOOT, HOOD;
     }
 }

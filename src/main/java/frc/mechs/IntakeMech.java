@@ -25,7 +25,7 @@ public class IntakeMech implements Mech {
     public void update() {
         boolean state = BIGData.getIntakeState();
         intakeSpeed = BIGData.getBoolean("in_teleop") ? BIGData.getDouble("intake_speed") : 0.4;
-        motor.set(ControlMode.PercentOutput, state ? intakeSpeed : 0);
+        motor.set(ControlMode.PercentOutput, intakeSpeed);
         sol.set(state);
     }
 

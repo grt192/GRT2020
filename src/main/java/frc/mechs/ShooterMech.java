@@ -67,6 +67,10 @@ public class ShooterMech implements Mech {
             motor_lead.set(BIGData.getDouble("shooter_manual"));
             // mode being true means it's in automatic control, speed calculated based on
             // distance to vision target
+        } else if (BIGData.getBoolean("auton_manual_shooter")) {
+            int rpm = BIGData.getInt("auton_manual_shooter_speed");
+            motor_lead.setVoltage(smff.calculate(rpm / 60));
+            BIGData.put("shooter_auto", rpm);
         } else {
             // TODO change this to a general range
             double range = 4 + BIGData.getDouble("lidar_range");

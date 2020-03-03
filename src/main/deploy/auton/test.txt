@@ -1,0 +1,3 @@
+## manual shooter auton
+hood down
+shoot 5000

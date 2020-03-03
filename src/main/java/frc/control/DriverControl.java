@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.control.input.Input;
 import frc.control.input.JoystickProfile;
 import frc.gen.BIGData;
+import frc.util.GRTUtil;
 
 class DriverControl extends Mode {
     private int pov = -1;
@@ -45,19 +46,19 @@ class DriverControl extends Mode {
         }
 
         // get input for automatically snapping to an angle (in increments of 45deg)
-        pov = Input.SWERVE_XBOX.getPOV();
-        if (pov != -1) {
-            lastPov = pov;
-            BIGData.setAngle(pov);
-        } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
-            pov = lastPov - 45;
-            lastPov = pov;
-            BIGData.setAngle(pov);
-        } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
-            pov = lastPov + 45;
-            lastPov = pov;
-            BIGData.setAngle(pov);
-        }
+        // pov = Input.SWERVE_XBOX.getPOV();
+        // if (pov != -1) {
+        //     lastPov = pov;
+        //     BIGData.setAngle(pov);
+        // } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
+        //     pov = lastPov - 45;
+        //     lastPov = pov;
+        //     BIGData.setAngle(pov);
+        // } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
+        //     pov = lastPov + 45;
+        //     lastPov = pov;
+        //     BIGData.setAngle(pov);
+        // }
 
         // center with vision if the a button is being held
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
@@ -82,6 +83,7 @@ class DriverControl extends Mode {
         double lTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kLeft);
         double rTriggerMech = Input.MECH_XBOX.getTriggerAxis(Hand.kRight);
         double mechTriggerSum = JoystickProfile.applyDeadband(Math.abs(rTriggerMech) - Math.abs(lTriggerMech));
+        mechTriggerSum = GRTUtil.transformation(-1, 1, -0.75, 0.75, mechTriggerSum);
         BIGData.put("intake_speed", mechTriggerSum);
         // if x button is released, toggle the intake position
         if (Input.MECH_XBOX.getXButtonReleased()) {
@@ -130,12 +132,12 @@ class DriverControl extends Mode {
 
     private void driveWinchMech() {
         // only allow the winch to be driven when the swerve y button is being pressed
-        BIGData.putWinchState(Input.SWERVE_XBOX.getYButton());
+        BIGData.putWinchState(Input.SWERVE_XBOX.getBumper(Hand.kRight));
         // read motor speed from right joystick of swerve controller
         double rJoystickSwerve = Input.SWERVE_XBOX.getY(Hand.kRight);
         rJoystickSwerve = JoystickProfile.applyProfile(rJoystickSwerve);
         // set the speed to spin at
-        BIGData.requestWinchSpeed(rJoystickSwerve);
+        BIGData.requestWinchSpeed(-rJoystickSwerve);
     }
 
     private void driveLinkageMech() {
