@@ -90,8 +90,8 @@ public class Lidar implements Runnable {
                 if (in != null) {
                     String[] data = in.replace("(", "").replace(")", "").split(",");
                     // data[0], data[3] should be in radians.
-                    BIGData.updateLidar(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
-                            Double.parseDouble(data[2]), Double.parseDouble(data[3]));
+                    BIGData.updateLidar(Math.toDegrees(Double.parseDouble(data[0])), Double.parseDouble(data[1]),
+                            Math.toDegrees(Double.parseDouble(data[2])), Double.parseDouble(data[3]));
                     System.out.println(Arrays.toString(data));
                 }
             }

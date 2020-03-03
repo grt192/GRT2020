@@ -10,7 +10,7 @@ class DriverControl extends Mode {
     private int pov = -1;
     private int lastPov;
 
-    private boolean useCameraCenter, useLidarCenter;
+    private boolean useCenter = false;
 
     @Override
     public boolean loop() {
@@ -45,33 +45,24 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        // get input for automatically snapping to an angle (in increments of 45deg)
-        // pov = Input.SWERVE_XBOX.getPOV();
-        // if (pov != -1) {
-        //     lastPov = pov;
-        //     BIGData.setAngle(pov);
-        // } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
-        //     pov = lastPov - 45;
-        //     lastPov = pov;
-        //     BIGData.setAngle(pov);
-        // } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
-        //     pov = lastPov + 45;
-        //     lastPov = pov;
-        //     BIGData.setAngle(pov);
-        // }
-
         // center with vision if the a button is being held
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
+        double lidarAzimuth = BIGData.getDouble("lidar_azimuth");
         if (Input.SWERVE_XBOX.getAButtonPressed()) {
-            useCameraCenter = true;
+            useCenter = true;
+            // don't center if we don't have 
         }
         if (Input.SWERVE_XBOX.getAButtonReleased()) {
-            useCameraCenter = false;
+            useCenter = false;
             BIGData.setPIDFalse();
         }
-        if (useCameraCenter) {
-            // set the angle to rotate to
-            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
+
+        if (useCenter) {
+            if (BIGData.getLong("camera_last_updated") > System.currentTimeMillis() - 500) {
+                BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
+            } else if (BIGData.getLong("lidar_last_updated") > System.currentTimeMillis() - 500) {
+                BIGData.setAngle(lidarAzimuth + BIGData.getGyroAngle());
+            }
         }
 
         BIGData.requestDrive(x, y, rotate);

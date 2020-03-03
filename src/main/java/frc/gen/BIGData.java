@@ -47,6 +47,9 @@ public class BIGData {
 			case "String":
 				put(key, "");
 				break;
+			case "long":
+				put(key, 0);
+				break;
 			}
 		}
 	}
@@ -85,6 +88,15 @@ public class BIGData {
 		existenceCheck(key, "int");
 		try {
 			return Integer.parseInt(map.get(key));
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	public static long getLong(String key) {
+		existenceCheck(key, "long");
+		try {
+			return Long.parseLong(map.get(key));
 		} catch (Exception e) {
 			return -1;
 		}
@@ -544,14 +556,14 @@ public class BIGData {
 	 * update lidar values
 	 * 
 	 * @param azimuth
-	 *                     angle in radians between the 0 rad line of lidar and the
+	 *                     angle in degrees between the 0 rad line of lidar and the
 	 *                     line from lidar to center of target. the plane of this
 	 *                     angle is parallel to the floor
 	 * @param range
 	 *                     distance from lidar to center of the target in the plane
 	 *                     parallel to the floor
 	 * @param relAngle
-	 *                     angle of the robot relative to target, where 0 rad is
+	 *                     angle of the robot in degrees relative to target, where 0 degrees is
 	 *                     right in front of target, and right of target are
 	 *                     positive angles, and left of target are negative angles.
 	 * @param quality
@@ -562,8 +574,9 @@ public class BIGData {
 		put("lidar_azimuth", azimuth);
 		put("lidar_rel_angle", relAngle);
 		put("lidar_quality", quality);
+		put("lidar_last_updated", ""+System.currentTimeMillis());
 	}
-
+	
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, String val) {
 		map.put(key, val);
@@ -593,6 +606,7 @@ public class BIGData {
 		put("camera_range", r);
 		put("relative_x", x);
 		put("relative_y", y);
+		put("camera_last_updated", ""+System.currentTimeMillis());
 	}
 
 	/** TODO COMMENT CODE PLS! */
@@ -602,14 +616,6 @@ public class BIGData {
 			return v;
 		}
 		return null;
-	}
-
-	/**
-	 * @param r
-	 *              distance in inches
-	 */
-	public static void updateLidar(double r) {
-		put("lidar_range", r);
 	}
 
 	/** put (or update) a key/value mapping into the map */
