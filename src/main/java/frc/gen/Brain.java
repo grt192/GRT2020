@@ -1,5 +1,6 @@
 package frc.gen;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -34,9 +35,11 @@ public class Brain implements Runnable {
         camera = new JetsonCamera();
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
-        // TODO Fix this
-        CameraServer.getInstance().startAutomaticCapture(0);
-        CameraServer.getInstance().startAutomaticCapture(1);
+        UsbCamera cameraA = CameraServer.getInstance().startAutomaticCapture(0);
+        UsbCamera cameraB = CameraServer.getInstance().startAutomaticCapture(1);
+        cameraA.setResolution(640, 360);
+        cameraB.setResolution(640, 360);
+
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
     }

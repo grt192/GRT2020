@@ -7,9 +7,7 @@ import frc.gen.BIGData;
 import frc.util.GRTUtil;
 
 class DriverControl extends Mode {
-    private int pov = -1;
-    private int lastPov;
-
+    // if we are currently trying to center using camera/lidar data
     private boolean useCenter = false;
 
     @Override
@@ -53,9 +51,8 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        pov = Input.SWERVE_XBOX.getPOV();
+        int pov = Input.SWERVE_XBOX.getPOV();
         if (pov != -1) {
-            lastPov = pov;
             BIGData.setAngle(pov);
         } 
 
