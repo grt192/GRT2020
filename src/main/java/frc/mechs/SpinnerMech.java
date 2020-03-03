@@ -93,7 +93,7 @@ public class SpinnerMech implements Mech {
         if (!state) {
             // if we are up, we are allowed to do stuff
             if (useManual) {
-                System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
+                // System.out.println("setting spinner to " + BIGData.getManualSpinnerSpeed());
                 motor.set(ControlMode.PercentOutput, BIGData.getManualSpinnerSpeed());
             } else {
                 automaticControl();

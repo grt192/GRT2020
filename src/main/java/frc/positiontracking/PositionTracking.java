@@ -92,56 +92,61 @@ public class PositionTracking {
     }
 
     public void update() {
-        manualSetPos();
+        // Yes, I know this is a terrible, but I enjoy running from my problems :)
+        try {
+            manualSetPos();
 
-        // time since last call
-        temp = System.currentTimeMillis();
-        ticks = (temp - lastUpdate);
-        lastUpdate = temp;
-        dt = ticks / 1000.0;
+            // time since last call
+            temp = System.currentTimeMillis();
+            ticks = (temp - lastUpdate);
+            lastUpdate = temp;
+            dt = ticks / 1000.0;
 
-        // calculate speed using swerve data
-        data = BIGData.getSwerveData();
-        speed = Math.sqrt(data.encoderVX * data.encoderVX + data.encoderVY * data.encoderVY);
+            // calculate speed using swerve data
+            data = BIGData.getSwerveData();
+            speed = Math.sqrt(data.encoderVX * data.encoderVX + data.encoderVY * data.encoderVY);
 
-        // set process noise covariance
-        Q = new Mat(STATES, STATES, TYPE);
-        Q.put(0, 0, PROCESS_NOISE * dt * speed, 0, 0, PROCESS_NOISE * dt * speed);
-        kf.set_processNoiseCov(Q);
-        kf.get_controlMatrix().put(0, 0, dt, 0, 0, dt);
+            // set process noise covariance
+            Q = new Mat(STATES, STATES, TYPE);
+            Q.put(0, 0, PROCESS_NOISE * dt * speed, 0, 0, PROCESS_NOISE * dt * speed);
+            kf.set_processNoiseCov(Q);
+            kf.get_controlMatrix().put(0, 0, dt, 0, 0, dt);
 
-        // predict using control input u
-        U = new Mat(STATES, 1, TYPE);
-        U.put(0, 0, data.encoderVX, data.encoderVY);
-        kf.predict(U);
+            // predict using control input u
+            U = new Mat(STATES, 1, TYPE);
+            U.put(0, 0, data.encoderVX, data.encoderVY);
+            kf.predict(U);
 
-        // get relative position estimate from the camera
-        relativeEstimate = BIGData.getCameraPos();
-        closestVisionTarget(new Vector(tempX, tempY));
-        if (relativeEstimate != null && BIGData.getBoolean("correct_with_camera")){
+            // get relative position estimate from the camera
+            relativeEstimate = BIGData.getCameraPos();
+            closestVisionTarget(new Vector(tempX, tempY));
+            if (relativeEstimate != null && BIGData.getBoolean("correct_with_camera")) {
 
-            // find absolute position from relative position
-            absoluteEstimate = closestTarget.subtract(relativeEstimate);
-            
-            // correct using measurement input z
-            Z = new Mat(STATES, 1, TYPE);
-            Z.put(0, 0, absoluteEstimate.x, absoluteEstimate.y);
-            kf.correct(Z);
+                // find absolute position from relative position
+                absoluteEstimate = closestTarget.subtract(relativeEstimate);
+
+                // correct using measurement input z
+                Z = new Mat(STATES, 1, TYPE);
+                Z.put(0, 0, absoluteEstimate.x, absoluteEstimate.y);
+                kf.correct(Z);
+            }
+            tempX = getX();
+            tempY = getY();
+
+            if (tempX < (-1 * FIELD_HEIGHT) || tempX > (2 * FIELD_HEIGHT) || tempY < (-1 * FIELD_WIDTH)
+                    || tempY > (2 * FIELD_WIDTH)) {
+                System.out.println("An error occured, resetting to last position");
+                set(cachedX, cachedY);
+            } else {
+                cachedX = tempX;
+                cachedY = tempY;
+            }
+            Vector curr_pos = new Vector(tempX, tempY);
+            // System.out.println("x: " + curr_pos.x + " y: " + curr_pos.y);
+            BIGData.setPosition(curr_pos, "curr");
+        } catch (Exception e) {
+            // TODO: handle exception
         }
-        tempX = getX();
-        tempY = getY();
-
-        if (tempX < (-1 * FIELD_HEIGHT) || tempX > (2 * FIELD_HEIGHT) || tempY < (-1 * FIELD_WIDTH)
-                || tempY > (2 * FIELD_WIDTH)) {
-            System.out.println("An error occured, resetting to last position");
-            set(cachedX, cachedY);
-        } else {
-            cachedX = tempX;
-            cachedY = tempY;
-        }
-        Vector curr_pos = new Vector(tempX, tempY);
-        // System.out.println("x: " + curr_pos.x + " y: " + curr_pos.y);
-        BIGData.setPosition(curr_pos, "curr");
     }
 
     /**
