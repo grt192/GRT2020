@@ -1,3 +1,6 @@
 ## manual shooter auton
+intake down
+wait
 hood down
-shoot 5000
+wait
+score

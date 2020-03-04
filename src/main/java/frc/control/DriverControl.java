@@ -44,7 +44,7 @@ class DriverControl extends Mode {
         double rotate;
         if (Input.SWERVE_XBOX.getBumper(Hand.kLeft)) {
             rotate = JoystickProfile.applyProfile(-(Math.abs(rTrigger) - Math.abs(lTrigger)));
-            rotate = GRTUtil.transformation(-1, 1, -0.2, 0.2, rotate);
+            rotate = GRTUtil.transformation(-1, 1, -0.1, 0.1, rotate);
 
         } else {
             rotate = JoystickProfile.applyProfile(-(Math.abs(rTrigger) - Math.abs(lTrigger)));
@@ -71,13 +71,20 @@ class DriverControl extends Mode {
             BIGData.setPIDFalse();
         }
 
-        if (useCenter) {
-            if (BIGData.getLong("camera_last_updated") > System.currentTimeMillis() - 500) {
-                BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
-            } else if (BIGData.getLong("lidar_last_updated") > System.currentTimeMillis() - 500) {
-                BIGData.setAngle(lidarAzimuth + BIGData.getGyroAngle());
-            }
+        // if (useCenter)
+        //     BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
+        if (useCenter && Math.abs(cameraAzimuth) > 1) {
+            rotate = (-0.01 * cameraAzimuth);
+        } else if (useCenter) {
+            rotate = 0;
         }
+        // if (useCenter) {
+        //     if (BIGData.getLong("camera_last_updated") > System.currentTimeMillis() - 500) {
+        //         BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
+        //     } else if (BIGData.getLong("lidar_last_updated") > System.currentTimeMillis() - 500) {
+        //         BIGData.setAngle(lidarAzimuth + BIGData.getGyroAngle());
+        //     }
+        // }
 
         BIGData.requestDrive(x, y, rotate);
     }

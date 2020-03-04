@@ -22,7 +22,7 @@ public class JetsonCamera implements Runnable {
     private BufferedReader stdIn;
 
     // default port of jetson to connect to
-    private final static int DEFAULT_PORT = 1337;
+    private final static int DEFAULT_PORT = 1338;
 
     public JetsonCamera() {
         port = BIGData.getInt("jetson_camera_port");
@@ -90,10 +90,8 @@ public class JetsonCamera implements Runnable {
             String in = stdIn.readLine();
             if (in != null) {
                 String[] data = in.replace("(", "").replace(")", "").split(",");
-                if (Double.parseDouble(data[0]) > 0) {
-                    BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
+                BIGData.updateCamera(Double.parseDouble(data[0]), Double.parseDouble(data[1]),
                         Double.parseDouble(data[2]), Double.parseDouble(data[3]));
-                }
                 System.out.println(Arrays.toString(data));
             }
         } catch (IOException e) {

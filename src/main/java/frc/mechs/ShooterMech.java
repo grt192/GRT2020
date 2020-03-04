@@ -73,24 +73,24 @@ public class ShooterMech implements Mech {
             BIGData.put("shooter_auto", rpm);
         } else {
             // TODO change this to a general range
-            double range = 4 + BIGData.getDouble("lidar_range");
+            // double range = 4 + BIGData.getDouble("lidar_range");
+            double range = BIGData.getDouble("camera_range");
             if (range > 0)
                 lastGood = range;
             if (BIGData.getDouble("range_testing") > 1) {
                 lastGood = BIGData.getDouble("range_testing");
-                System.out.println(lastGood);
+                // System.out.println(lastGood);
             }
             double rpm = calcSpeed((int) lastGood);
             // System.out.println(rpm);
 
-            if (BIGData.getDouble("shooter_rpm") > 1) {
-                rpm = BIGData.getDouble("shooter_rpm");
-                System.out.println(rpm);
-            }
+            // if (BIGData.getDouble("shooter_rpm") > 1) {
+            //     rpm = BIGData.getDouble("shooter_rpm");
+            //     // System.out.println(rpm);
+            // }
             int offset = BIGData.getInt("shooter_auto_offset");
             double newSpeed = rpm + offset;
-            newSpeed = 5500;
-            rpm = BIGData.getDouble("shooter_speed");
+            // rpm = BIGData.getDouble("shooter_speed");
             // put current rpm in BIGData so driver can to adjust speed based off that
             BIGData.put("shooter_auto", rpm);
             motor_lead.setVoltage(smff.calculate(rpm / 60));
@@ -138,7 +138,7 @@ public class ShooterMech implements Mech {
             } else {
                 // linear interpolation
 
-                System.out.println("Linearizing" + floorEntry + " " + ceilEntry);
+                //System.out.println("Linearizing" + floorEntry + " " + ceilEntry);
                 return floorEntry.getValue()
                         + ((ceilEntry.getValue() - floorEntry.getValue()) / (ceilEntry.getKey() - floorEntry.getKey()))
                                 * (range - floorEntry.getKey());

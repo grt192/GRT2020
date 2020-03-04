@@ -110,19 +110,26 @@ public class Target {
         return intakeState;
     }
 
-    public static void setIntakeState(boolean i) {
-        intakeState = i;
+    public static void setIntakeState(String i) {
+        switch (i.toLowerCase()) {
+        case "up":
+            intakeState = false;
+            break;
+        case "down":
+            intakeState = true;
+            break;
+        }
     }
 
     public static void setHoodState(String hoodPos) {
         switch (hoodPos.toLowerCase()) {
         case "up":
-            hoodState = true;
-            break;
-        case "down":
             hoodState = false;
             break;
-        } 
+        case "down":
+            hoodState = true;
+            break;
+        }
     }
 
     public static boolean getHoodState() {

@@ -24,6 +24,7 @@ public class GeneralControl extends Mode {
     private double cameraAzimuth;
     private double cameraRange;
     private double lemonCount;
+    private double rotate;
 
     public GeneralControl() {
     }
@@ -92,12 +93,17 @@ public class GeneralControl extends Mode {
             BIGData.requestDrive(0, 0, 0.1);
             returnBool = true;
         } else {
-            BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
-            if (cameraAzimuth < 2)
+            if (Math.abs(cameraAzimuth) > 1) {
+                rotate = (-0.01 * cameraAzimuth);
+            } else {
+                rotate = 0;
+            }
+            if (Math.abs(cameraAzimuth) < 1)
                 BIGData.putShooterState(true);
             returnBool = true;
             if (lemonCount < 1)
                 returnBool = false;
+            BIGData.requestDrive(0, 0, rotate);
         }
     }
 

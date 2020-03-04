@@ -105,7 +105,7 @@ public class Autonomous {
                 robot.setMode(3);
                 break;
             case "intake":
-                Target.setIntakeState(Boolean.parseBoolean(cmd[1]));
+                Target.setIntakeState(cmd[1]);
                 Target.putAction(Target.Actions.INTAKE);
                 robot.setMode(3);
                 break;
