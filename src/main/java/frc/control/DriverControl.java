@@ -20,6 +20,7 @@ class DriverControl extends Mode {
         driveWinchMech();
         driveLinkageMech();
         driveSpinnerMech();
+        toggleCameras();
         return true;
     }
 
@@ -193,6 +194,12 @@ class DriverControl extends Mode {
             break;
         }
         // System.out.println(BIGData.getManualSpinnerSpeed());
+    }
+
+    private void toggleCameras() {
+        if (Input.SWERVE_XBOX.getYButtonReleased()) {
+            BIGData.put("request_camera_switch", true);
+        }
     }
 
 }
