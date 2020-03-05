@@ -88,23 +88,17 @@ public class GeneralControl extends Mode {
         cameraRange = BIGData.getDouble("camera_range");
         lemonCount = BIGData.getInt("lemon_count");
 
-        if (cameraRange == 0) {
-            System.out.println("no vision target found!! turning!!");
-            BIGData.requestDrive(0, 0, 0.1);
-            returnBool = true;
+        if (Math.abs(cameraAzimuth) > 1) {
+            rotate = (-0.01 * cameraAzimuth);
         } else {
-            if (Math.abs(cameraAzimuth) > 1) {
-                rotate = (-0.01 * cameraAzimuth);
-            } else {
-                rotate = 0;
-            }
-            if (Math.abs(cameraAzimuth) < 1)
-                BIGData.putShooterState(true);
-            returnBool = true;
-            if (lemonCount < 1)
-                returnBool = false;
-            BIGData.requestDrive(0, 0, rotate);
+            rotate = 0;
         }
+        if (Math.abs(cameraAzimuth) < 1)
+            BIGData.putShooterState(true);
+        returnBool = true;
+        if (lemonCount < 1)
+            returnBool = false;
+        BIGData.requestDrive(0, 0, rotate);
     }
 
     private void runTurn() {

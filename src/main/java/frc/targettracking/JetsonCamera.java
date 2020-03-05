@@ -22,7 +22,7 @@ public class JetsonCamera implements Runnable {
     private BufferedReader stdIn;
 
     // default port of jetson to connect to
-    private final static int DEFAULT_PORT = 1338;
+    private final static int DEFAULT_PORT = 1337;
 
     public JetsonCamera() {
         port = BIGData.getInt("jetson_camera_port");
