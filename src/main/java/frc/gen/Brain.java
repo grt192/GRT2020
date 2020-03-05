@@ -38,7 +38,6 @@ public class Brain implements Runnable {
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
         cameras = new DriverCameras(2);
-        cameras.start();
 
         notif = new Notifier(this);
         notif.startPeriodic(0.02);

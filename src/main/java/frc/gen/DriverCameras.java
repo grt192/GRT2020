@@ -12,11 +12,11 @@ import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.cameraserver.CameraServer;
 
-public class DriverCameras extends Thread {
+public class DriverCameras {
     // the camera we are currently using
     private int curCameraIndex;
-    // the sink that we are currently using
-    private CvSink curCvSink;
+    // the camera that the driver sees
+    private VideoSink switchedCamera;
 
     // cameras we can switch between
     private UsbCamera[] cameras;
@@ -26,33 +26,20 @@ public class DriverCameras extends Thread {
 
     public DriverCameras(int numCameras) {
         if (numCameras > 0) {
-            cameras = UsbCamera[numCameras];
+            // initialize each camera
+            cameras = new UsbCamera[numCameras];
             for (int i = 0; i < numCameras; i++) {
-                cameras[i] = CameraServer.getInstance.startAutomaticCapture(i);
+                cameras[i] = CameraServer.getInstance().startAutomaticCapture(i);
                 cameras[i].setResolution(VIDEO_WIDTH, VIDEO_HEIGHT);
             }
+            // set up virtual camera for switching between camera streams
             curCameraIndex = 0;
-            curCvSink = CameraServer.getInstance().getVideo(cameras[0]);
+            switchedCamera = CameraServer.getInstance().addSwitchedCamera("DRIVER CAMERA");
+            // arbitrarily set the starting camera to the first camera
+            switchedCamera.setSource(cameras[0]);
         } else {
             cameras = null;
         }
-    }
-
-    public void run() {
-        CvSource outputStream = CameraServer.getInstance().putVideo("DRIVER CAMERA", VIDEO_WIDTH, VIDEO_HEIGHT);
-
-        Mat source = new Mat();
-        Mat output = new Mat();
-        Size size = new Size(VIDEO_WDITH, VIDEO_HEIGHT);
-
-        while (!Thread.interrupted()) {
-            if (curCvSink.grabFrame(source) == 0) {
-                continue;
-            }
-            Imgproc.resize(source, output, size);
-            outputStream.putFrame(output);
-        }
-
     }
 
     public void update() {
@@ -60,9 +47,8 @@ public class DriverCameras extends Thread {
             return;
         } else if (BIGData.getBoolean("request_camera_switch")) {
             BIGData.put("request_camera_switch", false);
-            curCvSink.close();
             curCameraIndex = (curCameraIndex+1) % cameras.length;
-            curCvSink = CameraServer.getInstance().getVideo(cameras[curCameraIndex]);
+            switchedCamera.setSource(cameras[curCameraIndex]);
         }
     }
 }
