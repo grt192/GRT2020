@@ -12,7 +12,7 @@ import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.cameraserver.CameraServer;
 
-public class DriverCameras extends Thread {
+public class DriverCameras {
     // array of cameras
     private UsbCamera[] cameras;
     // index of the camera that we are currently streaming
@@ -22,6 +22,7 @@ public class DriverCameras extends Thread {
       cameras = new UsbCamera[2];
       cameras[0] = CameraServer.getInstance().startAutomaticCapture(0);
       cameras[1] = CameraServer.getInstance().startAutomaticCapture(1);
+      CameraServer.getInstance().addServer("DRIVER CAMERA");
       server = CameraServer.getInstance().getServer();
     }
 
