@@ -1,5 +1,7 @@
 package frc.gen;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Notifier;
@@ -21,6 +23,7 @@ public class Brain implements Runnable {
     public static JetsonCamera camera;
     public static FieldGUI fieldGUI;
     public static PowerDistributionPanel pdp;
+    public static DriverCameras cameras;
 
     Notifier notif;
 
@@ -34,11 +37,7 @@ public class Brain implements Runnable {
         camera = new JetsonCamera();
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
-        // TODO Fix this
-        // UsbCamera cameraA = CameraServer.getInstance().startAutomaticCapture(0);
-        // UsbCamera cameraB = CameraServer.getInstance().startAutomaticCapture(1);
-        // cameraA.setResolution(640, 360);
-        // cameraB.setResolution(640, 360);
+        cameras = new DriverCameras();
 
         notif = new Notifier(this);
         notif.startPeriodic(0.02);
@@ -49,6 +48,7 @@ public class Brain implements Runnable {
         mechs.update();
         shuffleboardCommands.update();
         // fieldGUI.update();
+        cameras.update();
 
         if (!BIGData.getBoolean("in_teleop"))
             tracking.update();
