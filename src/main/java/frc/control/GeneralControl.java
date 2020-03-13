@@ -77,7 +77,6 @@ public class GeneralControl extends Mode {
     }
 
     private void runIntake() {
-        BIGData.put("auto_intake_speed", 0.5);
         intakeState = Target.getIntakeState();
         BIGData.requestIntakeState(intakeState);
         returnBool = false;

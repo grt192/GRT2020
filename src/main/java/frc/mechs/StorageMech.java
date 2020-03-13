@@ -171,7 +171,7 @@ public class StorageMech implements Mech {
         // if we've shot in this load already, make the rpm requirement less strict
         if ((shotInLoad && Math.abs(actualShooterSpeed - requestedShooterSpeed) < 100)
                 || ((Math.abs(actualShooterSpeed - requestedShooterSpeed) < 50)
-                        && Math.abs(BIGData.getDouble("shooter_auto")) > 0)) {
+                        && Math.abs(BIGData.getDouble("shooter_auto")) > 0) && (Math.abs(BIGData.getDouble("camer_azimuth")) < 2)) {
             motor.set(ControlMode.PercentOutput, shootStorageVelocity);
             shotInLoad = true;
             return;

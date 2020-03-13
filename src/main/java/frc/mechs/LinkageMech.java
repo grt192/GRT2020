@@ -16,8 +16,6 @@ public class LinkageMech implements Mech {
     @Override
     public void update() {
         firstSol.set(BIGData.getLinkageState());
-        if (BIGData.getLinkageState()) {
-            hookSol.set(BIGData.getHookState());
-        }
+        hookSol.set(BIGData.getHookState());
     }
 }

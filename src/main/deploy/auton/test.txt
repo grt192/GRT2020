@@ -1,6 +1,6 @@
 ## manual shooter auton
 intake down
 wait
-hood down
+hood up
 wait
 score

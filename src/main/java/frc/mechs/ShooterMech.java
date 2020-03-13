@@ -81,17 +81,19 @@ public class ShooterMech implements Mech {
                 lastGood = BIGData.getDouble("range_testing");
                 // System.out.println(lastGood);
             }
+            System.out.println("while moving az: " + calcSpeedWhileMoving(lastGood));
             double rpm = calcSpeed((int) lastGood);
             // System.out.println(rpm);
 
             // if (BIGData.getDouble("shooter_rpm") > 1) {
-            //     rpm = BIGData.getDouble("shooter_rpm");
-            //     // System.out.println(rpm);
+            // rpm = BIGData.getDouble("shooter_rpm");
+            // // System.out.println(rpm);
             // }
             int offset = BIGData.getInt("shooter_auto_offset");
-            double newSpeed = rpm + offset;
+            // rpm = rpm + offset;
             // rpm = BIGData.getDouble("shooter_speed");
             // put current rpm in BIGData so driver can to adjust speed based off that
+
             BIGData.put("shooter_auto", rpm);
             motor_lead.setVoltage(smff.calculate(rpm / 60));
             // System.out.println("smff voltage: " + smff.calculate(rpm / 60));
@@ -138,7 +140,7 @@ public class ShooterMech implements Mech {
             } else {
                 // linear interpolation
 
-                //System.out.println("Linearizing" + floorEntry + " " + ceilEntry);
+                // System.out.println("Linearizing" + floorEntry + " " + ceilEntry);
                 return floorEntry.getValue()
                         + ((ceilEntry.getValue() - floorEntry.getValue()) / (ceilEntry.getKey() - floorEntry.getKey()))
                                 * (range - floorEntry.getKey());
@@ -160,7 +162,9 @@ public class ShooterMech implements Mech {
 
         double distanceV = distanceRPM * MINUTES_TO_SECONDS * WHEEL_RADIUS * Math.cos(shooterAngle);
 
-        double relativeAng = Math.PI / 2 - Math.abs(BIGData.getDouble("lidar_relative"));
+        double relativeAng = Math.atan2(BIGData.getDouble("relative_x"), BIGData.getDouble("relative_y"));
+        // double relativeAng = Math.PI / 2 -
+        // Math.abs(BIGData.getDouble("lidar_relative"));
 
         double shooterV = Math
                 .sqrt(Math.pow(distanceV, 2) + Math.pow(wheelV, 2) - wheelV * distanceV * Math.cos(relativeAng))
@@ -168,13 +172,14 @@ public class ShooterMech implements Mech {
 
         double newAzimuth = Math.signum(relativeAng) * Math.asin(Math.sin(-relativeAng) * wheelV / shooterV);
 
-        System.out.println(newAzimuth);
-        BIGData.setAngle(newAzimuth);
+        System.out.println(relativeAng * (180 / Math.PI));
+        return newAzimuth;
+        // BIGData.setAngle(newAzimuth);
 
-        double shooterRPM = shooterV / MINUTES_TO_SECONDS / WHEEL_RADIUS;
+        // double shooterRPM = shooterV / MINUTES_TO_SECONDS / WHEEL_RADIUS;
 
-        System.out.println(range + " " + distanceRPM + " " + shooterRPM);
-        return shooterRPM;
+        // System.out.println(range + " " + distanceRPM + " " + shooterRPM);
+        // return shooterRPM;
     }
 
     public double getSpeed() {

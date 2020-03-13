@@ -266,7 +266,7 @@ public class BIGData {
 		put("gyro_w", w);
 	}
 
-	/** get the gyro's current angle in degrees */
+	/** get the gyro's current angle in radians */
 	public static double getGyroAngle() {
 		return getDouble("gyro_ang");
 	}
@@ -336,9 +336,14 @@ public class BIGData {
 		return getBoolean("intake_state");
 	}
 
-	/** Set the state of shooter; false = manual, true = automatic
-	 * @param controller where this command is coming from: controller="mech" means coming from mech controller, 
-	 * controller="swerve" means the control is coming from swerve after centering itself
+	/**
+	 * Set the state of shooter; false = manual, true = automatic
+	 * 
+	 * @param controller
+	 *                       where this command is coming from: controller="mech"
+	 *                       means coming from mech controller, controller="swerve"
+	 *                       means the control is coming from swerve after centering
+	 *                       itself
 	 */
 	public static void putShooterState(boolean state, String controller) {
 		switch (controller) {
@@ -425,15 +430,22 @@ public class BIGData {
 		return getDouble("spinner_manual_speed");
 	}
 
-	/** set whether we should use the manual spinner speed or automatic control 
-	 * @param use true if we should use manual control, false if we should use automatic spinner control
-	*/
+	/**
+	 * set whether we should use the manual spinner speed or automatic control
+	 * 
+	 * @param use
+	 *                true if we should use manual control, false if we should use
+	 *                automatic spinner control
+	 */
 	public static void setUseManualSpinner(boolean use) {
 		put("use_spinner_manual_speed", use);
 	}
 
-	/** get whether we should use manual spinner speed or automatic control
-	 * @return true if we should use manual control, false if we should use automatic spinner control
+	/**
+	 * get whether we should use manual spinner speed or automatic control
+	 * 
+	 * @return true if we should use manual control, false if we should use
+	 *         automatic spinner control
 	 */
 	public static boolean getUseManualSpinner() {
 		return getBoolean("use_spinner_manual_speed");
@@ -563,9 +575,10 @@ public class BIGData {
 	 *                     distance from lidar to center of the target in the plane
 	 *                     parallel to the floor
 	 * @param relAngle
-	 *                     angle of the robot in degrees relative to target, where 0 degrees is
-	 *                     right in front of target, and right of target are
-	 *                     positive angles, and left of target are negative angles.
+	 *                     angle of the robot in degrees relative to target, where 0
+	 *                     degrees is right in front of target, and right of target
+	 *                     are positive angles, and left of target are negative
+	 *                     angles.
 	 * @param quality
 	 *                     the quality of the data, lower is better
 	 */
@@ -574,9 +587,9 @@ public class BIGData {
 		put("lidar_azimuth", azimuth);
 		put("lidar_rel_angle", relAngle);
 		put("lidar_quality", quality);
-		put("lidar_last_updated", ""+System.currentTimeMillis());
+		put("lidar_last_updated", "" + System.currentTimeMillis());
 	}
-	
+
 	/** put (or update) a key/value mapping into the map */
 	public static void put(String key, String val) {
 		map.put(key, val);
@@ -606,7 +619,12 @@ public class BIGData {
 		put("camera_range", r);
 		put("relative_x", x);
 		put("relative_y", y);
-		put("camera_last_updated", ""+System.currentTimeMillis());
+		put("camera_last_updated", "" + System.currentTimeMillis());
+	}
+
+	public static void updateIntakeCamera(double d, double a) {
+		put("ball_distance", d);
+		put("ball_azimuth", a);
 	}
 
 	/** TODO COMMENT CODE PLS! */

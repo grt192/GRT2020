@@ -15,7 +15,7 @@ robot_height=38.5
 swerve_inverted=true
 swerve_kp=0.3
 swerve_kd=0.3
-swerve_kf=2.0
+swerve_kf=0.0
 
 pcm_id=9
 
@@ -101,6 +101,7 @@ spinner_manual_speed=.5
 #jetson variables
 jetson_camera_port=1337
 jetson_lidar_port=1030
-jetson_address=10.1.92.14
+jetson_address=10.1.92.94
+#jetson_address=10.1.92.14
 
 ring_id=7

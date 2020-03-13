@@ -20,7 +20,7 @@ public class Brain implements Runnable {
     public static PositionTracking tracking;
     public static ShuffleboardCommands shuffleboardCommands;
     public static Lidar lidar;
-    public static JetsonCamera camera;
+    public static JetsonCamera camera, intakeCamera;
     public static FieldGUI fieldGUI;
     public static PowerDistributionPanel pdp;
     public static DriverCameras cameras;
@@ -34,7 +34,8 @@ public class Brain implements Runnable {
         // pdp = new PowerDistributionPanel(0);
         shuffleboardCommands = new ShuffleboardCommands();
         // lidar = new Lidar();
-        camera = new JetsonCamera();
+        camera = new JetsonCamera(1337);
+        intakeCamera = new JetsonCamera(1992);
         // fieldGUI = new FieldGUI("10.1.92.151", 5000);
 
         cameras = new DriverCameras(2);

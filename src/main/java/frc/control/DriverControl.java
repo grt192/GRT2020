@@ -10,6 +10,8 @@ class DriverControl extends Mode {
     // if we are currently trying to center using camera/lidar data
     private boolean useCenter = false;
 
+    private int lastPov;
+
     @Override
     public boolean loop() {
         JoystickProfile.updateProfilingPoints();
@@ -19,7 +21,7 @@ class DriverControl extends Mode {
         driveStorageMech();
         driveWinchMech();
         driveLinkageMech();
-        driveSpinnerMech();
+        // driveSpinnerMech();
         toggleCameras();
         return true;
     }
@@ -36,7 +38,7 @@ class DriverControl extends Mode {
         double y = -Input.SWERVE_XBOX.getY(Hand.kLeft);
         x = JoystickProfile.applyProfile(x);
         y = JoystickProfile.applyProfile(y);
-        
+
         // rotate the robot
         double lTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kLeft);
         double rTrigger = Input.SWERVE_XBOX.getTriggerAxis(Hand.kRight);
@@ -54,8 +56,18 @@ class DriverControl extends Mode {
 
         int pov = Input.SWERVE_XBOX.getPOV();
         if (pov != -1) {
+            lastPov = pov;
             BIGData.setAngle(pov);
-        } 
+        }
+        // else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kLeft)) {
+        // pov = lastPov - 5;
+        // lastPov = pov;
+        // BIGData.setAngle(pov);
+        // } else if (Input.SWERVE_XBOX.getBumperPressed(Hand.kRight)) {
+        // pov = lastPov + 5;
+        // lastPov = pov;
+        // BIGData.setAngle(pov);
+        // }
 
         // center with vision if the a button is being held
         double cameraAzimuth = BIGData.getDouble("camera_azimuth");
@@ -70,18 +82,48 @@ class DriverControl extends Mode {
         }
 
         // if (useCenter)
-        //     BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
-        if (useCenter && Math.abs(cameraAzimuth) > 1) {
-            rotate = (-0.01 * cameraAzimuth);
-        } else if (useCenter) {
-            rotate = 0;
+        // BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
+        cameraAzimuth = cameraAzimuth
+                - (Math.signum(BIGData.getDouble("relative_x")) * BIGData.getDouble("relative_x") / 35);
+        // System.out.println(cameraAzimuth);
+
+        if (Input.SWERVE_XBOX.getBumper(Hand.kRight) && useCenter) {
+            BIGData.put("shooting_while_moving", Input.SWERVE_XBOX.getBumper(Hand.kRight));
+            double vel = Math.sqrt(Math.pow(BIGData.getDouble("enc_vx"), 2) + Math.pow(BIGData.getDouble("enc_vy"), 2));
+            cameraAzimuth -= Math.signum(BIGData.getDouble("enc_vx")) * vel / 10;
+            System.out.println("adding: " + Math.signum(BIGData.getDouble("enc_vx")) * vel / 10);
+
+        }
+
+        System.out.println("az: " + cameraAzimuth);
+        System.out.println("az w/ gyro: " + (cameraAzimuth + Math.toDegrees(BIGData.getGyroAngle())));
+
+        if (useCenter && Math.abs(cameraAzimuth) > 0.5) {
+            BIGData.setAngle(cameraAzimuth + Math.toDegrees(BIGData.getGyroAngle()));
+            // rotate = cameraAzimuth;// Math.max((-0.01 * cameraAzimuth), -5 * 0.01);
+        }
+
+        double ballAzimuth = BIGData.getDouble("ball_azimuth");
+        double ballDist = BIGData.getDouble("ball_distance");
+        if (Input.SWERVE_XBOX.getXButton()) {
+            if (ballAzimuth > 1.5) {
+                BIGData.setAngle(ballAzimuth + Math.toDegrees(BIGData.getGyroAngle()));
+            } else {
+                BIGData.requestIntakeState(true);
+                BIGData.put("intake_speed", 0.3);
+                rotate = 0;
+                x = 0;
+                y = -0.3;
+            }
         }
         // if (useCenter) {
-        //     if (BIGData.getLong("camera_last_updated") > System.currentTimeMillis() - 500) {
-        //         BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
-        //     } else if (BIGData.getLong("lidar_last_updated") > System.currentTimeMillis() - 500) {
-        //         BIGData.setAngle(lidarAzimuth + BIGData.getGyroAngle());
-        //     }
+        // if (BIGData.getLong("camera_last_updated") > System.currentTimeMillis() -
+        // 500) {
+        // BIGData.setAngle(cameraAzimuth + BIGData.getGyroAngle());
+        // } else if (BIGData.getLong("lidar_last_updated") > System.currentTimeMillis()
+        // - 500) {
+        // BIGData.setAngle(lidarAzimuth + BIGData.getGyroAngle());
+        // }
         // }
 
         BIGData.requestDrive(x, y, rotate);
@@ -163,45 +205,45 @@ class DriverControl extends Mode {
         }
     }
 
-    private void driveSpinnerMech() {
-        // check if we need to toggle spinner state (up/down)
-        boolean spinnerUp = BIGData.getSpinnerState();
-        if (Input.SWERVE_XBOX.getBackButtonReleased()) {
-            BIGData.putSpinnerState(!spinnerUp);
-        }
-        // check if we should be in automatic control of the color wheel
-        if (Input.MECH_XBOX.getStartButtonReleased()) {
-            BIGData.setUseManualSpinner(false);
-        }
-        // Use the POV on MECH_XBOX to set the speed
-        int mechPOV = Input.MECH_XBOX.getPOV();
-        // System.out.println(mechPOV);
-        // if POV is being pressed, we should use the manual control
-        if (mechPOV >= 0) {
-            BIGData.setUseManualSpinner(true);
-        }
-        switch (mechPOV) {
-        case 0:
-            BIGData.setManualSpinnerSpeed(0);
-            break;
-        case 45:
-            BIGData.setManualSpinnerSpeed(BIGData.getDouble("slow_spinner_speed"));
-            break;
-        case 90:
-            BIGData.setManualSpinnerSpeed(BIGData.getDouble("fast_spinner_speed"));
-            break;
-        case 270:
-            BIGData.setManualSpinnerSpeed(-BIGData.getDouble("fast_spinner_speed"));
-            break;
-        case 315:
-            BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed"));
-            break;
-        default:
-            BIGData.setManualSpinnerSpeed(0);
-            break;
-        }
-        // System.out.println(BIGData.getManualSpinnerSpeed());
-    }
+    // private void driveSpinnerMech() {
+    // // check if we need to toggle spinner state (up/down)
+    // boolean spinnerUp = BIGData.getSpinnerState();
+    // if (Input.SWERVE_XBOX.getBackButtonReleased()) {
+    // BIGData.putSpinnerState(!spinnerUp);
+    // }
+    // // check if we should be in automatic control of the color wheel
+    // if (Input.MECH_XBOX.getStartButtonReleased()) {
+    // BIGData.setUseManualSpinner(false);
+    // }
+    // // Use the POV on MECH_XBOX to set the speed
+    // int mechPOV = Input.MECH_XBOX.getPOV();
+    // // System.out.println(mechPOV);
+    // // if POV is being pressed, we should use the manual control
+    // if (mechPOV >= 0) {
+    // BIGData.setUseManualSpinner(true);
+    // }
+    // switch (mechPOV) {
+    // case 0:
+    // BIGData.setManualSpinnerSpeed(0);
+    // break;
+    // case 45:
+    // BIGData.setManualSpinnerSpeed(BIGData.getDouble("slow_spinner_speed"));
+    // break;
+    // case 90:
+    // BIGData.setManualSpinnerSpeed(BIGData.getDouble("fast_spinner_speed"));
+    // break;
+    // case 270:
+    // BIGData.setManualSpinnerSpeed(-BIGData.getDouble("fast_spinner_speed"));
+    // break;
+    // case 315:
+    // BIGData.setManualSpinnerSpeed(-BIGData.getDouble("slow_spinner_speed"));
+    // break;
+    // default:
+    // BIGData.setManualSpinnerSpeed(0);
+    // break;
+    // }
+    // // System.out.println(BIGData.getManualSpinnerSpeed());
+    // }
 
     private void toggleCameras() {
         if (Input.SWERVE_XBOX.getYButtonReleased()) {
